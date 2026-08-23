@@ -1,0 +1,25 @@
+# 민감/비공개 자료
+docs/private/
+data/
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# 공유용 압축본 (원본은 figures/ · tables/ 에 있다)
+*.zip

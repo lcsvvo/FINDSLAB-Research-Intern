@@ -1,0 +1,9 @@
+﻿variable,covariance,covariance_label,maxlags,n_restrictions,f_stat,p_value,nobs,n_dates
+Y3,date_cluster,Date-cluster,,7,2.1038974342909316,0.04006910009946096,17157,2451
+Y3,driscoll_kraay,Driscoll-Kraay lag=1,1.0,7,2.282103692402919,0.02539544898377647,17157,2451
+Y3,driscoll_kraay,Driscoll-Kraay lag=5,5.0,7,2.2430952903009134,0.028035844498939155,17157,2451
+Y3,driscoll_kraay,Driscoll-Kraay lag=10,10.0,7,2.2635123108096584,0.026623141471192487,17157,2451
+Curvature,date_cluster,Date-cluster,,7,0.7643887601082667,0.6172917922723987,17157,2451
+Curvature,driscoll_kraay,Driscoll-Kraay lag=1,1.0,7,0.7600926169048395,0.6209017590509234,17157,2451
+Curvature,driscoll_kraay,Driscoll-Kraay lag=5,5.0,7,0.8146110809614289,0.5749245262803839,17157,2451
+Curvature,driscoll_kraay,Driscoll-Kraay lag=10,10.0,7,0.799531608437403,0.5875562442023393,17157,2451

@@ -1,0 +1,6 @@
+﻿category,label,n_days
+up,금리 상승일,1203
+down,금리 하락일,1197
+zero,변화 없음,51
+missing,결측,1
+total,전체,2452

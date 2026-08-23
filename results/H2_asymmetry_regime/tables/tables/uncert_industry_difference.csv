@@ -1,0 +1,5 @@
+﻿model,variable,f_stat,p_value,df_num,n_industries,n_obs,n_dates,significant_5pct,p_value_bh,bh_n_tests,bh_family,significant_5pct_bh,source
+Y3_SizeDirection,abs_d_y3,2.2128676106082814,0.03920187475531667,6,7,17157,2451,True,0.03920187475531667,2,Y3_SizeDirection,True,07b (신규)
+Y3_SizeDirection,d_y3,4.137249264982811,0.0003849157633249669,6,7,17157,2451,True,0.0007698315266499339,2,Y3_SizeDirection,True,07b (신규)
+Y3_Asymmetry,d_y3_up,3.516189411752126,0.0018165251780528,6,7,17157,2451,True,0.0036330503561056,2,,True,"07 (기존, 참고)"
+Y3_Asymmetry,d_y3_down,3.1303826112516333,0.0046524308198562,6,7,17157,2451,True,0.0046524308198562,2,,True,"07 (기존, 참고)"

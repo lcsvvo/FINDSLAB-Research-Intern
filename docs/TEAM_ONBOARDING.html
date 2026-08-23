@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINDS Lab 연구 운영 대시보드</title>
+<style>
+  :root{
+    --accent:#1f6f78;
+    --accent-dark:#155158;
+    --accent-soft:#e4f1f2;
+    --ref:#8a6d3b;
+    --ref-soft:#f3ecd9;
+    --bg:#faf9f6;
+    --card:#ffffff;
+    --border:#e3e0d8;
+    --text:#2a2822;
+    --text-muted:#6b675e;
+    --text-faint:#9a968b;
+    --radius:10px;
+    --maxw:1060px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    font-size:15.5px;
+  }
+  h1,h2,h3,h4{
+    font-weight:700;
+    letter-spacing:-0.01em;
+    color:var(--text);
+  }
+  a{color:var(--accent-dark);}
+
+  /* progress bar */
+  #progress-bar{
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    background:var(--accent);
+    width:0%;
+    z-index:1000;
+    transition:width .08s linear;
+  }
+
+  /* top nav */
+  header.topbar{
+    position:sticky;
+    top:0;
+    z-index:900;
+    background:rgba(250,249,246,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+    padding-top:3px;
+  }
+  .nav-inner{
+    max-width:1200px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:4px;
+    overflow-x:auto;
+    padding:10px 20px;
+    scrollbar-width:thin;
+  }
+  .nav-inner::-webkit-scrollbar{height:4px;}
+  .nav-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  .nav-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent-dark);
+    white-space:nowrap;
+    margin-right:14px;
+    padding-right:14px;
+    border-right:1px solid var(--border);
+  }
+  .nav-link{
+    font-size:12.5px;
+    color:var(--text-muted);
+    text-decoration:none;
+    white-space:nowrap;
+    padding:6px 9px;
+    border-radius:6px;
+    transition:background .15s, color .15s;
+  }
+  .nav-link:hover{background:var(--accent-soft); color:var(--accent-dark);}
+  .nav-link.active{
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+  }
+
+  main{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+
+  /* hero */
+  .hero{
+    padding:40px 0 32px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:4px;
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--accent-dark);
+    background:var(--accent-soft);
+    padding:4px 10px;
+    border-radius:20px;
+    margin-bottom:14px;
+  }
+  .hero h1{
+    font-size:27px;
+    margin:0 0 8px;
+    line-height:1.3;
+  }
+  .hero p.lead{
+    font-size:14.5px;
+    color:var(--text-muted);
+    max-width:680px;
+    margin:0;
+  }
+
+  /* hero quick cards */
+  .hero-quick-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:24px;
+  }
+  .hq-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .hq-label{
+    font-size:11px;
+    font-weight:700;
+    color:var(--accent);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  .hq-title{font-size:15px; font-weight:700; margin:0;}
+  .hq-progress-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .hq-pill{
+    font-size:12px;
+    background:var(--accent-soft);
+    color:var(--accent-dark);
+    padding:4px 10px;
+    border-radius:20px;
+    font-weight:700;
+  }
+  .hq-doc-list{display:flex; flex-direction:column; gap:7px;}
+  .hq-doc-row{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted);}
+  .hq-doc-row code{font-family:ui-monospace,Consolas,monospace; font-size:11.5px; color:var(--text);}
+  .hq-flow-list{display:flex; flex-direction:column; gap:5px; margin:0; padding:0;}
+  .hq-flow-row{list-style:none; display:flex; gap:8px; font-size:12.5px; color:var(--text-muted); align-items:baseline;}
+  .hq-flow-row .n{flex:0 0 auto; font-weight:700; color:var(--accent-dark); font-size:11.5px;}
+  .hq-link{
+    margin-top:auto;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--accent-dark);
+    text-decoration:none;
+  }
+  .hq-link:hover{text-decoration:underline;}
+
+  /* badges (shared: req / ref / tpl) */
+  .badge{
+    display:inline-block;
+    font-size:10.5px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:5px;
+    color:#fff;
+    letter-spacing:.02em;
+  }
+  .badge.req{background:var(--accent-dark);}
+  .badge.ref{background:var(--ref);}
+  .badge.tpl{background:var(--text-faint);}
+
+  section{
+    padding:40px 0;
+    border-bottom:1px solid var(--border);
+    scroll-margin-top:60px;
+  }
+  section:last-of-type{border-bottom:none;}
+
+  .section-tag{
+    font-size:12px;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:.04em;
+    margin-bottom:6px;
+  }
+  section > h2{
+    font-size:21px;
+    margin:0 0 6px;
+  }
+  section > p.sub{
+    color:var(--text-muted);
+    font-size:13.5px;
+    margin:0 0 20px;
+    max-width:640px;
+  }
+
+  /* generic card */
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .callout{
+    background:var(--accent-soft);
+    border-left:3px solid var(--accent);
+    border-radius:6px;
+    padding:12px 16px;
+    font-size:13.5px;
+    color:var(--accent-dark);
+  }
+  .callout b, .card b, section b{color:inherit; font-weight:700;}
+
+  /* checklist */
+  .checklist-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  .checklist-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .checklist-card h4{margin:0 0 4px; font-size:14.5px;}
+  .progress-count{
+    font-size:12px;
+    color:var(--accent-dark);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+  .chk-row{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    padding:6px 0;
+    border-bottom:1px solid var(--border);
+    font-size:13px;
+  }
+  .chk-row:last-child{border-bottom:none;}
+  .chk-row input{
+    margin-top:2px;
+    width:14px; height:14px;
+    accent-color:var(--accent);
+    flex:0 0 auto;
+    cursor:pointer;
+  }
+  .chk-row label{cursor:pointer; color:var(--text);}
+  .chk-row.done label{color:var(--text-faint); text-decoration:line-through;}
+
+  /* flow diagram */
+  .flow-row{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    margin-top:18px;
+    overflow-x:auto;
+    padding-bottom:6px;
+  }
+  .flow-step{
+    flex:1 1 0;
+    min-width:148px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 13px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  .flow-step .fs-num{
+    width:22px; height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    color:#fff;
+    font-size:11.5px;
+    font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .flow-step .fs-title{font-size:13px; font-weight:700; line-height:1.35;}
+  .flow-step .fs-desc{font-size:11.8px; color:var(--text-muted); line-height:1.45;}
+  .flow-step .fs-desc code{font-family:ui-monospace,Consolas,monospace; font-size:11px; color:var(--accent-dark);}
+  .flow-arrow{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;
+    color:var(--text-faint);
+    font-size:16px;
+  }
+  .flow-loop{
+    margin-top:12px;
+    text-align:center;
+    font-size:12px;
+    color:var(--text-faint);
+    padding:7px;
+    border:1px dashed var(--border);
+    border-radius:8px;
+  }
+
+  /* file cards */
+  .group-label{
+    font-size:11.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--text-faint);
+    margin:22px 0 10px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .group-label:first-child{margin-top:0;}
+  .file-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .file-grid.tpl2{grid-template-columns:1fr 1fr;}
+  .file-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:15px 17px;
+  }
+  .file-card.req{border-top:3px solid var(--accent-dark);}
+  .file-card.ref{border-top:3px solid var(--ref);}
+  .file-card.tpl{border-top:3px solid var(--text-faint);}
+  .file-card .fname{
+    font-family:ui-monospace,Consolas,monospace;
+    font-size:12.5px;
+    color:var(--accent-dark);
+    font-weight:700;
+    margin:8px 0 6px;
+    word-break:break-all;
+  }
+  .file-card p{margin:0; font-size:12.8px; color:var(--text-muted);}
+
+  /* skeleton (template preview) */
+  .skeleton{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-top:14px;
+  }
+  .sk-block{
+    border:1px dashed var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    font-size:12.8px;
+    background:var(--card);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .sk-block .sk-tag{
+    flex:0 0 auto;
+    font-size:10.5px;
+    font-weight:700;
+    color:#fff;
+    background:var(--accent);
+    padding:2px 8px;
+    border-radius:5px;
+  }
+  .sk-block.repeat{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+    justify-content:center;
+    font-size:12px;
+    color:var(--accent-dark);
+    padding:7px 16px;
+  }
+  .sk-block .sk-tag.code{background:var(--text-faint);}
+  .sk-block .sk-tag.take{background:var(--accent-dark);}
+
+  /* accordion */
+  .acc-item{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    margin-bottom:9px;
+    background:var(--card);
+    overflow:hidden;
+  }
+  .acc-item summary{
+    list-style:none;
+    cursor:pointer;
+    padding:13px 18px;
+    font-size:13.8px;
+    font-weight:700;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .acc-item summary::-webkit-details-marker{display:none;}
+  .acc-item summary::after{
+    content:"+";
+    font-size:17px;
+    font-weight:400;
+    color:var(--accent);
+    transition:transform .2s;
+  }
+  .acc-item[open] summary::after{transform:rotate(45deg);}
+  .acc-body{
+    padding:0 18px 16px;
+    font-size:13.2px;
+    color:var(--text-muted);
+  }
+  .acc-body ul{margin:6px 0; padding-left:18px;}
+  .acc-body li{margin-bottom:4px;}
+  .acc-body .example{
+    display:flex;
+    gap:10px;
+    margin-top:9px;
+    padding:9px 13px;
+    border-radius:8px;
+    font-size:12.5px;
+  }
+  .acc-body .example.good{background:#eaf4ec; border-left:3px solid #3d8b52;}
+  .acc-body .example.bad{background:#f7e9e7; border-left:3px solid #b3554a;}
+  .acc-body .example .tag{font-weight:700; flex:0 0 auto;}
+  .acc-body .example.good .tag{color:#2e6b3f;}
+  .acc-body .example.bad .tag{color:#93362c;}
+
+  /* compare (in why accordion) */
+  .compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:8px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .compare .col{padding:14px 16px;}
+  .compare .col.left{background:var(--bg); border-right:1px solid var(--border);}
+  .compare .col.right{background:var(--bg);}
+  .compare h4{margin:0 0 10px; font-size:13px; color:var(--accent-dark);}
+  .compare dl{margin:0;}
+  .compare dt{font-size:11px; font-weight:700; color:var(--text-faint); margin-top:9px;}
+  .compare dt:first-child{margin-top:0;}
+  .compare dd{margin:2px 0 0; font-size:12.5px; color:var(--text-muted);}
+
+  /* reason grid (in why accordion) */
+  .reason-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:8px;
+  }
+  .reason-grid .card{background:var(--bg);}
+  .reason-grid .card h4{margin:0 0 6px; font-size:13px; color:var(--accent-dark);}
+  .reason-grid .card p{margin:0; font-size:12.5px; color:var(--text-muted);}
+
+  /* antipattern */
+  .anti-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .anti-item{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-left:3px solid #b3554a;
+    border-radius:8px;
+    padding:12px 14px;
+    font-size:13px;
+  }
+  .anti-item .a-title{font-weight:700; margin-bottom:3px; color:#93362c; font-size:13.2px;}
+  .anti-item .a-title::before{content:"\2715  ";}
+  .anti-item p{margin:0; color:var(--text-muted);}
+
+  /* glossary */
+  .glossary{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .g-item{
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    border-right:1px solid var(--border);
+    background:var(--card);
+  }
+  .g-item:nth-child(2n){border-right:none;}
+  .g-term{font-size:13px; font-weight:700; color:var(--accent-dark); margin-bottom:2px;}
+  .g-def{font-size:12.5px; color:var(--text-muted);}
+
+  footer{
+    padding:32px 0 60px;
+    text-align:center;
+    font-size:12px;
+    color:var(--text-faint);
+  }
+
+  @media (max-width:760px){
+    .file-grid, .reason-grid, .compare, .anti-grid, .glossary, .checklist-wrap, .hero-quick-grid{
+      grid-template-columns:1fr;
+    }
+    .compare .col.left{border-right:none; border-bottom:1px solid var(--border);}
+    .g-item{border-right:none;}
+    .hero h1{font-size:22px;}
+    .flow-row{flex-direction:column;}
+    .flow-arrow{transform:rotate(90deg); width:auto; padding:2px 0;}
+    .flow-step{min-width:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header class="topbar">
+  <nav class="nav-inner" id="nav-inner">
+    <span class="nav-title">FINDS Lab</span>
+    <a class="nav-link" data-target="s-check" href="#s-check">체크리스트</a>
+    <a class="nav-link" data-target="s-flow" href="#s-flow">작업흐름</a>
+    <a class="nav-link" data-target="s-files" href="#s-files">문서</a>
+    <a class="nav-link" data-target="s-why" href="#s-why">왜 이렇게</a>
+    <a class="nav-link" data-target="s-faq" href="#s-faq">헷갈림</a>
+    <a class="nav-link" data-target="s-mistake" href="#s-mistake">흔한 실수</a>
+    <a class="nav-link" data-target="s-glossary" href="#s-glossary">용어</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="eyebrow">FINDS Lab · 팀 공유 운영 대시보드</span>
+    <h1>연구 기록, 무엇을 · 어디에 · 어떤 순서로</h1>
+    <p class="lead">
+      규칙 원본은 아래 문서 4개. 이 페이지는 실행 순서와 체크리스트를 빠르게 확인하는 참조용 대시보드다.
+    </p>
+
+    <div class="hero-quick-grid">
+      <div class="hq-card">
+        <span class="hq-label">지금 확인</span>
+        <h3 class="hq-title">작업 체크리스트</h3>
+        <div class="hq-progress-row">
+          <span class="hq-pill progress-count" data-group="analysis">0 / 7 완료</span>
+          <span class="hq-pill progress-count" data-group="notion">0 / 5 완료</span>
+        </div>
+        <span style="font-size:12.5px; color:var(--text-muted);">분석 작성 7항목 · Notion 기록 5항목</span>
+        <a class="hq-link" href="#s-check">체크리스트 열기 &darr;</a>
+      </div>
+
+      <div class="hq-card">
+        <span class="hq-label">읽어야 할 문서</span>
+        <h3 class="hq-title">문서 4개, 역할 2가지</h3>
+        <div class="hq-doc-list">
+          <div class="hq-doc-row"><span class="badge req">필수</span><code>STYLE_GUIDE.md</code></div>
+          <div class="hq-doc-row"><span class="badge req">필수</span><code>NOTION_WORKSPACE.md</code></div>
+          <div class="hq-doc-row"><span class="badge tpl">템플릿</span><code>TEMPLATE_analysis.ipynb</code> 외 1</div>
+        </div>
+        <a class="hq-link" href="#s-files">문서 상세 보기 &darr;</a>
+      </div>
+
+      <div class="hq-card">
+        <span class="hq-label">작업 순서</span>
+        <h3 class="hq-title">2주 사이클 6단계</h3>
+        <ol class="hq-flow-list">
+          <li class="hq-flow-row"><span class="n">1&ndash;2</span> 진행보고 생성 → 회의록</li>
+          <li class="hq-flow-row"><span class="n">3&ndash;4</span> 의사결정 → 데이터 카탈로그</li>
+          <li class="hq-flow-row"><span class="n">5&ndash;6</span> 분석/템플릿 → 교수님 공유</li>
+        </ol>
+        <a class="hq-link" href="#s-flow">흐름도 보기 &darr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 체크리스트 -->
+  <section id="s-check">
+    <div class="section-tag">01</div>
+    <h2>작업 체크리스트</h2>
+    <p class="sub">작업하면서 바로 체크한다. 새로고침하면 초기화된다.</p>
+    <div class="checklist-wrap">
+      <div class="checklist-card">
+        <h4>분석을 쓸 때</h4>
+        <div class="progress-count" data-group="analysis">0 / 7 완료</div>
+        <div class="chk-row"><input type="checkbox" id="c1"><label for="c1">TEMPLATE_analysis.ipynb를 복사해서 시작했는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="c2"><label for="c2">개요 블록(분석 질문 · 입력 · 출력)을 먼저 채웠는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="c3"><label for="c3">코드 셀에는 계산 · 그림만, 설명은 마크다운 셀에 썼는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="c4"><label for="c4">관찰(섹션마다)과 해석(전체 끝나고 한 번)을 분리했는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="c5"><label for="c5">노트북 요약과 Summary 최상단에 Takeaway를 썼는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="c6"><label for="c6">파일명에 STEP을 붙이지 않았는가 (NN_stage.ipynb)</label></div>
+        <div class="chk-row"><input type="checkbox" id="c7"><label for="c7">결과 파일을 같은 이름으로 덮어쓰도록 저장했는가 (날짜 미포함)</label></div>
+      </div>
+      <div class="checklist-card">
+        <h4>Notion에 기록할 때</h4>
+        <div class="progress-count" data-group="notion">0 / 5 완료</div>
+        <div class="chk-row"><input type="checkbox" id="n1"><label for="n1">이 정보가 이미 다른 DB에 있는 건 아닌가 (한 정보 = 한 자리)</label></div>
+        <div class="chk-row"><input type="checkbox" id="n2"><label for="n2">맞는 DB를 골랐는가 (회의록 / 의사결정 기록 / 데이터 카탈로그 / 분석 코드 / 연구 산출물 / 진행 보고)</label></div>
+        <div class="chk-row"><input type="checkbox" id="n3"><label for="n3">속성에는 키워드만, 설명은 본문에 썼는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="n4"><label for="n4">전체 코드 · 표 · 대용량 파일 원본은 옮기지 않고 링크 · 요약만 남겼는가</label></div>
+        <div class="chk-row"><input type="checkbox" id="n5"><label for="n5">원본을 열지 않아도 이 기록만으로 이해되는가</label></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 작업 흐름 -->
+  <section id="s-flow">
+    <div class="section-tag">02</div>
+    <h2>작업 흐름 — 2주 사이클</h2>
+    <p class="sub">모든 활동은 이 한 바퀴 안에서 일어나고, 다음 사이클로 반복된다.</p>
+    <div class="flow-row">
+      <div class="flow-step">
+        <span class="fs-num">1</span>
+        <span class="fs-title">진행 보고 생성</span>
+        <span class="fs-desc"><code>진행 보고</code> DB에 새 회차(기간·담당자)</span>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <span class="fs-num">2</span>
+        <span class="fs-title">회의 · 피드백</span>
+        <span class="fs-desc">발생 즉시 <code>회의록</code>에 기록, 반영 여부 갱신</span>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <span class="fs-num">3</span>
+        <span class="fs-title">방법 · 데이터 결정</span>
+        <span class="fs-desc">확정되면 <code>의사결정 기록</code> + <code>근거 회의</code> 연결</span>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <span class="fs-num">4</span>
+        <span class="fs-title">프로젝트별 작업 수행</span>
+        <span class="fs-desc">프로젝트 계획에 따라 필요한 작업 수행</span>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <span class="fs-num">5</span>
+        <span class="fs-title">분석</span>
+        <span class="fs-desc">템플릿 복사 → <code>분석 코드</code> / <code>연구 산출물</code> 등록</span>
+      </div>
+      <span class="flow-arrow">&rarr;</span>
+      <div class="flow-step">
+        <span class="fs-num">6</span>
+        <span class="fs-title">진행 보고 마감</span>
+        <span class="fs-desc">"공유 완료"로 변경, 교수님께 공유</span>
+      </div>
+    </div>
+    <div class="flow-loop">다음 사이클로 이어지며 이 흐름이 반복된다</div>
+  </section>
+
+  <!-- 03 문서 -->
+  <section id="s-files">
+    <div class="section-tag">03</div>
+    <h2>문서 4개, 역할 2가지</h2>
+    <p class="sub">필수 문서는 항상 확인하고, 템플릿은 복사해서 시작.</p>
+
+    <div class="group-label"><span class="badge req">필수 문서</span> 항상 기준으로 사용하는 문서</div>
+    <div class="file-grid">
+      <div class="file-card req">
+        <span class="badge req">작성 규칙</span>
+        <div class="fname">docs/STYLE_GUIDE.md</div>
+        <p>제목 표기 · 헤딩 레벨 · 관찰/해석 분리 · Takeaway 작성법. 노트북·Summary를 쓸 때마다 매번 적용.</p>
+      </div>
+          <div class="file-card req">
+        <span class="badge req">운영 규칙</span>
+        <div class="fname">docs/NOTION_WORKSPACE.md</div>
+        <p>회의록 · 의사결정 기록 · 데이터 카탈로그 · 분석 코드 · 연구 산출물 · 진행 보고 — 무엇을 어디에 남기는지 정의. 구조는 거의 바뀌지 않음.</p>
+      </div>
+    </div>
+
+    <div class="group-label"><span class="badge tpl">템플릿</span> 복사해서 바로 시작</div>
+    <div class="file-grid tpl2">
+      <div class="file-card tpl">
+        <span class="badge tpl">분석 형틀</span>
+        <div class="fname">docs/templates/TEMPLATE_analysis.ipynb</div>
+        <p>새 노트북 복사용 빈 뼈대. 개요 → 섹션(목적·코드·관찰) 반복 → 해석 → Takeaway가 이미 칸으로 짜여 있음.</p>
+      </div>
+      <div class="file-card tpl">
+        <span class="badge tpl">요약 형틀</span>
+        <div class="fname">docs/templates/TEMPLATE_summary.md</div>
+        <p><code>results/{카테고리}/summary.md</code> 복사용 뼈대. Takeaway가 최상단에 오도록 구조화.</p>
+      </div>
+    </div>
+
+    <details class="acc-item" style="margin-top:18px;">
+      <summary>노트북 템플릿 구조 미리보기 (펼치기)</summary>
+      <div class="acc-body">
+        <p style="margin:0;">TEMPLATE_analysis.ipynb를 복사하면 아래 구조가 이미 빈칸으로 갖춰진다. 기억할 필요 없이 빈칸만 채우면 STYLE_GUIDE를 지킨 것이다.</p>
+        <div class="skeleton">
+          <div class="sk-block"><span class="sk-tag">개요</span> 분석 질문 · 입력 · 출력 (STEP 첫 셀, 한 번만)</div>
+          <div class="sk-block"><span class="sk-tag code">섹션</span> ## 섹션명 → ### 목적</div>
+          <div class="sk-block"><span class="sk-tag code">코드</span> 계산 또는 그림 생성만 (설명 없음)</div>
+          <div class="sk-block"><span class="sk-tag code">관찰</span> ### 관찰 결과 — 숫자·방향·패턴만, 해석 금지</div>
+          <div class="sk-block repeat">&#8635; 위 섹션 → 목적 → 코드 → 관찰 결과 블록을 분석 섹션 수만큼 반복</div>
+          <div class="sk-block"><span class="sk-tag take">해석</span> ## 해석 — 모든 섹션이 끝난 뒤 한 번만</div>
+          <div class="sk-block"><span class="sk-tag take">요약</span> ### Takeaway — 핵심 결과 3~5줄</div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 04 왜 이렇게 -->
+  <section id="s-why">
+    <div class="section-tag">04</div>
+    <h2>왜 이렇게 운영하나</h2>
+    <p class="sub">배경 설명. 실행에는 필요 없지만 판단이 헷갈릴 때 펼쳐본다.</p>
+
+    <details class="acc-item">
+      <summary>왜 이 공간을 쓰는가</summary>
+      <div class="acc-body">
+        <ul>
+          <li><b>연구실 공유 공간</b> — 개인 메모장이 아니다. 나만 알아보면 되는 기록은 맞지 않음.</li>
+          <li><b>읽는 사람 기준</b> — 교수님 · 공동연구자가 페이지 하나만 보고 맥락을 이해할 수 있어야 함. 유일한 품질 기준.</li>
+          <li><b>기록 = 연구 이력</b> — 연구가 끝나도 지우지 않고 상태만 종료로 변경.</li>
+          <li><b>AI로 작성해도 형식은 동일</b> — Claude로 초안을 빠르게 만들어도 STYLE_GUIDE · TEMPLATE 골격은 그대로. 가치는 "누가 만들었나"가 아니라 "표준에 맞는가"로 판단.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc-item">
+      <summary>왜 운영 규칙 / 작성 규칙을 나눴나</summary>
+      <div class="acc-body">
+        <p style="margin:0;">둘을 한 문서에 섞으면 하나가 바뀔 때마다 다른 쪽까지 뒤져야 한다. 나눠 두면 "어디"가 바뀔 때는 운영 규칙만, "어떻게"가 바뀔 때는 작성 규칙만 고치면 된다 — <b>한 정보 = 한 자리</b> 원칙을 문서 자체에도 적용.</p>
+        <div class="compare">
+          <div class="col left">
+            <h4>운영 규칙 · NOTION_WORKSPACE.md</h4>
+            <dl>
+              <dt>질문</dt><dd>어디에 두나</dd>
+              <dt>적용 순간</dt><dd>회의 종료 · 결정 · 데이터 수신 시점</dd>
+              <dt>변화 속도</dt><dd>느림, 구조는 거의 고정</dd>
+            </dl>
+          </div>
+          <div class="col right">
+            <h4>작성 규칙 · STYLE_GUIDE.md</h4>
+            <dl>
+              <dt>질문</dt><dd>어떻게 쓰나</dd>
+              <dt>적용 순간</dt><dd>셀 하나, 문장 하나마다</dd>
+              <dt>변화 속도</dt><dd>빠름, 매번 반복 적용</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <details class="acc-item">
+      <summary>왜 스타일을 하나로 통일하나</summary>
+      <div class="acc-body">
+        <div class="reason-grid">
+          <div class="card">
+            <h4>읽는 비용 0</h4>
+            <p>어느 노트북을 열어도 개요·관찰·해석·Takeaway가 같은 위치.</p>
+          </div>
+          <div class="card">
+            <h4>비교 가능</h4>
+            <p>모든 STEP이 같은 골격이라 나란히 비교 가능.</p>
+          </div>
+          <div class="card">
+            <h4>재현성</h4>
+            <p>Setup 셀 통일 · 파일명 규칙 · 날짜 미포함 = 다시 실행해도 같은 결과.</p>
+          </div>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 05 헷갈리는 지점 -->
+  <section id="s-faq">
+    <div class="section-tag">05</div>
+    <h2>가장 헷갈리는 지점</h2>
+    <p class="sub">신규 팀원이 가장 자주 묻는 네 가지.</p>
+
+    <details class="acc-item">
+      <summary>회의록 vs 의사결정 기록</summary>
+      <div class="acc-body">
+        <ul>
+          <li><b>회의록</b> — 무슨 논의 · 피드백이 있었는가까지만. 미확정 사안도 포함.</li>
+          <li><b>의사결정 기록</b> — 실제로 되돌리기 어렵게 <b>확정된 결정</b>과 근거 · 기각 대안만. 상태는 "확정" 또는 "재검토 필요".</li>
+          <li>회의록이 먼저, 결정이 확정되면 의사결정 기록으로 옮겨져 <code>근거 회의</code>로 연결.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc-item">
+      <summary>관찰 vs 해석, 왜 분리하는가</summary>
+      <div class="acc-body">
+        <ul>
+          <li><b>관찰</b> — 데이터에서 직접 확인되는 사실(숫자·방향·패턴). 섹션마다 <code>### 관찰 결과</code>.</li>
+          <li><b>해석</b> — 관찰을 근거로 한 주장. 전체 끝나고 <code>## 해석</code>에 한 번만.</li>
+        </ul>
+        <div class="example good"><span class="tag">관찰</span><span>전기전자 평균 수익률 0.000812로 최대, 철강금속 변동성 0.0184로 최대.</span></div>
+        <div class="example bad"><span class="tag">해석</span><span>산업마다 수익·위험 성격이 달라 금리 반응(베타)도 다를 여지가 있다.</span></div>
+        <p style="margin-top:8px;">"때문에" · "의미한다" · "여지가 있다" 같은 인과·의미 표현이 들어가면 이미 해석.</p>
+      </div>
+    </details>
+
+    <details class="acc-item">
+      <summary>STEP 표기 — 파일명에는 왜 안 쓰는가</summary>
+      <div class="acc-body">
+        <ul>
+          <li><b>파일명</b> — <code>NN_stage.ipynb</code>만. 예: <code>01_data_preparation.ipynb</code>. STEP 단어 금지.</li>
+          <li><b>문서 내부 제목(H1)</b> — <code>STEP{N}.</code> 표기 사용. 예: <code># STEP1. 데이터 준비</code>.</li>
+          <li>파일명은 정렬 · 탐색용 순번, STEP 표기는 사람이 읽는 라벨. 역할이 다르므로 위치도 다름.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="acc-item">
+      <summary>"원본은 옮기지 않지만 설명은 충분히"</summary>
+      <div class="acc-body">
+        <ul>
+          <li>전체 코드 · 전체 표 · 대용량 데이터 · 이미지 원본은 Notion으로 옮기지 않음. 원본은 원래 저장 위치에 두고 링크만 건다.</li>
+          <li>옮기지 않는 것은 <b>원본</b>이지 <b>설명</b>이 아님. 목적 · 입력 데이터 · 핵심 결과 · 해석은 Notion만 봐도 이해되게 풀어 써야 함.</li>
+          <li>"링크만 걸면 된다"는 틀린 판단. 문제는 겹침이 아니라 <b>설명 부족</b>.</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <!-- 06 흔한 실수 -->
+  <section id="s-mistake">
+    <div class="section-tag">06</div>
+    <h2>흔한 실수 (안티패턴)</h2>
+    <p class="sub">실제로 자주 나오는 위반 패턴 6가지.</p>
+    <div class="anti-grid">
+      <div class="anti-item">
+        <div class="a-title">관찰에 해석 섞기</div>
+        <p>"~때문에" "~로 보인다" 같은 주장이 관찰에 섞임. 관찰은 숫자·방향·패턴만.</p>
+      </div>
+      <div class="anti-item">
+        <div class="a-title">여러 곳에 중복 기록</div>
+        <p>같은 내용을 회의록 · 의사결정 기록 양쪽에 상세히 씀. 한 정보는 한 자리, 나머지는 링크.</p>
+      </div>
+      <div class="anti-item">
+        <div class="a-title">속성에 긴 설명 몰아넣기</div>
+        <p>Notion 표(속성)에 문단 단위 설명. 속성은 키워드 · 관계만, 상세 설명은 본문에.</p>
+      </div>
+      <div class="anti-item">
+        <div class="a-title">파일명에 STEP 붙이기</div>
+        <p><code>STEP01_data.ipynb</code>처럼 파일명에 STEP. 파일명은 <code>01_data_preparation.ipynb</code> 형식만.</p>
+      </div>
+      <div class="anti-item">
+        <div class="a-title">Takeaway 누락</div>
+        <p>Summary 최상단에 Takeaway 없이 바로 본문. 항상 최상단 3~5줄 필수.</p>
+      </div>
+      <div class="anti-item">
+        <div class="a-title">이모지 · 장식 사용</div>
+        <p>강조는 핵심 숫자 · 결론에 굵게만. 이모지, 화려한 장식은 쓰지 않는다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 용어 사전 -->
+  <section id="s-glossary">
+    <div class="section-tag">07</div>
+    <h2>용어 사전</h2>
+    <p class="sub">자주 등장하지만 헷갈리기 쉬운 용어만 모았다.</p>
+    <div class="glossary">
+      <div class="g-item"><div class="g-term">STEP</div><div class="g-def">노트북·요약 문서 내부 제목에만 쓰는 표기(<code>STEP1.</code>). 파일명에는 쓰지 않는다.</div></div>
+      <div class="g-item"><div class="g-term">Takeaway</div><div class="g-def">노트북 요약과 Summary 최상단에 오는 핵심 결과·의미 3~5줄 요약.</div></div>
+      <div class="g-item"><div class="g-term">관찰 / 해석</div><div class="g-def">관찰=데이터에서 확인되는 사실, 해석=그 사실을 근거로 한 주장. 반드시 분리해서 작성.</div></div>
+      <div class="g-item"><div class="g-term">Summary</div><div class="g-def"><code>results/{카테고리}/summary.md</code>. 해당 STEP 결과를 1페이지 이내로 압축한 문서.</div></div>
+      <div class="g-item"><div class="g-term">진행 보고</div><div class="g-def">2주마다 교수님께 공유하는 Notion DB. Workspace의 최우선 산출물.</div></div>
+      <div class="g-item"><div class="g-term">연구 산출물</div><div class="g-def">노트북·src 실행으로 생성된 Summary·Figure·Table·Dataset·Variable의 현황을 관리하는 DB.</div></div>
+      <div class="g-item"><div class="g-term">데이터 카탈로그</div><div class="g-def">원자료의 수집자·출처·상태 등 메타데이터만 관리하는 DB. 실제 데이터 파일은 넣지 않고 저장 위치만 남긴다.</div></div>
+      <div class="g-item"><div class="g-term">Source of Truth</div><div class="g-def">하나의 정보를 원본으로 관리하는 단 하나의 자리. 다른 곳에는 링크나 요약만 둔다.</div></div>
+      <div class="g-item"><div class="g-term">문서 우선</div><div class="g-def">운영 규칙이 바뀔 때는 Notion을 먼저 고치지 않고 문서(NOTION_WORKSPACE.md)를 먼저 고친 뒤 Notion에 반영한다.</div></div>
+    </div>
+  </section>
+
+  <footer>
+    FINDS Lab · 이 페이지는 팀 공유 대시보드이며, 규칙의 원본은 항상 docs/NOTION_WORKSPACE.md와 docs/STYLE_GUIDE.md다.
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  // scroll progress bar
+  var bar = document.getElementById('progress-bar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // active nav highlight via IntersectionObserver
+  var sections = document.querySelectorAll('main section[id]');
+  var links = document.querySelectorAll('.nav-link');
+  var linkMap = {};
+  links.forEach(function(l){ linkMap[l.getAttribute('data-target')] = l; });
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      var id = entry.target.getAttribute('id');
+      var link = linkMap[id];
+      if(!link) return;
+      if(entry.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        link.classList.add('active');
+        // keep active link visible in scrollable nav
+        link.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+      }
+    });
+  }, {
+    root:null,
+    rootMargin:'-45% 0px -50% 0px',
+    threshold:0
+  });
+  sections.forEach(function(s){ observer.observe(s); });
+
+  // checklist progress counters (updates both hero mini pills and section counters)
+  function updateCounters(){
+    var groups = {
+      analysis: ['c1','c2','c3','c4','c5','c6','c7'],
+      notion: ['n1','n2','n3','n4','n5']
+    };
+    Object.keys(groups).forEach(function(key){
+      var ids = groups[key];
+      var done = 0;
+      ids.forEach(function(id){
+        var el = document.getElementById(id);
+        if(el && el.checked) done++;
+        if(el){
+          var row = el.closest('.chk-row');
+          if(row){ row.classList.toggle('done', el.checked); }
+        }
+      });
+      var counters = document.querySelectorAll('.progress-count[data-group="'+key+'"]');
+      counters.forEach(function(counter){
+        counter.textContent = done + ' / ' + ids.length + ' 완료';
+      });
+    });
+  }
+  document.querySelectorAll('.chk-row input[type="checkbox"]').forEach(function(cb){
+    cb.addEventListener('change', updateCounters);
+  });
+  updateCounters();
+})();
+</script>
+
+</body>
+</html>

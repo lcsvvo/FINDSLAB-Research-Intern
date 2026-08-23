@@ -1,0 +1,2 @@
+﻿test,reference_industry,statistic,df_num,df_denom,p_value,decision_5pct,statistic_cluster,p_value_cluster,decision_5pct_cluster
+산업별 금리베타 동일성 공동검정,건설업,4.2694203626092,6.0,17136.0,0.00026421803628166933,H0 기각: 산업별 금리베타 차이 존재,4.189155937121925,0.0003375074939963298,H0 기각: 산업별 금리베타 차이 존재

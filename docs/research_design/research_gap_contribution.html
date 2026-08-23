@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>선행연구의 공백과 우리 연구의 기여 · 통합 연구설계</title>
+<style>
+:root{
+ --navy:#0b1220;--navy2:#172554;--blue:#2563eb;--blue-d:#1d4ed8;
+ --rose:#e11d48;--rose-d:#be123c;--slate:#64748b;--ink:#1e293b;
+ --bg:#f6f8fb;--line:#e2e8f0;--card:#fff;--soft:#f8fafc;
+ --blue-soft:#eff6ff;--blue-b:#bfdbfe;--rose-soft:#fff1f2;--rose-b:#fecdd3;
+ --amber:#fffbeb;--amber-b:#f59e0b;
+ --pos:var(--blue);--neg:var(--rose);--neu:var(--slate);
+ --shadow:0 1px 3px rgba(15,23,42,.06),0 10px 30px rgba(15,23,42,.05);
+ --radius:15px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--ink);line-height:1.68;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 26px}
+
+/* HERO */
+header.hero{background:radial-gradient(circle at 85% 18%,rgba(59,130,246,.28),transparent 30%),linear-gradient(135deg,#08111f,#172554 56%,#1d4ed8);color:#fff;padding:60px 0 50px}
+.eyebrow{font-size:13px;letter-spacing:.16em;color:#bfdbfe;font-weight:800;text-transform:uppercase}
+header.hero h1{font-size:37px;line-height:1.2;margin:12px 0 16px;letter-spacing:-.03em;font-weight:800}
+.headline{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.2);border-left:5px solid #60a5fa;border-radius:13px;padding:16px 20px;max-width:900px;font-size:15.5px;color:#eaf2ff}
+.headline b{color:#fff}
+.hero-meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.hero-meta span{padding:7px 12px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:12px}
+
+/* LAYOUT + TOC */
+.layout{display:grid;grid-template-columns:230px 1fr;gap:42px;padding:40px 0 82px}
+nav.toc{position:sticky;top:20px;align-self:start;height:max-content}
+nav.toc .toc-t{font-size:11px;letter-spacing:.14em;color:var(--slate);font-weight:800;margin:0 0 10px 12px;text-transform:uppercase}
+nav.toc a{display:block;padding:8px 13px;margin:2px 0;border-radius:9px;color:#475569;text-decoration:none;font-size:13.5px;font-weight:600;border-left:3px solid transparent;transition:.16s}
+nav.toc a:hover{background:#eef2f7;color:var(--blue-d)}
+nav.toc a.active{background:var(--blue-soft);color:var(--blue-d);border-left-color:var(--blue);font-weight:800}
+main{min-width:0}
+section{margin-bottom:56px;scroll-margin-top:22px}
+.sec-num{font-size:12px;letter-spacing:.14em;color:var(--blue);font-weight:800}
+h2{font-size:28px;color:var(--navy);margin:4px 0 4px;letter-spacing:-.02em}
+.lead{color:var(--slate);margin:0 0 20px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:26px 28px;margin-bottom:18px}
+.sub{font-size:17px;font-weight:800;color:var(--navy);margin:0 0 13px}
+.sub.mt{margin-top:24px}
+
+/* SIGNAL CARDS */
+.signals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sigcard{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--neu);border-radius:var(--radius);box-shadow:var(--shadow);padding:19px 21px}
+.sigcard.pos{border-top-color:var(--pos)}.sigcard.neg{border-top-color:var(--neg)}.sigcard.neu{border-top-color:var(--neu)}
+.sigcard .sig-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.sigcard .st{font-size:15px;font-weight:800;color:var(--navy)}
+.sigcard .sig-count{font-size:12px;color:var(--slate);margin-bottom:13px}
+.sigcard p{font-size:13.5px;color:#334155;margin-top:2px}
+
+/* DIR BADGE */
+.dirbadge{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+.dirbadge.pos{background:var(--blue-soft);color:var(--blue-d);border:1px solid var(--blue-b)}
+.dirbadge.neg{background:var(--rose-soft);color:var(--rose-d);border:1px solid var(--rose-b)}
+.dirbadge.neu{background:var(--soft);color:var(--slate);border:1px solid var(--line)}
+
+/* FORMULA + VARS */
+.formula{background:var(--navy);color:#e2e8f0;border-radius:13px;padding:18px 20px;text-align:center;font:800 15px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;margin:10px 0 6px;overflow-x:auto}
+.formula em{color:#93c5fd;font-style:normal}
+.var-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.var{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:15px}
+.var small{color:var(--slate);font-weight:800}.var b{display:block;color:#0f172a;margin:4px 0 2px}.var span{font-size:13px;color:#475569}
+
+/* OBS / NOTE / BANNER */
+.obs{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:15px 18px}
+.obs ul{list-style:none}
+.obs li{font-size:14px;color:#334155;padding:4px 0 4px 16px;position:relative}
+.obs li::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.obs li b{color:var(--navy)}
+.note{background:var(--amber);border:1px solid #fde68a;border-left:4px solid var(--amber-b);border-radius:11px;padding:13px 16px;color:#92400e;font-size:13.5px;margin-top:14px}
+.note b{color:#78350f}
+.banner{margin-top:18px;background:linear-gradient(135deg,#eff6ff,#eef2ff);border:1px solid var(--blue-b);border-left:5px solid var(--blue);border-radius:13px;padding:16px 20px;display:flex;gap:15px;align-items:flex-start}
+.banner b{color:var(--blue-d)}.banner p{margin:3px 0 0;font-size:14px;color:#334155}
+
+/* META */
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:11px}
+.meta .m{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.meta .m .k{font-size:11.5px;color:var(--slate);font-weight:700;margin-bottom:4px}
+.meta .m .v{font-size:13.5px;font-weight:700;color:var(--navy);word-break:break-word;line-height:1.4}
+
+/* TABLE */
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table.dtable{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+table.dtable thead th{background:var(--navy);color:#fff;padding:11px;text-align:left;white-space:nowrap;font-weight:600}
+table.dtable td{padding:10px 11px;border-bottom:1px solid #eef2f7;text-align:left;color:#334155;vertical-align:top}
+table.dtable tbody tr:nth-child(even){background:var(--soft)}
+table.dtable tbody tr:hover{background:#eef4ff}
+table.dtable td.hl{background:#dbeafe;font-weight:800;color:var(--blue-d);text-align:center}
+table.dtable tbody tr.us td{background:var(--blue-soft);font-weight:700}
+  .dtable tbody tr.grp td{background:#e8eef8;color:var(--navy);font-weight:800;font-size:12px;letter-spacing:.04em;padding:8px 11px;border-bottom:1px solid var(--blue-b)}
+  .dtable tbody tr.grp:hover td{background:#e8eef8}
+.tnote{font-size:12px;color:var(--slate);margin-top:8px}
+table.dtable td.lt{text-align:left;white-space:normal;min-width:140px}
+table.dtable td.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;color:var(--blue-d);white-space:nowrap}
+a.ref{color:var(--blue-d);text-decoration:none;font-weight:700;border-bottom:1px dotted var(--blue-b)}
+a.ref:hover{border-bottom-style:solid}
+
+/* PROCESS */
+.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.process{background:#fff;border:1px solid var(--line);border-radius:13px;padding:17px;box-shadow:0 4px 14px rgba(15,23,42,.035)}
+.process .n{width:34px;height:34px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;margin-bottom:10px;font-size:12px}
+.process h4{margin:0 0 5px;color:#0f172a;font-size:14.5px}.process p{margin:0;color:#475569;font-size:13px}
+
+/* INSIGHT CARD */
+.visual-insight{margin:0 0 12px;padding:15px 18px;background:var(--soft);border-left:4px solid var(--blue);border-radius:10px}
+.visual-insight span{font-size:10px;letter-spacing:.12em;color:var(--blue);font-weight:800}
+.visual-insight p{margin:4px 0 0;color:#334155;font-size:13.5px}
+.visual-insight b{color:#0f172a;font-weight:800}
+
+/* HYPOTHESIS CARDS */
+.hcard{background:#fff;border:1px solid var(--line);border-top:5px solid var(--neu);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin-bottom:16px}
+.hcard.base{border-top-color:#16a34a}
+.hcard.axis{border-top-color:var(--blue)}
+.hcard.opt{border-top-color:var(--amber-b)}
+.hcard .hh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.hcard .hh .hid{font-size:18px;font-weight:800;color:var(--navy)}
+.hcard p{font-size:14px;color:#334155;margin:6px 0 0}
+
+/* NEXT / PRIORITY */
+.next-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.next-card{background:linear-gradient(180deg,#fff,#f8fafc);border:1px solid var(--line);border-radius:13px;padding:17px}
+.next-card.must{border-top:4px solid var(--blue)}
+.next-card.add{border-top:4px solid #16a34a}
+.next-card.opt{border-top:4px solid var(--amber-b)}
+.next-card .tag{display:inline-block;padding:4px 9px;border-radius:999px;background:#dbeafe;color:var(--blue-d);font-size:10px;font-weight:800;letter-spacing:.05em}
+.next-card.add .tag{background:#dcfce7;color:#166534}
+.next-card.opt .tag{background:#fef3c7;color:#92400e}
+.next-card ul{list-style:none;margin:10px 0 0}
+.next-card li{font-size:13px;color:#475569;padding:4px 0 4px 15px;position:relative}
+.next-card li::before{content:"";position:absolute;left:0;top:10px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+
+/* DETAILS */
+details.mini{background:#fff;border:1px solid var(--line);border-radius:10px;padding:2px 16px;margin-top:12px}
+details.mini summary{cursor:pointer;font-weight:800;color:var(--blue-d);padding:12px 0;font-size:14px;list-style:none}
+details.mini summary::-webkit-details-marker{display:none}
+details.mini summary::before{content:"▸ ";color:var(--blue)}
+details.mini[open] summary::before{content:"▾ "}
+details.mini .mb{padding:0 0 16px;font-size:13.5px;color:#334155}
+details.mini .mb p{margin:0 0 8px}
+
+/* STORY */
+.summary-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.sc-head{background:linear-gradient(135deg,#172554,#2563eb);color:#fff;padding:24px 30px}
+.sc-head .lbl{font-size:12px;letter-spacing:.14em;color:#bfdbfe;font-weight:800;text-transform:uppercase}
+.sc-head h3{font-size:22px;font-weight:800;margin-top:6px}
+.sc-body{padding:24px 30px}
+.sc-body ol{list-style:none;counter-reset:s}
+.sc-body li{font-size:14.5px;color:#334155;padding:9px 0 9px 40px;position:relative;counter-increment:s}
+.sc-body li::before{content:counter(s);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center}
+.sc-body li b{color:var(--navy)}
+
+/* REFS */
+.reflist{font-size:12.8px;color:#334155;line-height:1.95}
+.reflist a{color:var(--blue-d);text-decoration:none}
+.reflist a:hover{text-decoration:underline}
+
+footer{text-align:center;color:var(--slate);font-size:12px;padding:30px;border-top:1px solid var(--line)}
+
+@media(max-width:992px){
+ .layout{grid-template-columns:1fr;gap:0}
+ nav.toc{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 0;margin:0 -26px 20px}
+ nav.toc .toc-t{display:none}
+ nav.toc .toc-links{display:flex;overflow-x:auto;gap:6px;padding:0 26px}
+ nav.toc a{white-space:nowrap;border-left:none;border-bottom:3px solid transparent}
+ nav.toc a.active{border-left:none;border-bottom-color:var(--blue)}
+ .signals,.process-grid,.next-grid,.var-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+ header.hero h1{font-size:27px}
+ .card{padding:19px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+ <div class="eyebrow">Literature Gap · Research Design · Contribution</div>
+ <h1>선행연구의 공백과 우리 연구의 기여</h1>
+ <div class="headline"><b>핵심 메시지</b> — 선행연구는 <b>산업별 금리민감도가 존재한다</b>는 것을 확인하는 데 그쳤다. 본 연구는 시장(KOSPI)을 통제해 산업 간 차이가 실재함을 베이스라인으로 확인한 뒤, <b>“왜, 언제, 어떤 기업이 더 민감한가”</b>로 확장한다 — <b>금리충격의 종류(H1)</b>, <b>상승·하락 비대칭과 경제국면(H2)</b>, <b>기업 재무구조(H3)</b>를 통해 차이가 생기는 <b>메커니즘</b>을 설명한다.</div>
+ <div class="hero-meta"><span>2지수 모형(KOSPI 통제)</span><span>산업 간 이질성 (Baseline)</span><span>금리충격 종류 (H1)</span><span>비대칭·국면 (H2)</span><span>기업 재무구조 (H3)</span><span>날짜 클러스터 SE · BH-FDR</span></div>
+</div></header>
+
+<div class="wrap"><div class="layout">
+<nav class="toc"><div class="toc-t">목차</div><div class="toc-links">
+ <a href="#message">01 핵심 변화</a>
+ <a href="#contribution">02 기존 vs 우리</a>
+ <a href="#gap">03 관찰된 문헌 공백</a>
+ <a href="#matrix">04 선행연구 비교표</a>
+ <a href="#papers">05 핵심 논문 심층</a>
+ <a href="#hypotheses">06 재조준된 가설</a>
+ <a href="#models">07 모형·분석 순서</a>
+ <a href="#data">08 데이터·변수</a>
+ <a href="#insight">09 예상 인사이트</a>
+ <a href="#novelty">10 헤드라인 기여</a>
+ <a href="#priority">11 현실적 우선순위</a>
+ <a href="#qa">12 예상 질문</a>
+ <a href="#refs">R 참고문헌</a>
+</div></nav>
+
+<main>
+
+<!-- 01 MESSAGE -->
+<section id="message">
+ <div class="sec-num">SECTION 01</div>
+ <h2>연구의 핵심 변화</h2>
+ <p class="lead">당연한 차이의 <b>검정</b>에서, 차이를 만드는 <b>원인의 분석</b>으로 확장한다.</p>
+ <div class="card">
+  <div class="signals" style="grid-template-columns:1fr 1fr">
+   <div class="sigcard neu"><div class="sig-title"><span class="st">기존 질문</span><span class="dirbadge neu">Baseline</span></div><p><b>산업별 금리베타는 서로 다른가?</b> 산업별 베타를 추정하고, 교차항 F-검정으로 계수의 동일성을 검정한다.</p></div>
+   <div class="sigcard pos"><div class="sig-title"><span class="st">보완된 질문</span><span class="dirbadge pos">H1·H2·H3</span></div><p><b>어떤 충격에, 언제, 어떤 기업이 더 민감한가?</b> 수익률곡선·비대칭성·국면·기업 특성을 통해 산업 차이의 경제적 원인을 설명한다.</p></div>
+  </div>
+  <div class="banner"><div style="font-size:26px">→</div><div><b>핵심 원칙</b><p>기존 베이스라인(산업 간 차이) 분석을 <b>버리는 것이 아니다.</b> 이를 연구의 출발점으로 유지하고, 새 분석을 통해 <b>“차이가 존재한다”에서 “왜 그 차이가 존재하는가”</b>로 결론을 발전시킨다. 방법론 기여(공동검정·날짜 클러스터 SE·FDR)는 헤드라인이 아니라 신뢰성의 뒷받침으로 배치한다.</p></div></div>
+ </div>
+</section>
+
+<!-- 02 CONTRIBUTION -->
+<section id="contribution">
+ <div class="sec-num">SECTION 02</div>
+ <h2>기존 연구와 우리 연구의 차이</h2>
+ <p class="lead">선행연구의 흐름을 유지하되, <b>설명 가능한 연구</b>로 확장한다.</p>
+ <div class="card">
+  <div class="signals" style="grid-template-columns:1fr 1fr">
+   <div class="sigcard neu"><div class="sig-title"><span class="st">기존 연구의 전형적 구조</span><span class="dirbadge neu">Before</span></div>
+    <div class="obs" style="background:transparent;border:none;padding:0"><ul>
+     <li>금리 변화 하나로 산업/시장 반응 확인</li>
+     <li>평균적·대칭적인 베타 추정</li>
+     <li>“차이가 존재한다”는 결과 제시</li>
+     <li>경제적 원인·국면·시장 함의 설명은 제한적</li>
+    </ul></div>
+   </div>
+   <div class="sigcard pos"><div class="sig-title"><span class="st">우리 연구의 확장 구조</span><span class="dirbadge pos">After</span></div>
+    <div class="obs" style="background:transparent;border:none;padding:0"><ul>
+     <li><b>시장(KOSPI) 통제 2지수 모형</b>으로 산업 베타 추정·공동검정</li>
+     <li>3년·10년·<b>곡선 3요인·신용스프레드</b>로 금리충격을 구분(H1)</li>
+     <li>금리 <b>상승·하락 및 국면별</b> 반응을 분리(H2)</li>
+     <li>기업 재무특성으로 산업 차이를 <b>설명</b>(H3)</li>
+     <li>시장 통제 전후 비교로 국내 선행연구 재검증</li>
+    </ul></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 03 GAP -->
+<section id="gap">
+ <div class="sec-num">SECTION 03</div>
+ <h2>관찰된 문헌 공백 (사실 기반)</h2>
+ <p class="lead">조사 범위 내에서 <b>확인되지 않은 조합</b>을 사실 기반으로 정리한다. 이것이 우리 차별화 포인트의 원료다.</p>
+ <div class="card">
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>#</th><th>관찰된 공백 (사실)</th><th>우리의 대응</th><th>유형</th></tr></thead>
+   <tbody>
+    <tr><td class="hl">1</td><td class="lt">산업더미×금리 교차항 <b>F-검정으로 산업 간 차이의 유의성을 직접 검정</b>한 논문 미확인 — 대부분 개별회귀 비교·분위회귀로 기술만 함</td><td class="lt">교차항 공동검정(F)으로 유의성 직접 검정</td><td class="lt"><span class="dirbadge pos">Baseline</span></td></tr>
+    <tr><td class="hl">2</td><td class="lt">2지수모형에 <b>level·slope·curvature + 신용스프레드를 함께 넣어 비금융 산업까지</b> 비교한 연구 없음 (Czaja et al.는 독일 금융기관 한정)</td><td class="lt">곡선 3요인+신용스프레드를 비금융 포함 산업에 적용</td><td class="lt"><span class="dirbadge pos">H1</span></td></tr>
+    <tr><td class="hl">3</td><td class="lt"><b>산업 집계단위(시총가중) βr ↔ 산업 집계 재무특성</b> 순위상관 설계 미확인 (Bartram·Weber·Dechow 모두 개별기업 단위)</td><td class="lt">시총가중 산업집계 재무특성↔βr + 사전 부호가설</td><td class="lt"><span class="dirbadge pos">H3</span></td></tr>
+    <tr><td class="hl">4</td><td class="lt">산업별 βr SE로 <b>날짜 클러스터 SE를 채택한 실증 논문 없음</b> (이 계열은 OLS/HAC 사용)</td><td class="lt">날짜 클러스터 SE로 동시점 상관 흡수</td><td class="lt"><span class="dirbadge neg">고유 기여</span></td></tr>
+    <tr><td class="hl">5</td><td class="lt">산업별 <b>다중 가설검정에 FDR 보정을 적용</b>한 금리민감도 논문 없음 (FDR은 주로 펀드알파에 적용)</td><td class="lt">산업별 다중검정에 BH-FDR 적용</td><td class="lt"><span class="dirbadge neg">고유 기여</span></td></tr>
+    <tr><td class="hl">6</td><td class="lt"><b>“2지수모형+산업집계+한국데이터” 조합</b>이 조사 범위 내 없음 (국내는 단순/다항회귀·사건연구뿐)</td><td class="lt">시장 통제 2지수를 한국 산업집계에 적용</td><td class="lt"><span class="dirbadge neu">국내</span></td></tr>
+    <tr><td class="hl">7</td><td class="lt"><b>수익률곡선 분해 + 신용스프레드 두 축을 함께 산업별로</b> 다룬 연구 없음</td><td class="lt">곡선 분해와 신용스프레드를 산업별로 동시 적용</td><td class="lt"><span class="dirbadge pos">H1</span></td></tr>
+   </tbody>
+  </table></div>
+  <div class="banner"><div style="font-size:24px;font-weight:900;color:var(--blue-d)">=</div><div><b>교수 피드백 = 문헌 공백 = 차별성</b><p>교수가 요구한 보완(<b>날짜 클러스터 SE·시장 통제 2지수</b>)이 그대로 선행연구에 없는 공백(#4·#6)을 메운다. 요구된 엄밀성이 곧 우리의 차별성이 된다. 특히 <b>날짜 클러스터 SE(#4)와 BH-FDR(#5)은 이 연구 계열에 없는 방법론 고유 기여</b>다.</p></div></div>
+ </div>
+</section>
+
+<!-- 04 MATRIX -->
+<section id="matrix">
+ <div class="sec-num">SECTION 04</div>
+ <h2>선행연구 종합 비교표</h2>
+ <p class="lead">각 논문의 핵심 기여·한계·우리의 보완 방향을 한 표로 통합했다. 논문명을 누르면 원문/서지로 이동한다. 가설 축별로 묶어 정렬했다.</p>
+ <div class="card">
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>선행연구</th><th>핵심 기여</th><th>한계</th><th>우리의 보완 · 확장</th></tr></thead>
+   <tbody>
+    <tr class="grp"><td class="lt" colspan="4">BASELINE · 시장 통제 2지수 모형</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.2307/2329656" target="_blank">Stone (1974)</a></td><td class="lt">2지수 모형으로 시장·금리 요인 분리</td><td class="lt">금리 하나·평균/대칭 반응, 산업차이 검정 없음</td><td class="lt">추정식 채택(Baseline). 만기별·비대칭 결합, 부호·단위(1%p당 %) 명시</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">H1 · 금리충격 원천 — 수준·기울기·곡률</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1086/296409" target="_blank">Nelson &amp; Siegel (1987)</a></td><td class="lt">수익률곡선 수준·기울기·곡률 요인 제시</td><td class="lt">산업주가 반응 연구가 아님</td><td class="lt">3년·10년·장단기차로 수준·기울기·곡률 <b>근사</b>(H1)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1007/s11156-008-0104-9" target="_blank">Czaja, Scholz &amp; Wilkens (2009)</a></td><td class="lt">수익률곡선 수준·기울기·곡률 분해</td><td class="lt">독일 금융기관 한정</td><td class="lt">산업 노출 프로파일화(금융=기울기 등)로 <b>비금융 확장</b>(H1)</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">H2 · 비대칭성과 국면 의존성</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1111/j.1540-6261.1986.tb05044.x" target="_blank">Sweeney &amp; Warga (1986)</a></td><td class="lt">금리위험이 특정 산업에 집중·가격결정</td><td class="lt">원인·국면 설명 부족</td><td class="lt">긴축·완화 국면 구분으로 <b>조건부 위험</b> 검정(H2)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1108/03074351011039445" target="_blank">Ferrer, González &amp; Soto (2010)</a></td><td class="lt">스페인 산업별 선형·비선형 금리노출</td><td class="lt">모형 복잡·원인 설명 부족, 공동검정 없음</td><td class="lt">상승·하락 분리와 상호작용으로 <b>단순화</b>, 기업특성과 연결(H2·H3)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1111/manc.12143" target="_blank">Ferrando, Ferrer &amp; Jareño (2017)</a></td><td class="lt">분위회귀로 위기국면 민감도 상승 확인</td><td class="lt">시간불변 SE·특성연결 없음</td><td class="lt">국면별 서브샘플로 H2 시간변동성의 근거로 활용</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">H3 · 기업 재무구조와 듀레이션 채널</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1111/j.1540-6261.1984.tb03898.x" target="_blank">Flannery &amp; James (1984)</a></td><td class="lt">금리민감도를 재무구조(만기갭)와 연결</td><td class="lt">금융기관 한정</td><td class="lt">부채·성장·수익·규모를 <b>기업패널에서 금리와 상호작용</b>(H3)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.3905/jpm.2007.684757" target="_blank">Reilly, Wright &amp; Johnson (2007)</a></td><td class="lt">산업별 경험적 듀레이션 격차 확인</td><td class="lt">재무특성 연결 없음</td><td class="lt">산업 차이를 듀레이션 채널로 설명(H3)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1016/j.jfineco.2018.03.003" target="_blank">Weber (2018)</a> · <a class="ref" href="https://doi.org/10.1023/B:RAST.0000028186.44328.3f" target="_blank">Dechow, Sloan &amp; Soliman (2004)</a></td><td class="lt">현금흐름 듀레이션 = 금리민감도; B/M·E/P가 듀레이션의 대리변수</td><td class="lt">한국·산업집계 미검증</td><td class="lt"><b>H3 이론 엔진</b> — 배당·PBR·ROE 부호예측 검정</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1023/A:1015024825914" target="_blank">Bartram (2002)</a></td><td class="lt">비금융서 레버리지 채널 반증(유동성이 유의)</td><td class="lt">산업집계 아님</td><td class="lt">부채비율 약상관을 사전 예고 → 널 결과도 해석 가능(H3)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1353/mcb.2004.0063" target="_blank">Ehrmann &amp; Fratzscher (2004)</a></td><td class="lt">통화정책 반응과 기업특성 연결</td><td class="lt">산업지수와 직접 연결 약함</td><td class="lt">산업지수 → 기업패널 <b>2단계 구조</b>로 구성효과 확인(H3). 국내 대응물 김재거·김동회(2016)과 대질</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">선택 · 통화정책 충격과 경기정보 효과의 구분</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1111/j.1540-6261.2005.00760.x" target="_blank">Bernanke &amp; Kuttner (2005)</a></td><td class="lt">예상 밖 통화정책 충격의 중요성</td><td class="lt">시장금리 변화 전체와 구분 필요</td><td class="lt">금통위일·큰 충격일·동반방향 비교로 예상/비예상 분리</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1257/mac.20180090" target="_blank">Jarociński &amp; Karadi (2020)</a></td><td class="lt">정책충격과 중앙은행 정보효과 분리</td><td class="lt">고빈도 자료·복잡한 식별 필요</td><td class="lt">금리·시장 부호 조합으로 단순 탐색</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">방법론 · 표준오차</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.1007/BF00127084" target="_blank">Kwan (1991)</a></td><td class="lt">SUR로 동시점 잔차 상관 처리</td><td class="lt">산업 간 비교 없음</td><td class="lt"><b>날짜 클러스터 SE의 SUR 논리적 근거</b>로 인용</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">국내 선행연구</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002882746" target="_blank">김규형 외 (2022)</a> · <a class="ref" href="https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE02373766" target="_blank">정영우·정현철 (2014)</a></td><td class="lt">국내 산업별 금리스프레드·기준금리 반응</td><td class="lt">시장 미통제 / 산업단위 아님</td><td class="lt">시장 통제 전후 비교로 <b>국내 결론 재검증</b></td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.38162/JOME.47.2.5" target="_blank">김세완 외 (2018)</a></td><td class="lt">국내 7개 산업의 수익률 변동성 비대칭이 산업별로 상이함을 확인</td><td class="lt">변동성 비대칭이지 금리베타가 아니며, 금리변수 자체가 없음</td><td class="lt">동일한 7산업 구분을 공유. <b>비대칭을 변동성이 아니라 금리베타 수준으로 이동</b>(H2)</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.35527/kfedoi.2016.15.1.003" target="_blank">김재거·김동회 (2016)</a></td><td class="lt">국내 통화정책 충격이 B/M·규모·ROE 포트폴리오별로 다름을 확인</td><td class="lt">VAR·GIR 포트폴리오 단위이며 산업분류·금리베타 추정이 아님</td><td class="lt"><b>H3 사전 부호가설과 상충하는 국내 증거</b> — 정면 대질 대상으로 명시</td></tr>
+    <tr><td class="lt"><a class="ref" href="https://doi.org/10.35527/kfedoi.2023.22.1.004" target="_blank">연소영·정정현 (2023)</a></td><td class="lt">국내 18개 산업지수에 11개 시장지표의 표본외 예측력을 검정(1994–2021)</td><td class="lt">월별 수익률 예측성과이며 금리베타 추정·산업 간 민감도 비교가 아님</td><td class="lt"><b>국내 산업 단위 분석의 선례</b> — 월별·예측 프레임을 일별·민감도 프레임으로 전환</td></tr>
+    <tr class="grp"><td class="lt" colspan="4">본 연구</td></tr>
+    <tr class="us"><td class="lt">본 연구</td><td class="lt">시장 통제 2지수(Baseline) + 금리충격 분해 + 비대칭·국면 + 기업 재무구조</td><td class="lt">인턴 기간·데이터 확보 제약</td><td class="lt">— (위 확장의 종합)</td></tr>
+   </tbody>
+  </table></div>
+
+  <h3 class="sub mt">차원별 대조표 — 어디에도 없는 조합</h3>
+  <p class="lead" style="margin-bottom:12px">같은 논문들을 <b>설계 차원</b>으로 나란히 놓으면, 마지막 행(본 연구)만이 곡선분해·산업집계·날짜클러스터·FDR·시장통제·재무특성·한국을 동시에 만족한다.</p>
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>연구</th><th>금리변수</th><th>집계단위</th><th>SE</th><th>FDR</th><th>시장통제</th><th>재무특성</th><th>국가</th></tr></thead>
+   <tbody>
+    <tr><td class="lt">Stone (1974)</td><td class="lt">단일 Δy</td><td class="lt">시장·산업</td><td class="lt">OLS</td><td class="hl">✗</td><td class="lt">✓ 2지수</td><td class="hl">✗</td><td class="lt">미국</td></tr>
+    <tr><td class="lt">Flannery &amp; James (1984)</td><td class="lt">단일</td><td class="lt">금융기관</td><td class="lt">OLS</td><td class="hl">✗</td><td class="lt">부분</td><td class="lt">✓ 만기갭</td><td class="lt">미국</td></tr>
+    <tr><td class="lt">Ferrer et al. (2010)</td><td class="lt">단일·비선형</td><td class="lt">산업</td><td class="lt">OLS</td><td class="hl">✗</td><td class="hl">✗</td><td class="hl">✗</td><td class="lt">스페인</td></tr>
+    <tr><td class="lt">Czaja et al. (2009)</td><td class="lt">level·slope·curve</td><td class="lt">금융기관</td><td class="lt">OLS</td><td class="hl">✗</td><td class="hl">✗</td><td class="hl">✗</td><td class="lt">독일</td></tr>
+    <tr><td class="lt">Weber·Dechow 등</td><td class="lt">만기구조</td><td class="lt">기업</td><td class="lt">—</td><td class="hl">✗</td><td class="lt">—</td><td class="lt">✓ 듀레이션</td><td class="lt">미국</td></tr>
+    <tr><td class="lt">Bartram (2002)</td><td class="lt">단일</td><td class="lt">기업</td><td class="lt">OLS</td><td class="hl">✗</td><td class="lt">✓</td><td class="lt">✓ 레버리지</td><td class="lt">국제</td></tr>
+    <tr><td class="lt">김규형 외 (2022)</td><td class="lt">스프레드</td><td class="lt">산업(스프레드)</td><td class="lt">OLS</td><td class="hl">✗</td><td class="hl">✗</td><td class="hl">✗</td><td class="lt">한국</td></tr>
+    <tr class="us"><td class="lt">본 연구</td><td class="lt">곡선 3요인+신용</td><td class="lt">산업(시총가중)+기업</td><td class="lt">HAC+날짜클러스터</td><td class="lt">✓ BH</td><td class="lt">✓ 2지수</td><td class="lt">✓ 시총가중</td><td class="lt">한국</td></tr>
+   </tbody>
+  </table></div>
+  <p class="tnote"><b>읽는 법</b> — 회색 ✗는 해당 설계 차원의 부재. 본 연구 행만 전 차원에서 ✓이며, 특히 <b>날짜클러스터 SE·FDR</b> 두 열은 다른 어느 행에도 없는 우리 고유 기여다.</p>
+ </div>
+</section>
+
+<!-- 05 PAPERS -->
+<section id="papers">
+ <div class="sec-num">SECTION 05</div>
+ <h2>핵심 선행연구 심층 — 한계 → 보완 → 인사이트</h2>
+ <p class="lead">논증의 중심이 되는 논문에 한해, 빈틈을 우리 프로젝트의 구체적 분석으로 연결한다.</p>
+
+ <div class="card">
+  <h3 class="sub">Stone (1974) — 2지수 모형의 출발점</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 금리요인을 하나로 처리하고, 산업 차이의 원인과 비대칭성을 설명하지 못한다.</li>
+   <li><b>보완</b> — 국고채 3년·10년·장단기차를 비교하고 <b>상승·하락 계수를 분리</b>한다.</li>
+   <li><b>인사이트</b> — 산업별 금리민감도는 <b>어느 만기 구간이 움직였는지</b>에 따라 달라질 수 있다.</li>
+  </ul></div>
+ </div>
+
+ <div class="card">
+  <h3 class="sub">Ferrer et al. (2010) — 비대칭·비선형 금리노출 (가장 근접)</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 복잡한 비선형 모형은 해석·재현이 어렵고 비대칭 원인을 설명하기 어렵다.</li>
+   <li><b>보완</b> — 금리 상승분·하락분을 분리하고 <b>기업특성과 상호작용</b>한다.</li>
+   <li><b>인사이트</b> — 금리상승은 할인율·차입비용 충격, 금리하락은 경기악화 신호일 수 있다.</li>
+  </ul></div>
+ </div>
+
+ <div class="card">
+  <h3 class="sub">Nelson &amp; Siegel (1987) — 수익률곡선 요인분해</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 원래 목적이 산업별 주가반응 분석이 아니며, 직접 추정 시 연구범위가 커진다.</li>
+   <li><b>보완</b> — 3년·10년·장단기차와 중기금리로 <b>수준·기울기·곡률을 근사</b>한다.</li>
+   <li><b>인사이트</b> — 금융업은 기울기, 성장산업은 장기금리 수준에 더 민감할 수 있다.</li>
+  </ul></div>
+ </div>
+
+ <div class="card">
+  <h3 class="sub">Weber (2018) · Dechow, Sloan &amp; Soliman (2004) — 듀레이션 채널 (이론 엔진)</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 개별기업 단위이며 한국·산업집계에서 검증되지 않았다.</li>
+   <li><b>보완</b> — <b>고배당→|βr|↓, 고PBR→|βr|↑, 고ROE→|βr|↓</b>를 사전 부호예측으로 등록한다. Bartram(2002)에 근거해 <b>부채비율↔βr 약상관</b>을 미리 예고한다.</li>
+   <li><b>인사이트</b> — 산업 금리베타는 사실상 그 산업의 <b>“주식 듀레이션”</b>이며, 부채 상관이 약해도 국제 증거와 일치한다.</li>
+  </ul></div>
+ </div>
+
+ <div class="card">
+  <h3 class="sub">Ehrmann &amp; Fratzscher (2004) — 기업특성과 통화정책 반응</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 기업별 반응은 설명하지만 산업지수 수준의 차이와 직접 연결하기 어렵다.</li>
+   <li><b>보완</b> — 산업지수 분석 후 기업패널에서 원인을 설명하는 <b>2단계 구조</b>를 사용한다. 국내 대응물인 김재거·김동회(2016)와 나란히 놓고 부호를 대질한다.</li>
+   <li><b>인사이트</b> — 기업특성 통제 후 산업효과가 줄어들면 <b>구성효과</b>를 확인할 수 있다.</li>
+  </ul></div>
+ </div>
+
+ <div class="card">
+  <h3 class="sub">김규형 외 (2022) — 국내 산업별 금리스프레드 (국내 확장)</h3>
+  <div class="obs"><ul>
+   <li><b>한계</b> — 시장을 통제하지 않아 산업 민감도가 시장효과와 혼입될 수 있다.</li>
+   <li><b>보완</b> — 시장 통제 전후 βr을 나란히 제시(단순회귀 병행이 이를 제공).</li>
+   <li><b>인사이트</b> — 국내 선행연구의 산업 민감도 순위가 <b>시장효과 혼입의 산물</b>인지 판별할 수 있다.</li>
+  </ul></div>
+ </div>
+</section>
+
+<!-- 06 HYPOTHESES -->
+<section id="hypotheses">
+ <div class="sec-num">SECTION 06</div>
+ <h2>통합된 최종 가설</h2>
+ <p class="lead">베이스라인 1개, 핵심 가설 3개, 선택 가설 1개로 구성한다. 앞 단계가 다음 단계의 질문으로 이어진다.</p>
+ <div class="card">
+  <div class="hcard base">
+   <div class="hh"><span class="dirbadge neu">Baseline</span><span class="hid">산업 간 금리베타 차이</span></div>
+   <p>시장수익률을 통제한 뒤에도 산업별 금리베타의 <b>부호와 크기가 서로 다른지</b>를 추정하고, 산업더미×금리 교차항의 <b>공동검정(F-검정 · HAC/날짜 클러스터 SE · BH-FDR)</b>으로 확인한다. 경제적 크기는 “금리 1%p당 산업 간 수익률 격차 X%p”로 제시한다.</p>
+   <div class="formula">Rᵢ,ₜ = αᵢ + βᴹᵢ·Rₘ,ₜ + <em>βʳᵢ·Δyₜ</em> + εᵢ,ₜ</div>
+   <div class="obs" style="margin-top:12px"><ul>
+    <li><b>βr 부호 규약</b> — Δy(%p) 증가 = 금리 상승. <b>βr &gt; 0: 금리 상승 시 해당 산업이 시장 대비 초과 상승, βr &lt; 0: 시장 대비 부진.</b> 채권가격 기준의 Stone(1974)과 부호가 반대이므로 규약을 명시한다.</li>
+    <li><b>날짜 클러스터 SE (SUR 논리)</b> — 산업 잔차는 같은 날 공통충격으로 <b>동시적 상관</b>을 갖는다. Kwan(1991)의 SUR 문제의식을 이어 <b>날짜 클러스터 SE로 동시점 상관을 흡수</b>한다(HAC는 시계열 자기상관, 클러스터는 횡단면 동시상관 대비). 이 계열이 OLS/HAC에 머문 것과 대비되는 고유 기여다.</li>
+   </ul></div>
+  </div>
+  <div class="hcard axis">
+   <div class="hh"><span class="dirbadge pos">H1</span><span class="hid">금리충격 원천에 따른 이질성</span></div>
+   <p>산업별 주가 반응은 단일 금리변화보다 <b>수익률곡선의 수준·기울기·곡률 및 신용스프레드</b> 충격에 따라 다르게 나타난다. “금융업은 금리에 민감하다”가 아니라 <b>“금융업은 곡선 기울기에는 긍정적이지만 신용스프레드 확대에는 부정적이다”</b>처럼 산업별 <b>금리 노출 프로필</b>로 해석한다. <b>곡률(curvature)은 선택이 아니라 필수 요인</b>으로 포함하며, Czaja et al.(2009)이 독일 금융기관에 한정한 곡선 3요인 분해를 <b>비금융 산업까지 확장</b>한다 — 곡선분해와 신용스프레드를 산업별로 동시에 다룬 연구는 확인되지 않는다.</p>
+  </div>
+  <div class="hcard axis">
+   <div class="hh"><span class="dirbadge pos">H2</span><span class="hid">비대칭성과 국면 의존성</span></div>
+   <p>산업별 금리민감도는 금리 <b>상승과 하락에서 비대칭적</b>이며, <b>긴축 또는 신용위험이 높은 국면에서 확대</b>된다. 상승분·하락분을 분리해 βᵘᵖ ≠ βᵈᵒʷⁿ을 검정하고, 국면 상호작용계수 β₂로 조건부 위험 여부를 확인한다.</p>
+   <div class="formula">Rᵢ,ₜ = αᵢ + βᴹᵢ·Rₘ,ₜ + <em>βᵘᵖᵢ·Δyᵘᵖₜ + βᵈᵒʷⁿᵢ·Δyᵈᵒʷⁿₜ</em> + εᵢ,ₜ</div>
+   <div class="formula">Rᵢ,ₜ = αᵢ + βᴹᵢ·Rₘ,ₜ + β₁·Δyₜ + <em>β₂·(Δyₜ × Tighteningₜ)</em> + εᵢ,ₜ</div>
+  </div>
+  <div class="hcard axis">
+   <div class="hh"><span class="dirbadge pos">H3</span><span class="hid">기업 재무구조에 따른 차이 — 사전 부호가설</span></div>
+   <p><b>산업 금리베타는 사실상 그 산업의 “주식 듀레이션”이다.</b> Weber(2018)·Dechow et al.(2004)·Bartram(2002)의 이론을 근거로 <b>추정 전에 부호를 예측·등록</b>한다(사후 해석이 아니라 사전 검정) — 이것이 “인사이트 부재”의 직접 해법이다. 재무특성은 지수와 동일하게 <b>시총가중으로 산업집계</b>해 βr과 단위를 통일한다.</p>
+   <div class="tablewrap" style="margin:6px 0 12px"><table class="dtable">
+    <thead><tr><th>재무특성</th><th>이론적 경로</th><th>사전 예측</th><th>근거</th></tr></thead>
+    <tbody>
+     <tr><td class="lt">고배당수익률</td><td class="lt">짧은 현금흐름 듀레이션</td><td class="lt"><b>|βr| ↓</b></td><td class="lt">Weber (2018)</td></tr>
+     <tr><td class="lt">고PBR (성장)</td><td class="lt">긴 현금흐름 듀레이션</td><td class="lt"><b>|βr| ↑</b></td><td class="lt">Weber (2018) · Dechow et al. (2004)</td></tr>
+     <tr><td class="lt">고ROE</td><td class="lt">높은 E/P → 현금흐름 조기 실현 → 짧은 듀레이션</td><td class="lt"><b>|βr| ↓</b></td><td class="lt">Dechow et al. (2004) — 파생예측</td></tr>
+     <tr><td class="lt">고부채비율</td><td class="lt">레버리지 채널(비금융 약함)</td><td class="lt"><b>약상관</b></td><td class="lt">Bartram (2002) 반증</td></tr>
+    </tbody>
+   </table></div>
+   <p>산업집계 순위상관으로 부호 일치를 1차 확인하고, 기업 일별수익률에 <b>전년도 재무특성</b>을 결합한 패널(기업고정효과 αⱼ·날짜고정효과 δₜ)로 심화한 뒤 산업별 평균 한계효과로 산업 수준 해석을 복원한다.</p>
+   <div class="formula">Rⱼ,ₜ = αⱼ + δₜ + <em>θ₁(Δyₜ×Levⱼ) + θ₂(Δyₜ×PBRⱼ) + θ₃(Δyₜ×Sizeⱼ)</em> + εⱼ,ₜ</div>
+  </div>
+  <div class="hcard opt">
+   <div class="hh"><span class="dirbadge neu">선택</span><span class="hid">통화정책 충격과 경기정보 효과의 구분</span></div>
+   <p>금리상승·시장상승이 동반된 날과 금리상승·시장하락이 동반된 날을 구분하여, <b>성장정보와 할인율 충격</b>의 산업별 반응을 탐색한다. 철강·운수장비의 양(+)의 베타가 경기개선 정보에 대한 반응인지 확인한다.</p>
+  </div>
+  <div class="note"><b>상쇄(보조 분해)</b> — 시장 전체에서 약하게 보이는 금리효과가 산업별 양·음 반응의 상쇄로 설명되는지 <b>분해</b>한다. 지수 구성상 어느 정도 예상 가능한 결과이므로 메인 기여가 아니라 <b>설명용 분해</b>로 배치하고, 금리 단순회귀로 총효과를 독립 추정한다.</div>
+ </div>
+</section>
+
+<!-- 07 MODELS + WORKFLOW -->
+<section id="models">
+ <div class="sec-num">SECTION 07</div>
+ <h2>모형별 해석과 분석 순서</h2>
+ <p class="lead">각 회귀식이 정확히 무엇을 답하는지 구분하고, 결과가 다음 질문으로 이어지도록 순서를 구성한다.</p>
+ <div class="card">
+  <h3 class="sub">모형별 해석</h3>
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>모형</th><th>답하는 질문</th><th>핵심 계수</th></tr></thead>
+   <tbody>
+    <tr><td class="lt"><b>A</b> 기본 2지수</td><td class="lt">시장 전체 움직임을 제외한 뒤에도 산업이 금리에 반응하는가?</td><td class="mono">βʳᵢ (음수=금리상승일 시장 대비 부진)</td></tr>
+    <tr><td class="lt"><b>B</b> 수익률곡선 다요인</td><td class="lt">금리 전반·장단기차·중기구간·신용위험 중 무엇에 민감한가?</td><td class="mono">βLevel · βSlope · βCurvature · βCredit</td></tr>
+    <tr><td class="lt"><b>C</b> 상승·하락 비대칭</td><td class="lt">금리상승 충격이 금리하락의 반대효과보다 큰가?</td><td class="mono">βup, βdown (H₀: βup=βdown)</td></tr>
+    <tr><td class="lt"><b>D</b> 국면 상호작용</td><td class="lt">긴축기·신용위험 고조기에 반응이 더 커지는가?</td><td class="mono">Δy×Tightening / Δy×HighCreditRisk</td></tr>
+    <tr><td class="lt"><b>E</b> 기업 단위 패널</td><td class="lt">부채비율·PBR·규모가 기업의 금리반응 차이를 설명하는가?</td><td class="mono">Δy×Lev, Δy×PBR, Δy×Size → 산업별 한계효과</td></tr>
+   </tbody>
+  </table></div>
+  <p class="tnote"><b>B의 계수 조합</b>이 각 산업의 ‘금리 노출 프로필’이 되고, <b>E의 산업별 평균 한계효과</b>로 기업 단위 결과를 산업 수준으로 다시 해석한다.</p>
+
+  <h3 class="sub mt">권장 분석 순서</h3>
+  <div class="process-grid">
+   <div class="process"><div class="n">1</div><h4>데이터 점검·EDA</h4><p>날짜 병합·휴장일 처리, 수익률·금리변화 단위 통일, 상관 점검.</p></div>
+   <div class="process"><div class="n">2</div><h4>베이스라인 재현</h4><p>산업별 2지수·HAC, 교차항 F-검정, 1·2년 rolling beta 비교.</p></div>
+   <div class="process"><div class="n">3</div><h4>금리충격 원천 분해</h4><p>3년·10년·장단기차 비교 후 수준·기울기·곡률·신용스프레드 확장.</p></div>
+   <div class="process"><div class="n">4</div><h4>비대칭성·국면</h4><p>상승·하락 계수 분리, 긴축·완화 또는 고위험 국면 상호작용.</p></div>
+   <div class="process"><div class="n">5</div><h4>기업 단위 재무구조</h4><p>기업 일별수익률+전년도 재무특성으로 금리×특성 교차항 회귀.</p></div>
+   <div class="process"><div class="n">6</div><h4>산업별 메커니즘 비교</h4><p>기업특성 통제 전·후 산업 민감도 차이 축소 정도로 구성효과 판별.</p></div>
+   <div class="process"><div class="n">7</div><h4>강건성·최종 스토리</h4><p>만기·rolling 창·HAC lag·극단치·코로나 구간 제외로 안정성 확인.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 08 DATA -->
+<section id="data">
+ <div class="sec-num">SECTION 08</div>
+ <h2>데이터와 변수 구성</h2>
+ <p class="lead">이미 확보한 데이터와 추가 수집할 데이터를 구분한다.</p>
+ <div class="card">
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>구분</th><th>변수</th><th>자료</th><th>연구에서의 역할</th></tr></thead>
+   <tbody>
+    <tr><td class="lt"><b>확보</b></td><td class="lt">산업지수·KOSPI 일별수익률</td><td class="lt">KRX</td><td class="lt">베이스라인 산업별 금리베타·시장 통제</td></tr>
+    <tr><td class="lt"><b>확보</b></td><td class="lt">국고채 3년·10년 금리</td><td class="lt">한국은행 ECOS</td><td class="lt">기본 금리변화·장단기차 분석</td></tr>
+    <tr><td class="lt"><b>추가 권장</b></td><td class="lt">3개월·1년·5년 등 만기별 금리</td><td class="lt">ECOS</td><td class="lt">수익률곡선 수준·기울기·곡률 구성(H1)</td></tr>
+    <tr><td class="lt"><b>추가 권장</b></td><td class="lt">회사채 AA− 금리(신용스프레드)</td><td class="lt">ECOS·채권정보</td><td class="lt">무위험금리와 신용위험 분리(H1)</td></tr>
+    <tr><td class="lt"><b>핵심 추가</b></td><td class="lt">기업 일별주가·산업분류</td><td class="lt">KRX·FnGuide 대체자료</td><td class="lt">기업 단위 금리 반응 추정(H3·모형E)</td></tr>
+    <tr><td class="lt"><b>핵심 추가</b></td><td class="lt">부채비율·ROE·PBR·배당·시가총액</td><td class="lt">DART·KRX</td><td class="lt">시총가중 산업집계·금리×기업특성 교차항(H3)</td></tr>
+    <tr><td class="lt"><b>선택</b></td><td class="lt">긴축·완화 국면 · 금통위 발표일</td><td class="lt">한국은행</td><td class="lt">국면·이벤트 기반 추가 분석(H2·선택)</td></tr>
+   </tbody>
+  </table></div>
+  <div class="note"><b>시차 원칙</b> — 기업의 재무특성은 반드시 <b>전년도 값 또는 공시 이후 이용 가능한 값</b>으로 연결한다. 같은 해 말 재무정보를 같은 해 초 수익률에 사용하면 미래정보가 섞일 수 있다.</div>
+ </div>
+</section>
+
+<!-- 09 INSIGHT -->
+<section id="insight">
+ <div class="sec-num">SECTION 09</div>
+ <h2>공백 → 인사이트 매핑과 예상 시사점</h2>
+ <p class="lead">각 공백을 “이렇게 녹이면 이런 인사이트가 나온다”로 연결한다. 단순한 산업 순위 비교를 넘어서는 방향이다.</p>
+ <div class="card">
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>공백</th><th>녹이는 방법</th><th>나오는 인사이트</th></tr></thead>
+   <tbody>
+    <tr><td class="lt"><b>금리충격 종류 (H1)</b></td><td class="lt">만기별 금리로 수준·기울기·곡률+신용스프레드 구성</td><td class="lt">산업마다 민감한 수익률곡선 구간이 다르다(노출 프로필)</td></tr>
+    <tr><td class="lt"><b>비대칭·국면 (H2)</b></td><td class="lt">상승·하락 계수 분리, 긴축·완화 국면 상호작용</td><td class="lt">금리민감도는 고정 특성이 아니라 방향·국면 의존 조건부 위험</td></tr>
+    <tr><td class="lt"><b>기업 재무구조 (H3)</b></td><td class="lt">시총가중 산업집계 순위상관 + 기업패널 금리×특성</td><td class="lt">산업 차이의 상당 부분은 구성기업 재무구조로 설명(구성효과)</td></tr>
+    <tr><td class="lt"><b>국내 재검증</b></td><td class="lt">시장 통제 전(단순회귀)·후(2지수) βr 병행, 운수장비로 대질</td><td class="lt">국내 민감도 순위가 시장효과 혼입인지 판별</td></tr>
+   </tbody>
+  </table></div>
+  <div class="note"><b>주장/근거 구분</b> — “산업 노출 프로파일(금융=기울기 등)”은 <b>추정</b>이며 추정 후 판명된다. “시장 통제 전후 비교가 국내 문헌 교정이 된다”는 것은 <b>설계상 성립</b>한다.</div>
+
+  <h3 class="sub mt">뻔하지 않은 예상 시사점</h3>
+  <div class="visual-insight"><span>INSIGHT 01</span><p>산업별 금리민감도는 <b>금리 수준보다 어느 구간의 금리가 움직였는가</b>에 좌우될 수 있다. 금융업은 장단기차, 성장산업은 장기금리 수준처럼 노출 프로필이 다르다.</p></div>
+  <div class="visual-insight"><span>INSIGHT 02</span><p><b>금리 상승과 하락은 서로 반대인 동일 충격이 아니다.</b> 상승은 할인율·차입비용 충격, 하락은 경기악화 신호일 수 있다.</p></div>
+  <div class="visual-insight"><span>INSIGHT 03</span><p><b>산업 차이의 상당 부분은 구성기업의 재무구조(듀레이션)로 설명될 수 있다.</b> 기업특성 통제 전후 산업효과를 비교해 구성효과를 확인한다.</p></div>
+  <div class="visual-insight"><span>INSIGHT 04</span><p><b>철강·운수장비의 양(+)의 베타는 금리혜택보다 경기개선 정보에 대한 반응</b>일 수 있다. 금리상승·시장상승 동반일을 구분해 경기정보 경로를 탐색한다.</p></div>
+ </div>
+</section>
+
+<!-- 10 NOVELTY -->
+<section id="novelty">
+ <div class="sec-num">SECTION 10</div>
+ <h2>차별성 · 헤드라인 기여</h2>
+ <p class="lead">“산업별로 다르다”의 재현이 아니라, <b>WHAT에서 WHY·WHEN·WHO로</b> 확장하는 설명 가능한 연구인 이유.</p>
+ <div class="card">
+  <div class="tablewrap"><table class="dtable">
+   <thead><tr><th>#</th><th>헤드라인 기여</th><th>근거</th></tr></thead>
+   <tbody>
+    <tr><td class="hl">1</td><td class="lt"><b>시장을 통제해도 산업 간 βr의 부호·크기가 유의하게 다르다</b> — 공동검정으로 확인(국내에서 드문 접근)</td><td class="lt">Baseline</td></tr>
+    <tr><td class="hl">2</td><td class="lt">그 차이는 금리 하나가 아니라 <b>충격의 종류(수준·기울기·신용)</b>에 따라 달라진다</td><td class="lt">H1</td></tr>
+    <tr><td class="hl">3</td><td class="lt">금리민감도는 <b>상승·하락 비대칭·국면 의존적 조건부 위험</b>이다</td><td class="lt">H2</td></tr>
+    <tr><td class="hl">4</td><td class="lt">산업 βr 횡단면이 <b>듀레이션 채널과는 부호 일치, 레버리지 채널과는 불일치</b></td><td class="lt">H3</td></tr>
+    <tr><td class="hl">5</td><td class="lt">시장 미통제 국내 선행연구의 산업 민감도 순위를 <b>시장 통제 하에서 재검증·교정</b></td><td class="lt">국내</td></tr>
+   </tbody>
+  </table></div>
+  <div class="banner"><div style="font-size:24px;font-weight:900;color:var(--blue-d)">+</div><div><b>선행연구에 없는 방법론 고유 기여</b><p><b>날짜 클러스터 SE</b>(이 계열은 OLS/HAC만 사용)와 <b>산업별 다중검정 BH-FDR 보정</b>(FDR은 주로 펀드알파에 적용)은 이 연구 계열에서 확인되지 않는 우리 고유 기여다. 교수가 요구한 보완이 그대로 문헌 공백을 메운다.</p></div></div>
+  <div class="note"><b>배치 원칙</b> — 시장 전체의 약한 금리효과가 산업 부호 상쇄의 산물이라는 결과는 <b>보조 분해</b>로 둔다(지수 구성상 예상 가능). 헤드라인은 “왜 다른가”의 메커니즘이며, 방법 기여는 신뢰성의 뒷받침으로 배치한다.</div>
+ </div>
+</section>
+
+<!-- 11 PRIORITY -->
+<section id="priority">
+ <div class="sec-num">SECTION 11</div>
+ <h2>인턴 기간에 맞춘 현실적 범위</h2>
+ <p class="lead">모든 아이디어를 동일한 비중으로 수행하지 않는다. 연구 기여도와 실행 가능성으로 나눈다.</p>
+ <div class="card">
+  <div class="next-grid">
+   <div class="next-card must"><span class="tag">필수</span>
+    <ul>
+     <li>2지수 모형과 산업 간 F-검정(Baseline)</li>
+     <li>βr 부호 규약 명시</li>
+     <li>수익률곡선 3요인(level·slope·<b>curvature</b>) — 비금융 확장</li>
+     <li>금리 상승·하락 비대칭성</li>
+     <li>H3 이론적 사전 부호가설 등록(시총가중)</li>
+     <li>기업 단위 금리×부채비율·PBR·규모</li>
+     <li>시장 통제 전후 βr 비교 + 김규형 외 대질</li>
+     <li><b>날짜 클러스터 SE · BH-FDR</b> · 결과표 규격</li>
+    </ul>
+   </div>
+   <div class="next-card add"><span class="tag">가능하면 추가</span>
+    <ul>
+     <li>회사채 신용스프레드(곡선+신용 동시)</li>
+     <li>긴축·완화 국면 상호작용</li>
+     <li>상쇄 기여도 분해(보조)</li>
+     <li>산업별 평균 한계효과 시각화</li>
+     <li>직교화·단순평균 집계 강건성 · 시변 베타</li>
+    </ul>
+   </div>
+   <div class="next-card opt"><span class="tag">선택 (시간이 남을 때만)</span>
+    <ul>
+     <li>금통위 발표일 이벤트 분석</li>
+     <li>정책충격·경기정보 효과 구분</li>
+     <li>Nelson–Siegel 직접 추정</li>
+     <li>비선형·wavelet·GARCH/DCC·SUR</li>
+    </ul>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 12 QA -->
+<section id="qa">
+ <div class="sec-num">SECTION 12</div>
+ <h2>예상 교수 · 심사자 질문</h2>
+ <p class="lead">지적 가능성이 높은 질문과 방어 논리. 클릭하면 답변이 펼쳐진다.</p>
+ <div class="card">
+  <details class="mini" open><summary>산업 6~7개로 무슨 통계를 하나?</summary><div class="mb"><p>Baseline·H1·H2는 일별 T≈2,400의 시계열 검정이라 소표본 문제가 없다. H3는 산업 순위상관에 의존하지 않고 <b>기업-일별 패널의 교차항 회귀</b>로 설계해 표본과 설명력을 확보한다.</p></div></details>
+  <details class="mini"><summary>날짜 클러스터 SE를 왜 쓰나? HAC로 충분하지 않나?</summary><div class="mb"><p>HAC는 <b>시계열 자기상관</b>을 다루지만, 산업 잔차는 같은 날 공통충격으로 <b>횡단면 동시상관</b>을 갖는다. Kwan(1991)의 SUR 문제의식을 이어 날짜 클러스터 SE로 이 동시상관을 흡수한다. 이 계열이 OLS/HAC에 머문 점과 대비되는 고유 기여다.</p></div></details>
+  <details class="mini"><summary>시장을 통제하면 금리→시장→산업 경로를 지우는 것 아닌가?</summary><div class="mb"><p>그렇다. βr은 ‘시장 대비 초과 민감도’다(Stone 계열 표준 해석). 그래서 단순회귀(총효과)를 병행 보고하며, 두 계수의 차이 자체가 국내 문헌 대질의 결과가 된다.</p></div></details>
+  <details class="mini"><summary>H3에 인사이트가 없다는 지적에 어떻게 답하나?</summary><div class="mb"><p>Weber·Dechow·Bartram 이론으로 <b>추정 전에 부호를 예측·등록</b>한다(고배당→|βr|↓, 고PBR→|βr|↑, 고ROE→|βr|↓, 부채비율→약상관). 사후 해석이 아니라 <b>사전 검정</b>이므로, 일치/불일치 자체가 이론 검정 결과가 된다.</p></div></details>
+  <details class="mini"><summary>비대칭·곡선·기업패널까지, 인턴 기간에 다 되나?</summary><div class="mb"><p>필수(2지수·F-검정·곡선 3요인·비대칭·기업 금리×부채/PBR·날짜클러스터·FDR)만 완성해도 하나의 완결된 스토리가 된다. 신용스프레드·국면은 데이터 확보 시 추가, 정책충격·Nelson–Siegel 직접추정은 선택으로 분리했다.</p></div></details>
+ </div>
+</section>
+
+<!-- FINAL STORY -->
+<section id="story">
+ <div class="summary-card">
+  <div class="sc-head"><div class="lbl">Final Story</div><h3>최종 보고서의 논리 구조</h3></div>
+  <div class="sc-body"><ol>
+   <li><b>산업별 금리베타는 실제로 다르다.</b> 시장요인을 통제하고 F-검정으로 통계적 차이를 확인한다 (Baseline).</li>
+   <li><b>그러나 차이는 ‘금리’ 하나로 설명되지 않는다.</b> 산업마다 수익률곡선 수준·기울기·신용스프레드에 대한 노출이 다르다 (H1).</li>
+   <li><b>금리민감도는 시기와 방향에 따라 달라진다.</b> 상승·하락이 비대칭이며, 긴축·신용위험 국면에서 확대된다 (H2).</li>
+   <li><b>기업 재무구조가 산업 차이의 일부를 설명한다.</b> 부채비율·성장성을 통제한 뒤 남는 차이는 산업 고유의 사업·현금흐름 특성으로 해석한다 (H3).</li>
+   <li><b>WHAT에서 WHY·WHEN·WHO로</b> — 순위 나열이 아니라 설명 가능한 금리노출 메커니즘을 제시하고, 시장 통제 전후 비교로 국내 선행연구를 재검증한다.</li>
+  </ol></div>
+ </div>
+</section>
+
+<!-- REFERENCES -->
+<section id="refs">
+ <div class="sec-num">REFERENCES</div>
+ <h2>참고문헌</h2>
+ <p class="lead">APA 7th · 논문명 링크는 DOI 또는 국내·국외 원문 서지 페이지.</p>
+ <div class="card">
+  <div class="reflist">
+   Bartram, S. M. (2002). The interest rate exposure of nonfinancial corporations. <i>Review of Finance, 6</i>(1), 101–125. <a href="https://doi.org/10.1023/A:1015024825914" target="_blank">https://doi.org/10.1023/A:1015024825914</a><br>
+   Bernanke, B. S., &amp; Kuttner, K. N. (2005). What explains the stock market's reaction to Federal Reserve policy? <i>The Journal of Finance, 60</i>(3), 1221–1257. <a href="https://doi.org/10.1111/j.1540-6261.2005.00760.x" target="_blank">https://doi.org/10.1111/j.1540-6261.2005.00760.x</a><br>
+   Czaja, M.-G., Scholz, H., &amp; Wilkens, M. (2009). Interest rate risk of German financial institutions: The impact of level, slope, and curvature of the term structure. <i>Review of Quantitative Finance and Accounting, 33</i>(1), 1–26. <a href="https://doi.org/10.1007/s11156-008-0104-9" target="_blank">https://doi.org/10.1007/s11156-008-0104-9</a><br>
+   Dechow, P. M., Sloan, R. G., &amp; Soliman, M. T. (2004). Implied equity duration: A new measure of equity risk. <i>Review of Accounting Studies, 9</i>(2–3), 197–228. <a href="https://doi.org/10.1023/B:RAST.0000028186.44328.3f" target="_blank">https://doi.org/10.1023/B:RAST.0000028186.44328.3f</a><br>
+   Ehrmann, M., &amp; Fratzscher, M. (2004). Taking stock: Monetary policy transmission to equity markets. <i>Journal of Money, Credit and Banking, 36</i>(4), 719–737. <a href="https://doi.org/10.1353/mcb.2004.0063" target="_blank">https://doi.org/10.1353/mcb.2004.0063</a><br>
+   Ferrando, L., Ferrer, R., &amp; Jareño, F. (2017). Interest rate sensitivity of Spanish industries: A quantile regression approach. <i>The Manchester School, 85</i>(2), 212–242. <a href="https://doi.org/10.1111/manc.12143" target="_blank">https://doi.org/10.1111/manc.12143</a><br>
+   Ferrer, R., González, C., &amp; Soto, G. M. (2010). Linear and nonlinear interest rate exposure in Spain. <i>Managerial Finance, 36</i>(5), 431–451. <a href="https://doi.org/10.1108/03074351011039445" target="_blank">https://doi.org/10.1108/03074351011039445</a><br>
+   Flannery, M. J., &amp; James, C. M. (1984). The effect of interest rate changes on the common stock returns of financial institutions. <i>The Journal of Finance, 39</i>(4), 1141–1153. <a href="https://doi.org/10.1111/j.1540-6261.1984.tb03898.x" target="_blank">https://doi.org/10.1111/j.1540-6261.1984.tb03898.x</a><br>
+   Jarociński, M., &amp; Karadi, P. (2020). Deconstructing monetary policy surprises — The role of information shocks. <i>American Economic Journal: Macroeconomics, 12</i>(2), 1–43. <a href="https://doi.org/10.1257/mac.20180090" target="_blank">https://doi.org/10.1257/mac.20180090</a><br>
+   Kwan, S. H. (1991). Re-examination of interest rate sensitivity of commercial bank stock returns using a random coefficient model. <i>Journal of Financial Services Research, 5</i>(1), 61–76. <a href="https://doi.org/10.1007/BF00127084" target="_blank">https://doi.org/10.1007/BF00127084</a><br>
+   Nelson, C. R., &amp; Siegel, A. F. (1987). Parsimonious modeling of yield curves. <i>The Journal of Business, 60</i>(4), 473–489. <a href="https://doi.org/10.1086/296409" target="_blank">https://doi.org/10.1086/296409</a><br>
+   Reilly, F. K., Wright, D. J., &amp; Johnson, R. R. (2007). Analysis of the interest rate sensitivity of common stocks. <i>The Journal of Portfolio Management, 33</i>(3), 85–107. <a href="https://doi.org/10.3905/jpm.2007.684757" target="_blank">https://doi.org/10.3905/jpm.2007.684757</a><br>
+   Stone, B. K. (1974). Systematic interest-rate risk in a two-index model of returns. <i>Journal of Financial and Quantitative Analysis, 9</i>(5), 709–721. <a href="https://doi.org/10.2307/2329656" target="_blank">https://doi.org/10.2307/2329656</a><br>
+   Sweeney, R. J., &amp; Warga, A. D. (1986). The pricing of interest-rate risk: Evidence from the stock market. <i>The Journal of Finance, 41</i>(2), 393–410. <a href="https://doi.org/10.1111/j.1540-6261.1986.tb05044.x" target="_blank">https://doi.org/10.1111/j.1540-6261.1986.tb05044.x</a><br>
+   Weber, M. (2018). Cash flow duration and the term structure of equity returns. <i>Journal of Financial Economics, 128</i>(3), 486–503. <a href="https://doi.org/10.1016/j.jfineco.2018.03.003" target="_blank">https://doi.org/10.1016/j.jfineco.2018.03.003</a><br>
+   김규형, 박진수, &amp; 서지혜 (2022). 금리 스프레드와 산업별 주식 수익률 관계 분석. <i>지능정보연구, 28</i>(3), 105–117. <a href="https://www.kci.go.kr/kciportal/ci/sereArticleSearch/ciSereArtiView.kci?sereArticleSearchBean.artiId=ART002882746" target="_blank">KCI 원문</a><br>
+   김세완, 황윤경, 김영민, &amp; 김경록 (2018). 주식수익률 변동성은 산업별로 상이한가? 국내 7개 산업에 대한 실증분석. <i>시장경제연구, 47</i>(2), 151–176. <a href="https://doi.org/10.38162/JOME.47.2.5" target="_blank">https://doi.org/10.38162/JOME.47.2.5</a><br>
+   김재거, &amp; 김동회 (2016). 통화정책과 증권시장의 이상현상. <i>금융공학연구, 15</i>(1), 45–74. <a href="https://doi.org/10.35527/kfedoi.2016.15.1.003" target="_blank">https://doi.org/10.35527/kfedoi.2016.15.1.003</a><br>
+   연소영, &amp; 정정현 (2023). 시장지표를 이용한 산업별 주식수익률의 예측성과. <i>금융공학연구, 22</i>(1), 81–116. <a href="https://doi.org/10.35527/kfedoi.2023.22.1.004" target="_blank">https://doi.org/10.35527/kfedoi.2023.22.1.004</a><br>
+   정영우, &amp; 정현철 (2014). 기준금리 조정이 주가에 미치는 영향. <i>대한경영학회지, 27</i>(2), 219–241. <a href="https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE02373766" target="_blank">DBpia 원문</a>
+  </div>
+ </div>
+</section>
+
+</main></div></div>
+<footer>선행연구 공백과 우리 연구의 기여 · 통합 연구설계 · Industry Interest-Rate Sensitivity Project · FINDS Lab</footer>
+
+<script>
+const links=[...document.querySelectorAll('nav.toc a')];
+const map={};links.forEach(a=>{map[a.getAttribute('href').slice(1)]=a;});
+const obs=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));map[e.target.id]&&map[e.target.id].classList.add('active');}});},{rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('main section[id]').forEach(s=>obs.observe(s));
+</script>
+</body>
+</html>

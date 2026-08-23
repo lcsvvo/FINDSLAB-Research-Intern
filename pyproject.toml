@@ -1,0 +1,27 @@
+# 저장소를 편집 가능 모드로 설치해 `import config` / `from src import ...` 가
+# 실행 위치(cwd)와 무관하게 항상 동작하도록 한다.
+#
+#   pip install -e .
+#
+# 이 한 번의 설치로 notebooks/, src/, 터미널, nbconvert, CI 어디서 실행하든
+# sys.path 조작 없이 동일하게 import된다. 편집기 설정(.vscode 등)에 의존하지
+# 않으므로 팀원이 VS Code를 쓰지 않아도 동일하게 재현된다.
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "findslab-research-intern"
+version = "0.1.0"
+description = "산업별 금리 베타 분석 (FINDS Lab)"
+requires-python = ">=3.9"
+dynamic = ["dependencies"]
+
+[tool.setuptools]
+# flat-layout 자동 탐색은 data/ docs/ notebooks/ 를 패키지로 오인하므로
+# 대상을 명시한다.
+py-modules = ["config"]
+packages = ["src"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }

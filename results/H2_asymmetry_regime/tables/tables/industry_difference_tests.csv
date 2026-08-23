@@ -1,0 +1,5 @@
+﻿model,variable,f_stat,p_value,df_num,n_industries,n_obs,n_dates,significant_5pct,p_value_bh,bh_n_tests,bh_family,significant_5pct_bh
+Y3_Asymmetry,d_y3_up,3.516189411752126,0.001816525178052815,6,7,17157,2451,True,0.00363305035610563,2,Y3_Asymmetry,True
+Y3_Asymmetry,d_y3_down,3.1303826112516333,0.004652430819856246,6,7,17157,2451,True,0.004652430819856246,2,Y3_Asymmetry,True
+Curvature_Asymmetry,d_curv_up,3.007698222362294,0.0062454129086741035,6,7,17157,2451,True,0.012490825817348207,2,Curvature_Asymmetry,True
+Curvature_Asymmetry,d_curv_down,1.3744173363694179,0.22108555707445077,6,7,17157,2451,False,0.22108555707445077,2,Curvature_Asymmetry,False

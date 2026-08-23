@@ -1,0 +1,752 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>config.py 사용 가이드 — FINDS Lab</title><style>
+:root{
+ --navy:#0f172a; --navy2:#1e3a8a; --blue:#2563eb; --sky:#eff6ff;
+ --ink:#1e293b; --sub:#475569; --muted:#64748b; --line:#e2e8f0;
+ --bg:#f8fafc; --card:#fff; --green:#166534; --rose:#dc2626;
+ --amber:#92400e; --purple:#6d28d9;
+ --pos:#1d4ed8; --neg:#dc2626;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+ line-height:1.75;-webkit-font-smoothing:antialiased}
+
+.hero{background:linear-gradient(135deg,#07111f,#172554 58%,#2563eb);color:#fff;padding:56px 0 46px}
+.hero .inner{max-width:1400px;margin:0 auto;padding:0 32px}
+.eyebrow{font-size:12px;letter-spacing:.16em;color:#bfdbfe;font-weight:900}
+.hero h1{font-size:38px;line-height:1.2;letter-spacing:-.035em;margin:12px 0 14px;font-weight:900}
+.hero p{max-width:860px;color:#dbeafe;margin:0;font-size:15.5px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.meta span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);
+ border-radius:999px;padding:5px 13px;font-size:12px;color:#e0ecff}
+
+.shell{max-width:1400px;margin:0 auto;padding:0 32px;display:grid;
+ grid-template-columns:236px 1fr;gap:38px;align-items:start}
+
+nav.toc{position:sticky;top:22px;padding:22px 0 40px}
+nav.toc .lbl{font-size:11px;letter-spacing:.16em;color:var(--muted);font-weight:900;
+ padding:0 14px;margin-bottom:10px}
+nav.toc a{display:block;padding:9px 14px;border-radius:9px;text-decoration:none;
+ color:var(--sub);font-size:13.5px;font-weight:600;border-left:3px solid transparent;
+ transition:all .16s}
+nav.toc a .no{color:var(--muted);font-weight:900;margin-right:7px;font-size:12px}
+nav.toc a:hover{background:#eef2f7;color:var(--navy)}
+nav.toc a.on{background:var(--sky);color:var(--navy2);border-left-color:var(--blue);font-weight:900}
+nav.toc a.on .no{color:var(--blue)}
+
+main{padding:34px 0 90px;min-width:0}
+section{margin-bottom:56px;scroll-margin-top:20px}
+.sec{font-size:11.5px;letter-spacing:.14em;color:var(--blue);font-weight:900}
+h2{font-size:27px;color:var(--navy);margin:5px 0 8px;letter-spacing:-.025em;font-weight:900}
+h3{font-size:18px;color:var(--navy);margin:26px 0 10px;font-weight:800}
+h4{font-size:15px;color:var(--navy);margin:18px 0 8px;font-weight:800}
+.lead{color:var(--muted);margin:0 0 20px;font-size:14.5px}
+p{margin:0 0 13px}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin:0 0 26px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;
+ box-shadow:0 10px 26px rgba(15,23,42,.06)}
+.kpi b{display:block;color:var(--blue);font-size:26px;font-weight:900;letter-spacing:-.02em}
+.kpi b.warn{color:var(--rose)}
+.kpi span{font-size:11.5px;color:var(--muted);display:block;margin-top:3px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;
+ box-shadow:0 8px 22px rgba(15,23,42,.045);margin-bottom:16px}
+.result-box{background:linear-gradient(135deg,#eff6ff,#eef2ff);border:1px solid #bfdbfe;
+ border-left:6px solid var(--blue);border-radius:15px;padding:22px 24px;margin-bottom:16px}
+.result-box h3{margin:0 0 8px;font-size:20px;color:var(--navy)}
+.result-box p:last-child{margin-bottom:0}
+.dark{background:var(--navy);color:#fff;border-radius:15px;padding:24px}
+.dark small{color:#93c5fd;font-weight:900;letter-spacing:.11em;font-size:11px}
+.dark h3{font-size:20px;margin:8px 0 10px;color:#fff}
+.dark p{color:#cbd5e1;margin:0 0 10px}
+.dark p:last-child{margin-bottom:0}
+.dark b{color:#bfdbfe}
+
+.warning{background:#fffbeb;border:1px solid #fde68a;border-left:5px solid #f59e0b;
+ border-radius:13px;padding:17px 19px;margin-bottom:14px}
+.warning b{color:#92400e}
+.warning p{margin:5px 0 0;color:#78350f;font-size:13.5px}
+.warning p:first-child{margin-top:0}
+.danger{background:#fef2f2;border:1px solid #fecaca;border-left:5px solid var(--rose);
+ border-radius:13px;padding:17px 19px;margin-bottom:14px}
+.danger b{color:#991b1b}
+.danger p{margin:5px 0 0;color:#7f1d1d;font-size:13.5px}
+.good{background:#f0fdf4;border:1px solid #bbf7d0;border-left:5px solid #16a34a;
+ border-radius:13px;padding:17px 19px;margin-bottom:14px}
+.good b{color:#166534}
+.good p{margin:5px 0 0;color:#14532d;font-size:13.5px}
+
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:13px;background:#fff;margin:14px 0 6px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--navy);color:#fff;padding:11px 12px;text-align:left;white-space:nowrap;font-weight:700}
+tbody td{padding:10px 12px;border-bottom:1px solid #eef2f6;vertical-align:middle}
+tbody tr:nth-child(even){background:#fafbfc}
+tbody tr.hi{background:#eff6ff}
+tbody tr.hi td{font-weight:700}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pos{color:var(--pos);font-weight:800}
+.neg{color:var(--neg);font-weight:800}
+.zero{color:var(--muted);font-weight:700}
+.cap{font-size:12.5px;color:var(--muted);margin:8px 2px 20px;padding-left:11px;
+ border-left:3px solid var(--line)}
+
+.badge{display:inline-block;border-radius:999px;padding:3px 9px;font-size:10.5px;font-weight:900}
+.sig{background:#dbeafe;color:#1d4ed8}
+.nsig{background:#f1f5f9;color:#64748b}
+.mid{background:#fef3c7;color:#92400e}
+.tag-conf{background:#dcfce7;color:#166534}
+.tag-post{background:#fef3c7;color:#92400e}
+
+.figure{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;
+ box-shadow:0 8px 20px rgba(15,23,42,.04);margin:16px 0}
+.figure img{display:block;width:100%;height:auto;border-radius:9px}
+.figcap{font-size:12.5px;color:var(--sub);margin:11px 3px 0}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin:16px 0}
+.flow div{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;text-align:center}
+.flow b{display:block;color:var(--blue);font-size:13.5px;margin-bottom:5px}
+.flow span{font-size:12px;color:var(--sub)}
+
+.stage{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:start;
+ padding:14px 0;border-bottom:1px solid var(--line)}
+.stage:last-child{border-bottom:none}
+.stage .tag{font-size:11.5px;font-weight:900;color:var(--blue);padding-top:2px}
+.stage .body b{color:var(--navy)}
+.stage .body p{margin:3px 0 0;font-size:13.5px;color:var(--sub)}
+
+.eq{background:var(--navy);color:#e0ecff;border-radius:12px;padding:18px 20px;
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;
+ overflow-x:auto;margin:14px 0}
+.eq .hl{color:#fbbf24;font-weight:700}
+
+.profile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:12px}
+.profile h4{margin:0 0 4px;color:var(--navy);font-size:16px;display:flex;
+ justify-content:space-between;align-items:center;gap:8px}
+.profile p{margin:6px 0 0;color:var(--sub);font-size:13.5px}
+
+.term{display:grid;grid-template-columns:170px 1fr;gap:12px;padding:12px 0;
+ border-bottom:1px solid var(--line);font-size:13.5px}
+.term:last-child{border-bottom:none}
+.term b{color:var(--navy)}
+.term span{color:var(--sub)}
+
+ul{margin:0 0 13px;padding-left:20px}
+li{margin-bottom:6px}
+li::marker{color:var(--blue)}
+code{background:#f1f5f9;padding:2px 6px;border-radius:5px;font-size:12.5px;
+ font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--navy2)}
+
+footer{border-top:1px solid var(--line);text-align:center;color:var(--muted);
+ font-size:12px;padding:26px;background:#fff}
+
+@media(max-width:1100px){
+ .shell{grid-template-columns:1fr;gap:0}
+ nav.toc{position:static;display:flex;flex-wrap:wrap;gap:6px;padding:16px 0;
+  border-bottom:1px solid var(--line);margin-bottom:10px}
+ nav.toc .lbl{width:100%;padding:0}
+ nav.toc a{border-left:none;border:1px solid var(--line);padding:6px 11px;font-size:12.5px}
+ nav.toc a.on{border-color:var(--blue)}
+ .kpis{grid-template-columns:repeat(2,1fr)}
+ .grid2,.grid3,.flow{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+ .hero h1{font-size:27px}.kpis{grid-template-columns:1fr}
+ .shell,.hero .inner{padding:0 18px}
+ .stage{grid-template-columns:1fr}.term{grid-template-columns:1fr}
+}
+
+.code{background:#0b1220;color:#e2e8f0;border-radius:12px;padding:16px 18px;
+ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;
+ line-height:1.75;overflow-x:auto;margin:12px 0;white-space:pre}
+.code .c{color:#64748b}
+.code .k{color:#c084fc}
+.code .s{color:#86efac}
+.code .f{color:#7dd3fc}
+.code .o{color:#fbbf24}
+.code .bad{color:#450a0a;background:#fca5a5;padding:1px 7px;border-radius:5px;font-weight:800}
+.code .good{color:#052e16;background:#86efac;padding:1px 7px;border-radius:5px;font-weight:800}
+.code b{color:#fff;font-weight:800}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:14px 0}
+.split .box{border-radius:14px;padding:17px 19px;border:1px solid var(--line);background:#fff}
+.split .box.no{border-color:#fecaca;background:#fef7f7}
+.split .box.yes{border-color:#bbf7d0;background:#f6fefa}
+.split .box h4{margin:0 0 8px;font-size:14.5px}
+.split .box.no h4{color:#991b1b}
+.split .box.yes h4{color:#166534}
+.split .box .code{margin:8px 0 0;font-size:12px}
+
+.qa{border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:12px;overflow:hidden}
+.qa .q{background:#f1f5f9;padding:14px 18px;font-weight:800;color:var(--navy);font-size:15px}
+.qa .a{padding:16px 18px}
+.qa .a p:last-child{margin-bottom:0}
+
+.step-num{display:grid;grid-template-columns:38px 1fr;gap:14px;align-items:start;
+ padding:16px 0;border-bottom:1px solid var(--line)}
+.step-num:last-child{border-bottom:none}
+.step-num .n{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;
+ display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+.step-num .t b{color:var(--navy);font-size:15px}
+.step-num .t p{margin:4px 0 0;font-size:13.5px;color:var(--sub)}
+
+.varbox{background:#f8fafc;border:1px solid var(--line);border-radius:10px;
+ padding:11px 14px;margin:8px 0;font-family:ui-monospace,monospace;font-size:12.5px}
+@media(max-width:1100px){.split{grid-template-columns:1fr}}
+
+.tree{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:16px 0}
+.tree .root{background:var(--navy);color:#fff;border-radius:11px;padding:13px 17px;
+ font-weight:800;font-size:14.5px;display:inline-block}
+.tree .root .p{background:#bbf7d0;color:#052e16;border-radius:5px;padding:1px 8px;
+ font-weight:900;margin-left:8px;font-size:13px}
+.tree .branches{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.tree .br{border:1px solid var(--line);border-radius:13px;padding:16px 18px;background:#f8fafc}
+.tree .br.b{border-left:5px solid var(--blue)}
+.tree .br.c{border-left:5px solid #7c3aed}
+.tree .br .name{font-size:12px;font-weight:900;letter-spacing:.08em;color:var(--blue)}
+.tree .br.c .name{color:#7c3aed}
+.tree .br h4{margin:5px 0 8px;font-size:16px;color:var(--navy)}
+.tree .br .cut{font-size:13.5px;color:var(--sub);margin:0 0 10px}
+.tree .br .res{border-radius:9px;padding:9px 12px;font-size:13.5px;font-weight:800}
+.tree .br .res.lose{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.tree .br .res.win{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+@media(max-width:1100px){.tree .branches{grid-template-columns:1fr}}
+</style></head><body>
+
+<header class="hero"><div class="inner">
+<div class="eyebrow">FINDS LAB · 팀 공유용 사용 가이드</div>
+<h1>config.py 사용 가이드</h1>
+<p>경로를 각자 PC에 맞춰 고치지 않아도 팀원 모두가 같은 코드를 그대로 돌릴 수 있게 하는 방법.
+왜 쓰는지, 어떻게 쓰는지, 안 쓰면 어떻게 되는지, 무엇을 공유해야 하는지를 정리했다.</p>
+<div class="meta">
+ <span>대상 — 팀원 전체</span>
+ <span>설치는 PC당 1회</span>
+ <span>기준 파일 — config.py</span>
+</div>
+</div></header>
+
+<div class="shell"><nav class="toc"><div class="lbl">목차</div><a href="#g1" data-t="g1"><span class="no">01</span>왜 config를 쓰나</a><a href="#g2" data-t="g2"><span class="no">02</span>설치 — 딱 한 번</a><a href="#g3" data-t="g3"><span class="no">03</span>기본 사용법</a><a href="#g4" data-t="g4"><span class="no">04</span>경로 변수 목록</a><a href="#g5" data-t="g5"><span class="no">05</span>자주 하는 실수</a><a href="#g6" data-t="g6"><span class="no">06</span>config를 안 쓴다면</a><a href="#g7" data-t="g7"><span class="no">07</span>공유는 어떻게</a></nav>
+<main><section id="g1">
+<div class="sec">SECTION 01</div><h2>왜 config를 쓰나</h2>
+<p class="lead">결론부터. 각자 PC 경로를 코드에 적으면 남의 코드가 안 돌아간다.</p>
+<h3>문제 상황</h3>
+<div class="split">
+ <div class="box no"><h4>config 없이 — 이렇게 하면</h4>
+<div class="code"><span class="c"># 지우 노트북</span>
+df = pd.read_csv(<span class="s">"C:/Users/jiwoo/Desktop/GitHub/
+  FINDSLAB/data/processed/panel.csv"</span>)
+
+<span class="c"># 수현이가 그대로 실행하면</span>
+<span class="bad">FileNotFoundError</span></div>
+ <p style="font-size:13px;margin:10px 0 0;color:#7f1d1d">
+ 경로를 각자 고쳐야 한다. 고치다 보면 어느 순간 <b>서로 다른 파일을 읽고 있다.</b></p></div>
+
+ <div class="box yes"><h4>config 쓰면 — 이렇게 된다</h4>
+<div class="code"><span class="c"># 누가 실행하든 동일</span>
+<span class="k">import</span> config
+df = pd.read_csv(config.PANEL_PATH)
+
+<span class="c"># 지우 PC, 수현 PC, 정현 PC</span>
+<span class="good">전부 정상 동작</span></div>
+ <p style="font-size:13px;margin:10px 0 0;color:#14532d">
+ 저장소를 <b>어디에 두든</b> 동작한다. 바탕화면이든 문서 폴더든 상관없다.</p></div>
+</div>
+
+<h3>어떻게 가능한가</h3>
+<p><code>config.py</code>는 <b>자기 파일 위치(<code>__file__</code>)를 기준</b>으로 프로젝트 루트를 찾는다.
+현재 작업 폴더(cwd)에 의존하지 않는다.</p>
+<div class="code"><span class="c"># config.py 내부</span>
+PROJECT_ROOT = Path(__file__).resolve().parent
+<span class="c"># → config.py 가 있는 폴더 = 저장소 루트</span>
+
+DATA_DIR   = PROJECT_ROOT / <span class="s">"data"</span>
+H1_TABDIR  = PROJECT_ROOT / <span class="s">"results"</span> / <span class="s">"H1_yield_curve"</span> / <span class="s">"tables"</span></div>
+
+<h3>얻는 것 네 가지</h3>
+<div class="card">
+<div class="stage"><div class="tag">1</div><div class="body"><b>경로 수정 없이 그대로 실행</b>
+<p>팀원 PC가 Windows든 Mac이든, 저장소가 어디 있든 동작한다.</p></div></div>
+<div class="stage"><div class="tag">2</div><div class="body"><b>파일명이 달라도 흡수</b>
+<p>원본 파일명이 팀원마다 조금씩 달라도 별칭(alias)으로 찾아준다.
+<code>.csv</code>·<code>.xlsx</code>·<code>.xls</code>를 모두 인식한다.</p></div></div>
+<div class="stage"><div class="tag">3</div><div class="body"><b>엉뚱한 파일을 읽는 사고 차단</b>
+<p>탐색을 <b>프로젝트 폴더 안으로만</b> 제한한다. 다른 프로젝트의 동명 파일이 잡히지 않는다.</p></div></div>
+<div class="stage"><div class="tag">4</div><div class="body"><b>무엇을 읽었는지 추적 가능</b>
+<p><code>config.describe()</code>로 실제 잡힌 파일을 확인할 수 있다.
+재현성 검증에서 "무엇을 읽었나"는 반드시 확인해야 한다.</p></div></div>
+</div>
+</section><section id="g2">
+<div class="sec">SECTION 02</div><h2>설치 — 딱 한 번</h2>
+<p class="lead">각자 PC에서 한 번만 하면 된다. 그 뒤로는 신경 쓸 일이 없다.</p>
+<div class="card">
+<div class="step-num"><div class="n">1</div><div class="t"><b>저장소 루트로 이동</b>
+<p><code>config.py</code>와 <code>requirements.txt</code>가 <b>둘 다 보이는</b> 폴더다.</p>
+<div class="code"><span class="c"># Windows PowerShell</span>
+cd C:\Users\내이름\...\FINDSLAB-Research-Intern
+
+<span class="c"># Mac / Linux</span>
+cd ~/.../FINDSLAB-Research-Intern</div></div></div>
+
+<div class="step-num"><div class="n">2</div><div class="t"><b>편집 가능 모드로 설치</b>
+<p>마지막 점(<code>.</code>)까지 포함해서 그대로 입력한다.</p>
+<div class="code">pip install -e .</div></div></div>
+
+<div class="step-num"><div class="n">3</div><div class="t"><b>확인</b>
+<p>노트북이나 파이썬에서 아래를 실행해 경로가 뜨면 끝이다.</p>
+<div class="code"><span class="k">import</span> config
+config.describe()</div></div></div>
+</div>
+
+<div class="good">
+<b><code>-e</code>가 붙는 이유</b>
+<p>editable(편집 가능) 모드로 설치한다는 뜻이다. 파일을 복사해 두는 게 아니라
+<b>저장소를 직접 바라보게</b> 만든다.</p>
+<p>그래서 팀원이 보내준 새 <code>config.py</code>로 <b>덮어쓰기만 해도</b>
+재설치 없이 바로 반영된다.</p>
+</div>
+
+<div class="warning">
+<b>가상환경을 쓴다면</b>
+<p>가상환경을 켠 상태에서 설치해야 한다. 가상환경마다 한 번씩 필요하다.</p>
+<div class="code"><span class="c"># 가상환경 활성화 후</span>
+pip install -e .
+pip install -r requirements.txt</div>
+</div>
+</section><section id="g3">
+<div class="sec">SECTION 03</div><h2>기본 사용법</h2>
+<p class="lead">규칙은 하나다 — 경로는 전부 config에서 가져온다.</p>
+<h3>노트북 첫 셀</h3>
+<div class="code"><span class="k">import</span> config
+<span class="k">import</span> pandas <span class="k">as</span> pd
+
+config.describe()   <span class="c"># 어떤 파일이 잡혔는지 먼저 확인</span></div>
+
+<h3>읽기</h3>
+<div class="code">panel = pd.read_csv(config.PANEL_PATH, encoding=<span class="s">"utf-8-sig"</span>)
+ext   = pd.read_csv(config.EXTENDED_PANEL_PATH, encoding=<span class="s">"utf-8-sig"</span>)
+yields = pd.read_csv(config.RAW_YIELD_CURVE_FILE, encoding=<span class="s">"utf-8-sig"</span>)</div>
+
+<h3>쓰기</h3>
+<div class="code"><span class="c"># 표 저장 — 가설별 폴더가 이미 만들어져 있다</span>
+df.to_csv(config.H2_TABDIR / <span class="s">"up_down_beta_by_industry.csv"</span>,
+          index=<span class="k">False</span>, encoding=<span class="s">"utf-8-sig"</span>)
+
+<span class="c"># 그림 저장</span>
+fig.savefig(config.H2_FIGDIR / <span class="s">"up_down_beta_ci.png"</span>,
+            dpi=<span class="o">200</span>, bbox_inches=<span class="s">"tight"</span>)</div>
+
+<div class="good">
+<b>폴더를 미리 만들 필요 없다</b>
+<p><code>config.py</code>가 import될 때 <code>results/</code> 하위 폴더를 전부 자동 생성한다.
+<code>mkdir</code>을 따로 쓰지 않아도 된다.</p>
+</div>
+
+<h3>describe() 출력 읽는 법</h3>
+<div class="code">PROJECT_ROOT : C:\Users\...\FINDSLAB-Research-Intern
+
+[raw 파일]
+  [<span class="good">OK     </span>] RAW_YIELD_CURVE_FILE: data/raw/rates/treasury_...csv
+  [<span class="o">OK(탐색)</span>] RAW_CREDIT_SPREAD_FILE: data/raw/rates/corp_aa3.csv
+  [<span class="bad">MISSING</span>] RAW_YIELD_FILE: data/raw/rates/treasury_3y_10y.csv</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>표시</th><th>뜻</th><th>할 일</th></tr></thead>
+<tbody>
+<tr><td><b>OK</b></td><td>표준 경로에서 정상적으로 찾음</td><td>없음</td></tr>
+<tr><td><b>OK(탐색)</b></td><td>표준 경로엔 없지만 별칭으로 찾아냄</td>
+ <td>파일명을 표준으로 바꾸면 더 깔끔하다</td></tr>
+<tr><td><b>MISSING</b></td><td>못 찾음</td><td><b>파일이 실제로 있는지 확인.</b> 그대로 두면 에러 난다</td></tr>
+</tbody></table></div>
+<p class="cap">이 표는 describe() 출력의 표시를 설명한다. <b>MISSING이 하나라도 있으면 분석을 시작하지 말 것.</b></p>
+</section><section id="g4">
+<div class="sec">SECTION 04</div><h2>경로 변수 목록</h2>
+<p class="lead">이 표만 있으면 경로를 직접 쓸 일이 없다.</p>
+<h3>데이터</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>변수</th><th>가리키는 곳</th><th>내용</th></tr></thead>
+<tbody>
+<tr><td><code>config.PANEL_PATH</code></td><td><code>data/processed/industry_rate_panel_daily.csv</code></td>
+ <td>산업·KOSPI·국고채 3년/10년 기본 패널</td></tr>
+<tr><td><code>config.EXTENDED_PANEL_PATH</code></td><td><code>data/processed/industry_rate_panel_extended.csv</code></td>
+ <td><b>확장 패널</b> — 위 + 1·5년 금리 + Level·Slope·Curvature + Credit Spread</td></tr>
+<tr><td><code>config.RAW_YIELD_FILE</code></td><td><code>data/raw/rates/treasury_yield_3y_10y.csv</code></td>
+ <td>Baseline용 국고채 3년·10년 원본</td></tr>
+<tr><td><code>config.RAW_YIELD_CURVE_FILE</code></td><td><code>data/raw/rates/treasury_yield_curve_1_3_5_10y.csv</code></td>
+ <td>곡선용 국고채 1·3·5·10년 원본</td></tr>
+<tr><td><code>config.RAW_CREDIT_SPREAD_FILE</code></td><td><code>data/raw/rates/corporate_bond_aa_minus_3y.csv</code></td>
+ <td>회사채 AA− 3년 원본</td></tr>
+</tbody></table></div>
+
+<h3>결과 저장 — 가설별로 나뉘어 있다</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>가설</th><th>표</th><th>그림</th><th>담당 노트북</th></tr></thead>
+<tbody>
+<tr><td>EDA</td><td><code>config.TABDIR</code></td><td><code>config.FIGDIR</code></td><td>03</td></tr>
+<tr><td>Baseline</td><td><code>config.BASELINE_TABDIR</code></td><td><code>config.BASELINE_FIGDIR</code></td><td>04 · 05</td></tr>
+<tr><td>H1 (모형 B)</td><td><code>config.H1_TABDIR</code></td><td><code>config.H1_FIGDIR</code></td><td>06</td></tr>
+<tr class="hi"><td><b>H2 (모형 C)</b></td><td><code>config.H2_TABDIR</code></td><td><code>config.H2_FIGDIR</code></td><td>07</td></tr>
+<tr><td>H3</td><td><code>config.H3_TABDIR</code></td><td><code>config.H3_FIGDIR</code></td><td>예정</td></tr>
+</tbody></table></div>
+<p class="cap">이 표는 가설별 결과 저장 위치다.
+<b>모형 C 조는 <code>config.H2_TABDIR</code>·<code>config.H2_FIGDIR</code>를 쓰면 된다.</b></p>
+
+<div class="warning">
+<b>회의록 경로와 다르다</b>
+<p>회의록(2026-07-16)에는 <code>results/Asymmetry/...</code>로 적혀 있지만,
+이후 저장소가 가설 기준으로 재구성되면서 현재 표준은
+<code>results/H2_asymmetry_regime/</code>이다.</p>
+<p>경로를 문자열로 쓰지 말고 <b><code>config.H2_TABDIR</code>를 쓰면</b> 이런 혼란이 생기지 않는다.</p>
+</div>
+
+<h3>점검용</h3>
+<div class="varbox">config.describe()          <span style="color:#64748b"># 경로·파일 상태 출력</span></div>
+<div class="varbox">config.PROJECT_ROOT        <span style="color:#64748b"># 저장소 루트 확인</span></div>
+</section><section id="g5">
+<div class="sec">SECTION 05</div><h2>자주 하는 실수</h2>
+<p class="lead">이 네 가지만 피하면 된다.</p>
+<div class="split">
+<div class="box no"><h4>1. 경로를 문자열로 쓴다</h4>
+<div class="code">df.to_csv(<span class="bad">"results/H2_asymmetry_regime/
+  tables/result.csv"</span>)</div>
+<p style="font-size:13px;margin:10px 0 0;color:#7f1d1d">
+노트북을 어디서 여느냐에 따라 <b>엉뚱한 곳에 저장</b>되거나 에러가 난다.
+폴더 이름이 바뀌면 전부 고쳐야 한다.</p></div>
+
+<div class="box yes"><h4>이렇게</h4>
+<div class="code">df.to_csv(config.H2_TABDIR / <span class="s">"result.csv"</span>,
+          index=<span class="k">False</span>,
+          encoding=<span class="s">"utf-8-sig"</span>)</div>
+<p style="font-size:13px;margin:10px 0 0;color:#14532d">
+어디서 실행하든 같은 곳에 저장된다.</p></div>
+</div>
+
+<div class="split">
+<div class="box no"><h4>2. config 변수를 노트북에서 덮어쓴다</h4>
+<div class="code"><span class="bad">config.EXTENDED_PANEL_PATH = ...</span>
+<span class="bad">PANEL = "data/processed/panel.csv"</span></div>
+<p style="font-size:13px;margin:10px 0 0;color:#7f1d1d">
+셀을 순서대로 실행하지 않으면 <b>NameError</b>가 나거나 config와 값이 어긋난다.</p></div>
+
+<div class="box yes"><h4>이렇게</h4>
+<div class="code"><span class="c"># 별칭을 만들지 말고 매번 config에서</span>
+pd.read_csv(config.EXTENDED_PANEL_PATH)</div>
+<p style="font-size:13px;margin:10px 0 0;color:#14532d">
+값이 한 곳에서만 관리된다.</p></div>
+</div>
+
+<div class="split">
+<div class="box no"><h4>3. describe() 안 보고 시작한다</h4>
+<p style="font-size:13px;color:#7f1d1d">
+<code>MISSING</code>이 있는데 모르고 진행하면 한참 뒤에 에러가 난다.
+더 나쁜 경우는 <b>다른 파일이 잡혔는데 눈치 못 채는 것</b>이다.</p></div>
+
+<div class="box yes"><h4>이렇게</h4>
+<div class="code"><span class="c"># 첫 셀에서 항상</span>
+config.describe()</div>
+<p style="font-size:13px;margin:10px 0 0;color:#14532d">
+10초면 된다. 습관으로 만들 것.</p></div>
+</div>
+
+<div class="split">
+<div class="box no"><h4>4. 결과 파일에 날짜를 붙인다</h4>
+<div class="code"><span class="bad">"up_down_beta_20260721.csv"</span></div>
+<p style="font-size:13px;margin:10px 0 0;color:#7f1d1d">
+재실행할 때마다 파일이 쌓여서 <b>어느 게 최신인지 모르게 된다.</b></p></div>
+
+<div class="box yes"><h4>이렇게</h4>
+<div class="code"><span class="s">"up_down_beta_by_industry.csv"</span></div>
+<p style="font-size:13px;margin:10px 0 0;color:#14532d">
+<b>같은 이름으로 덮어쓴다.</b> 최신 결과가 항상 그 파일 하나뿐이라 헷갈릴 일이 없다.
+(<code>docs/STYLE_GUIDE.md</code> §9)</p></div>
+</div>
+</section><section id="g6">
+<div class="sec">SECTION 06</div><h2>config를 안 쓴다면</h2>
+<p class="lead">실제로 이렇게 해왔다. 잘 돌아가지만 팀으로 일할 때 문제가 생긴다.</p>
+<h3>지금까지 쓰던 방식</h3>
+<p>노트북 첫 셀에서 폴더를 직접 뒤져 파일을 찾는 코드다.</p>
+
+<div class="code"><span class="k">from</span> pathlib <span class="k">import</span> Path
+
+CURRENT_DIR = Path.cwd()
+candidate_roots = [CURRENT_DIR, CURRENT_DIR.parent, CURRENT_DIR.parent.parent]
+
+<span class="k">for</span> root <span class="k">in</span> candidate_roots:
+    panel_candidates = [
+        root / <span class="s">"industry_rate_panel_daily.csv"</span>,
+        root / <span class="s">"data"</span> / <span class="s">"processed"</span> / <span class="s">"industry_rate_panel_daily.csv"</span>,
+    ]
+    zip_candidates = [
+        root / <span class="s">"국고채 금리 1,3,5,10.zip"</span>,
+        root / <span class="s">"data"</span> / <span class="s">"raw"</span> / <span class="s">"국고채 금리 1,3,5,10.zip"</span>,
+    ]
+    ...
+    <span class="k">if</span> found_panel <span class="k">and</span> (found_zip <span class="k">or</span> found_csv):
+        PROJECT_ROOT = root; <span class="k">break</span>
+
+TABLE_DIR  = PROJECT_ROOT / <span class="s">"results"</span> / <span class="s">"Yield_Curve"</span> / <span class="s">"tables"</span>
+FIGURE_DIR = PROJECT_ROOT / <span class="s">"results"</span> / <span class="s">"Yield_Curve"</span> / <span class="s">"figures"</span>
+
+<span class="k">for</span> folder <span class="k">in</span> [PROCESSED_DIR, TABLE_DIR, FIGURE_DIR]:
+    folder.mkdir(parents=<span class="k">True</span>, exist_ok=<span class="k">True</span>)</div>
+
+<div class="good">
+<b>혼자 쓸 때는 문제없다</b>
+<p>자기 PC에서 자기 파일로 자기 노트북만 돌린다면 이 코드로 충분하다.
+아래 문제들은 <b>팀원과 파일을 주고받을 때</b> 생긴다.</p>
+</div>
+
+<h3>여섯 가지 문제</h3>
+<div class="card">
+<div class="stage"><div class="tag">문제 1</div><div class="body">
+ <b>저장 경로가 조용히 복제된다 — 가장 위험</b>
+ <p>이 코드는 <code>results/<span style="color:#dc2626">Yield_Curve</span>/</code>에 저장한다.
+ 그런데 저장소 표준은 <code>results/<span style="color:#1d4ed8">H1_yield_curve</span>/</code>다.</p>
+ <p><code>mkdir(parents=True, exist_ok=True)</code>가 붙어 있어서 <b>없는 폴더를 그냥 새로 만든다.</b>
+ 에러가 안 나니까 아무도 모른다. 결과물이 두 폴더에 흩어지고,
+ 나중에 <b>어느 게 최신인지 알 수 없게 된다.</b></p></div></div>
+
+<div class="stage"><div class="tag">문제 2</div><div class="body">
+ <b>파일명이 코드에 박혀 있다</b>
+ <p><code>"국고채 금리 1,3,5,10.zip"</code>처럼 <b>한글과 쉼표가 들어간 이름</b>을 직접 적었다.
+ 팀원이 파일명을 조금만 다르게 저장하면 못 찾는다.</p>
+ <p>저장소 명명 규칙도 <b>ASCII 전용·쉼표 금지</b>다. 실제 파일명은
+ <code>treasury_yield_curve_1_3_5_10y.csv</code>로 이미 바뀌었으므로 이 코드는 지금 돌리면 실패한다.</p></div></div>
+
+<div class="stage"><div class="tag">문제 3</div><div class="body">
+ <b>Path.cwd()에 의존한다</b>
+ <p>같은 노트북이라도 VS Code에서 열 때, Jupyter Lab에서 열 때,
+ 터미널에서 돌릴 때 <b>cwd가 각각 다르다.</b></p>
+ <p>위로 3단계까지만 뒤지므로 폴더가 더 깊으면 못 찾고,
+ 반대로 <b>프로젝트 밖의 동명 파일이 잡힐 수도 있다.</b></p></div></div>
+
+<div class="stage"><div class="tag">문제 4</div><div class="body">
+ <b>파일이 늘어날 때마다 코드를 고쳐야 한다</b>
+ <p>회사채 AA− 원본을 추가하려면 <code>candidates</code> 목록에 직접 넣어야 한다.
+ 노트북이 여러 개면 <b>전부 똑같이 고쳐야</b> 한다.</p></div></div>
+
+<div class="stage"><div class="tag">문제 5</div><div class="body">
+ <b>무엇을 읽었는지 검증하지 않는다</b>
+ <p><code>print</code>는 하지만 <b>맞는 파일인지 확인하지 않는다.</b>
+ 엉뚱한 파일이 잡혀도 그대로 진행된다.</p></div></div>
+
+<div class="stage"><div class="tag">문제 6</div><div class="body">
+ <b>노트북마다 이 블록이 복사된다</b>
+ <p>노트북이 7개면 같은 코드가 7벌 있다.
+ 경로 규칙이 바뀌면 <b>7군데를 다 고쳐야</b> 하고, 하나라도 빠뜨리면 결과가 갈린다.</p></div></div>
+</div>
+
+<div class="danger">
+<b>실제로 일어난 일</b>
+<p>회의록에는 산출물 경로가 <code>results/Yield_Curve/tables/...</code>로 적혀 있다.
+지금 저장소에 그 폴더는 <b>없다.</b> 재구성하면서 <code>results/H1_yield_curve/</code>로 통일했기 때문이다.</p>
+<p>위 코드를 그대로 돌리면 <b>없어진 폴더가 다시 생긴다.</b>
+config를 쓰면 <code>config.H1_TABDIR</code> 하나만 바꾸면 되지만,
+직접 쓰면 모든 노트북을 찾아다녀야 한다.</p>
+</div>
+
+<h3>세 가지 선택지</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>방법</th><th>설치</th><th>경로 관리</th><th>팀 공유</th><th>추천</th></tr></thead>
+<tbody>
+<tr class="hi"><td><b>config + <code>pip install -e .</code></b></td><td>1회</td>
+ <td>한 곳에서 관리</td><td>문제 없음</td><td><span class="badge sig">권장</span></td></tr>
+<tr><td>config + 부트스트랩 셀</td><td>없음</td><td>한 곳에서 관리</td>
+ <td>문제 없음</td><td><span class="badge mid">대안</span></td></tr>
+<tr><td>직접 탐색 (위 코드)</td><td>없음</td><td>노트북마다 따로</td>
+ <td><b>경로가 갈림</b></td><td><span class="badge nsig">비권장</span></td></tr>
+</tbody></table></div>
+<p class="cap">이 표는 세 방식을 비교한다.
+<b>혼자 쓰면 셋 다 되지만, 팀으로 파일을 주고받으면 세 번째가 무너진다.</b></p>
+
+<h3>설치가 부담스럽다면 — 부트스트랩 셀</h3>
+<p><code>pip install</code> 없이도 <code>import config</code>가 되게 만드는 방법이다.
+<b><code>notebooks/06_yield_curve_exposure.ipynb</code> 첫 코드 셀에 이미 들어 있으니 복사해서 쓰면 된다.</b></p>
+
+<div class="code"><span class="k">import</span> sys
+<span class="k">from</span> pathlib <span class="k">import</span> Path
+
+_anchors = []
+<span class="k">if</span> <span class="s">"__vsc_ipynb_file__"</span> <span class="k">in</span> globals():        <span class="c"># VS Code</span>
+    _anchors.append(Path(globals()[<span class="s">"__vsc_ipynb_file__"</span>]).resolve().parent)
+<span class="k">if</span> globals().get(<span class="s">"_dh"</span>):                      <span class="c"># Jupyter</span>
+    _anchors.append(Path(globals()[<span class="s">"_dh"</span>][<span class="o">0</span>]).resolve())
+_anchors.append(Path.cwd().resolve())         <span class="c"># 최후 수단</span>
+
+<span class="c"># config.py 와 requirements.txt 를 '둘 다' 가진 폴더만 루트로 인정</span>
+_root = next((p <span class="k">for</span> a <span class="k">in</span> _anchors <span class="k">for</span> p <span class="k">in</span> [a, *a.parents]
+    <span class="k">if</span> (p / <span class="s">"config.py"</span>).is_file() <span class="k">and</span> (p / <span class="s">"requirements.txt"</span>).is_file()), <span class="k">None</span>)
+
+<span class="k">if</span> _root <span class="k">is</span> <span class="k">not</span> <span class="k">None</span>:
+    <span class="k">if</span> str(_root) <span class="k">in</span> sys.path: sys.path.remove(str(_root))
+    sys.path.insert(<span class="o">0</span>, str(_root))
+
+<span class="k">import</span> config</div>
+
+<div class="good">
+<b>기존 코드와 무엇이 다른가</b>
+<p><b>마커를 두 개 본다.</b> <code>config.py</code> 하나만 보면 다른 폴더의 동명 파일을 집을 수 있어서,
+<code>requirements.txt</code>까지 함께 있는 폴더만 루트로 인정한다.</p>
+<p><b>VS Code·Jupyter의 실제 노트북 위치를 먼저 본다.</b> <code>cwd</code>는 최후 수단으로만 쓴다.</p>
+<p><b>경로를 만들지 않는다.</b> 찾기만 하고, 실제 경로 정의는 <code>config.py</code> 한 곳에 맡긴다.</p>
+</div>
+
+<h3>그래도 직접 쓰겠다면 — 최소 안전장치</h3>
+<div class="warning">
+<b>세 가지만 지켜주세요</b>
+<p><b>① 폴더를 자동 생성하지 말 것.</b> <code>mkdir</code> 대신 없으면 에러를 내야 한다.
+오타로 새 폴더가 생기는 사고를 막는다.</p>
+<div class="code"><span class="k">if</span> <span class="k">not</span> TABLE_DIR.exists():
+    <span class="k">raise</span> FileNotFoundError(f<span class="s">"경로 확인 필요: {TABLE_DIR}"</span>)</div>
+<p><b>② 저장 경로는 <code>results/H1_yield_curve/</code> 형식으로.</b>
+회의록의 <code>results/Yield_Curve/</code>는 재구성 이전 표기다.</p>
+<p><b>③ 무엇을 읽었는지 반드시 출력하고 눈으로 확인할 것.</b>
+파일 크기나 행 수도 같이 찍어두면 좋다.</p>
+</div>
+</section><section id="g7">
+<div class="sec">SECTION 07</div><h2>공유는 어떻게</h2>
+<p class="lead">우리 팀은 GitHub를 쓰지 않고 카톡으로 파일을 주고받는다. 그 상황에 맞춘 방법이다.</p>
+<div class="qa">
+<div class="q">Q. 카톡으로만 공유하는데 config를 쓸 필요가 있나요?</div>
+<div class="a">
+<p><b>오히려 더 필요합니다.</b></p>
+<p>GitHub로 받으면 다들 비슷한 위치에 저장되지만, <b>카톡으로 압축파일을 받으면 푸는 위치가 제각각</b>입니다.
+다운로드 폴더, 바탕화면, 문서 폴더... 경로가 코드에 박혀 있으면 받는 사람이 <b>매번 코드를 고쳐야</b> 합니다.</p>
+<p>config를 쓰면 압축을 어디에 풀든 그냥 실행됩니다.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>문제</th><th>config가 해결하나</th><th>추가로 필요한 것</th></tr></thead>
+<tbody>
+<tr><td>각자 폴더 위치가 다름</td><td><span class="badge sig">해결</span></td><td>없음</td></tr>
+<tr><td>원본 파일명이 조금씩 다름</td><td><span class="badge sig">해결</span></td><td>없음</td></tr>
+<tr><td>엉뚱한 파일을 읽는 사고</td><td><span class="badge sig">해결</span></td><td>없음</td></tr>
+<tr class="hi"><td><b>누가 최신 버전인지</b></td><td><span class="badge nsig">못 함</span></td>
+ <td><b>폴더 통째로 압축해서 공유</b></td></tr>
+</tbody></table></div>
+<p class="cap">이 표는 config로 해결되는 것과 안 되는 것이다.
+<b>버전 관리는 config가 못 하므로 공유 방식으로 보완해야 한다.</b></p>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. config.py도 카톡으로 보내야 하나요?</div>
+<div class="a">
+<p><b>네. 다만 파일 하나만 보내지 마세요.</b></p>
+<p><code>config.py</code>는 <code>notebooks/</code>·<code>src/</code>·<code>results/</code>와 <b>같은 폴더 구조 안에 있어야</b> 작동합니다.
+자기 위치를 기준으로 프로젝트 루트를 찾기 때문입니다.</p>
+<p><code>config.py</code>만 따로 보내면 받은 사람이 어디에 넣을지 몰라서 결국 안 됩니다.</p>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. 그럼 어떻게 보내면 되나요?</div>
+<div class="a">
+<div class="split">
+<div class="box no"><h4>이렇게 하면 안 됨</h4>
+<p style="font-size:13.5px;margin:0 0 8px">파일 하나씩 카톡으로 전송</p>
+<div class="code" style="font-size:12px">06_yield_curve.ipynb
+config.py
+credit_spread_betas.csv
+<span class="bad">→ 어디에 넣어야 하죠?</span></div>
+<p style="font-size:13px;margin:10px 0 0;color:#7f1d1d">
+받는 사람이 폴더 구조를 직접 맞춰야 한다. <b>한 개만 빠져도 안 돌아간다.</b></p></div>
+
+<div class="box yes"><h4>이렇게</h4>
+<p style="font-size:13.5px;margin:0 0 8px">폴더 통째로 압축해서 1개 파일로</p>
+<div class="code" style="font-size:12px">FINDSLAB-Research-Intern.zip
+ ├ config.py
+ ├ notebooks/
+ ├ src/
+ ├ results/
+ └ data/
+<span class="good">→ 압축 풀고 바로 실행</span></div>
+<p style="font-size:13px;margin:10px 0 0;color:#14532d">
+구조가 그대로 유지된다. 어디에 풀든 동작한다.</p></div>
+</div>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. 매번 전체 폴더를 보내야 하나요? 용량이 큰데요.</div>
+<div class="a">
+<p><b>아니요. 상황에 따라 다릅니다.</b></p>
+<div class="tablewrap"><table>
+<thead><tr><th>상황</th><th>보낼 것</th><th>빈도</th></tr></thead>
+<tbody>
+<tr><td>새 팀원 합류 / 처음 세팅</td><td><b>전체 폴더 압축</b></td><td>1회</td></tr>
+<tr class="hi"><td><b>노트북만 수정</b></td><td>해당 <code>.ipynb</code> 1개</td><td>자주</td></tr>
+<tr><td>결과만 공유</td><td><code>results/</code> 안의 파일 또는 HTML 리포트</td><td>자주</td></tr>
+<tr><td><code>config.py</code> 수정</td><td><code>config.py</code> 1개 + <b>"config 바뀜" 공지</b></td><td>드묾</td></tr>
+<tr><td>원본 데이터 추가</td><td><code>data/raw/</code> 해당 파일</td><td>드묾</td></tr>
+</tbody></table></div>
+<p class="cap">이 표는 상황별로 무엇을 보낼지 정리한다.
+<b>전체 압축은 처음 한 번이면 충분하고, 그 뒤엔 바뀐 파일만 보내면 된다.</b></p>
+<p><code>config.py</code>는 경로만 담고 있어서 <b>거의 바뀌지 않습니다.</b>
+새 원본 파일이나 새 가설 폴더가 생길 때만 수정됩니다.</p>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. config.py가 바뀌면 pip install을 다시 해야 하나요?</div>
+<div class="a">
+<p><b>아니요.</b> <code>-e</code>(편집 가능) 모드로 설치했기 때문에 폴더 안의 파일을 직접 바라봅니다.
+<b>새 <code>config.py</code>로 덮어쓰기만 하면 바로 반영됩니다.</b></p>
+<p>재설치가 필요한 경우는 <code>pyproject.toml</code>이나 <code>requirements.txt</code>가 바뀌었을 때뿐입니다.</p>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. 새 팀원이 합류하면 뭘 시키면 되나요?</div>
+<div class="a">
+<div class="card">
+<div class="step-num"><div class="n">1</div><div class="t"><b>전체 폴더 압축본 받기</b>
+<p>카톡이나 드라이브로 <code>FINDSLAB-Research-Intern.zip</code>을 받는다.</p></div></div>
+<div class="step-num"><div class="n">2</div><div class="t"><b>압축 풀기 — 구조를 바꾸지 말 것</b>
+<p>어디에 풀어도 되지만 <b>안쪽 폴더 구조는 그대로 둬야</b> 한다.
+<code>config.py</code>가 <code>notebooks/</code>·<code>src/</code>와 같은 높이에 있어야 한다.</p></div></div>
+<div class="step-num"><div class="n">3</div><div class="t"><b>패키지 설치</b>
+<div class="code"><span class="c"># 압축 푼 폴더 안에서</span>
+pip install -e .
+pip install -r requirements.txt</div></div></div>
+<div class="step-num"><div class="n">4</div><div class="t"><b>확인</b>
+<div class="code"><span class="k">import</span> config
+config.describe()</div>
+<p><b>MISSING</b>이 없으면 준비 완료. 있으면 그 파일을 보내달라고 요청한다.</p></div></div>
+</div>
+</div></div>
+
+<div class="qa">
+<div class="q">Q. 원본 파일명이 저와 다른데요?</div>
+<div class="a">
+<p>대부분 <b>config가 알아서 찾습니다.</b> 별칭 탐색이 들어 있어서
+<code>.csv</code>·<code>.xlsx</code>·<code>.xls</code>, 영문/국문 폴더명 차이를 흡수합니다.</p>
+<p><code>describe()</code>에서 <b>OK(탐색)</b>으로 나오면 별칭으로 찾은 것이니 그대로 써도 됩니다.
+<b>MISSING</b>이 나오면 파일이 실제로 없는 것이니 팀원에게 요청하세요.</p>
+</div></div>
+
+<div class="warning">
+<b>카톡 공유에서 가장 조심할 것 — 버전이 갈리는 것</b>
+<p>지우가 수정한 노트북과 연진이 갖고 있는 노트북이 <b>다른데 아무도 모르는</b> 상황이 제일 위험합니다.
+"같은 코드인데 결과가 다른데?"의 원인 대부분이 이것입니다.</p>
+<p>보낼 때 <b>무엇을 바꿨는지 한 줄 같이 적어주세요.</b>
+예 — "06 노트북에 PART D 추가함. config는 안 바뀜"</p>
+</div>
+
+<div class="dark">
+<small>한 줄 요약</small>
+<h3>폴더 통째로 압축 · pip install -e . 한 번</h3>
+<p>처음에 <b>전체 폴더를 압축해서</b> 공유하고, 각자 PC에서 <code>pip install -e .</code>를 한 번 실행한다.
+그 뒤로는 <b>바뀐 파일만</b> 보내면 된다.</p>
+<p>규칙은 하나 — <b>경로를 손으로 쓰지 않는다.</b>
+이것만 지키면 압축을 어디에 풀든 팀원 누구의 코드든 그대로 돌아간다.</p>
+</div>
+</section></main></div>
+<footer>FINDS Lab · 학부연구인턴 3기 · 팀 공유용<br>
+기준 파일 <code>config.py</code> · 스타일 규칙 <code>docs/STYLE_GUIDE.md</code></footer>
+<script>
+const links=[...document.querySelectorAll('nav.toc a')];
+const secs=links.map(a=>document.getElementById(a.dataset.t)).filter(Boolean);
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)
+ links.forEach(l=>l.classList.toggle('on',l.dataset.t===e.target.id))}),
+ {rootMargin:'-15% 0px -70% 0px'});
+secs.forEach(s=>io.observe(s));
+links.forEach(a=>a.addEventListener('click',()=>{links.forEach(l=>l.classList.remove('on'));a.classList.add('on')}));
+</script></body></html>
