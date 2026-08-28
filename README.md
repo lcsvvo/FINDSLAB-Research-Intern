@@ -86,11 +86,21 @@ H3: 산업 재무특성과의 탐색적 정렬
 - 산업별 HAC 추정에서는 금융업·운수장비·철강금속이 유의한 양(+)의 계수, 의약품이 유의한 음(−)의 계수로 관찰되었다.
 - BH 보정 후 유의한 산업 쌍 6개는 모두 의약품을 포함한다. 따라서 결과는 모든 산업이 서로 다르다는 진술보다 의약품과 나머지 산업의 대비에 가깝다.
 
+<p align="center">
+  <img src="results/Baseline_industry_beta/figures/02_industry_rate_beta_coefficient_plot.png" alt="산업별 금리베타와 95% 신뢰구간" width="900">
+</p>
+<p align="center"><sub>산업별 금리베타 추정치와 HAC 95% 신뢰구간</sub></p>
+
 ### H1
 
 - 기본 λ=0.5에서 Curvature의 산업 간 차이가 관찰되었다(F=3.580, 검정족 내 BH p=0.0047). 의약품은 음(−), 운수장비는 양(+)의 곡률 계수로 나타났다.
 - Level·Slope의 산업별 계수와 산업 간 차이는 BH 보정 후 유의수준에 도달하지 않았다. PCA에서 PC1이 금리곡선 변화의 92.09%를 설명해 요인별 해석에는 유보가 필요하다.
 - 곡률 결과는 λ와 요인 구성에 민감하다. 곡선 적합 기준 대안 λ=0.8041에서는 산업별 곡률 계수가 BH 보정 후 유의하지 않아 λ=0.5 결과를 조건부 관찰로 해석한다.
+
+<p align="center">
+  <img src="results/H1_yield_curve/figures/02_yield_curve_factor_beta_heatmap.png" alt="산업별 Nelson-Siegel 요인 민감도" width="900">
+</p>
+<p align="center"><sub>산업별 Nelson–Siegel Level·Slope·Curvature 민감도</sub></p>
 
 ### H2
 
@@ -98,11 +108,21 @@ H3: 산업 재무특성과의 탐색적 정렬
 - 전 산업 동시검정의 원 p는 0.0401이지만 Y3·Curvature 두 공동검정을 함께 보정하면 0.0801이므로, 전체 공동결론은 검정족과 공분산 사양에 민감하다. Curvature 비대칭 공동검정은 비유의였다(p=0.6173).
 - 정책국면 상호작용(모형 D)은 BH 보정 후 7개 산업 모두 비유의였다. 건설업 결과는 2021년 이후에 집중되고 극단일·기간 설정에 민감해 조건부 결과로 본다.
 
+<p align="center">
+  <img src="results/H2_asymmetry_regime/figures/02_up_down_beta_ci.png" alt="산업별 금리 상승·하락 계수와 신뢰구간" width="900">
+</p>
+<p align="center"><sub>산업별 금리 상승·하락 계수와 HAC 95% 신뢰구간</sub></p>
+
 ### H3
 
 - 배당수익률과 금리베타는 시가총액가중 기준에서 양(+)의 순위상관이 관찰되었다(ρ=0.8571, exact p=0.0238). 중앙값 기준에서는 유의수준에 도달하지 않아 집계 방식에 민감하다.
 - 부채비율은 시가총액가중·중앙값·금융업 제외 기준 모두 유의수준에 도달하지 않았다. leave-one-out 결과도 산업 하나의 제외에 민감하다.
 - H3는 산업 수가 7개인 탐색적 분석이다. 의약품의 낮은 배당수익률·부채비율, R&D 지출, 시가총액 집중도는 기술적 관찰이며 음(−)의 금리베타 원인을 입증하지 않는다.
+
+<p align="center">
+  <img src="results/H3_firm_characteristics/figures/beta_vs_characteristics.png" alt="금리베타와 산업 특성의 관계" width="900">
+</p>
+<p align="center"><sub>산업 금리베타와 부채비율·배당수익률의 탐색적 관계</sub></p>
 
 ## 7. Repository 구조
 
