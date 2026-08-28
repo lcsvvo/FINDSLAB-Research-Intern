@@ -1,158 +1,202 @@
 # Industry Rate Beta — 산업별 금리 베타 분석
 
-FINDS Lab 학부연구인턴 3기 프로젝트. 2지수 모형(시장+금리)으로 산업별 금리 베타를 추정하고, 산업 간 차이와 시간 변동성을 검증한다.
+KRX 산업지수 수익률의 금리 민감도를 추정하고, 수익률곡선 요인·금리 방향과 정책국면·산업 재무특성으로 이어지는 후속 분석을 수행한 FINDS Lab 학부 연구인턴 프로젝트다.
 
-<!-- 썸네일: 프로젝트 실행 후 GPT Image 2.0으로 생성해 이 자리에 추가 -->
+`분석 완료` · `공개 release 검토 중` · `Python 3.9+`
 
-`Status: In Progress` `Python 3.9+` `License: TBD`
+## 1. 연구 개요
 
-## 1. 프로젝트 소개
+이 연구는 2016~2025년 KRX 7개 산업지수의 일별 수익률을 대상으로 KOSPI 수익률을 통제한 뒤 국고채 금리 변화에 대한 산업별 조건부 민감도(금리베타)를 추정한다. Baseline에서 산업 간 차이를 확인하고, 이후 분석에서 수익률곡선의 Level·Slope·Curvature, 금리 상승·하락과 정책국면, 기업 재무특성과의 탐색적 정렬을 차례로 살펴본다.
 
-- **What**: 산업 수익률을 시장수익률·금리변화 2개 요인에 회귀시켜 산업별 "금리 베타"를 HAC(Newey-West) 표준오차로 추정한다.
-- **Why**: 금리 변화에 대한 민감도가 산업마다 다르다는 가설(H1)과, 그 차이가 산업 재무 특성과 관련 있다는 가설(H3)을 확인하기 위함.
-- **핵심 기능 3줄**
-  1. `rate_beta()` — 산업별 금리 베타·표준오차·p-value 추정
-  2. `cross_industry_Ftest()` — 산업 간 금리 베타 동일성 F-검정 (H1)
-  3. `rolling_beta()`, `rank_assoc()` — 시간 변동성 및 산업특성과의 순위상관 (H3)
+모든 결과는 동시점 조건부 연관이며 금리 변화가 산업 수익률을 인과적으로 변화시켰다는 의미가 아니다.
 
-## 2. 기술 스택
+## 2. 연구 설계
 
-| 구분 | 도구 |
+연구 흐름은 다음과 같다.
+
+```text
+Baseline: 산업별 금리베타 차이
+    ↓
+H1: 금리충격의 원천 — 수익률곡선 요인
+    ↓
+H2: 상승·하락 비대칭과 정책국면
+    ↓
+H3: 산업 재무특성과의 탐색적 정렬
+```
+
+최초 계획서, 현재 가설 번호, 모형 A~E, 노트북과 결과 폴더의 상세 대응은 [`docs/HYPOTHESIS_MODEL_MAP.md`](docs/HYPOTHESIS_MODEL_MAP.md)를 참고한다.
+
+## 3. 연구 질문
+
+- **Baseline / 모형 A:** 시장을 통제한 뒤에도 산업마다 국고채 3년물 금리 민감도가 다른가?
+- **H1 / 모형 B:** 산업 간 차이는 수익률곡선의 Level·Slope·Curvature 또는 Credit Spread 중 어느 차원에서 관찰되는가?
+- **H2 / 모형 C·D:** 금리가 오를 때와 내릴 때 반응이 다른가? 정책국면에 따라 반응이 달라지는가?
+- **H3 / 모형 E:** 산업 금리베타의 순위가 부채비율·배당수익률 등 산업 재무특성의 순위와 정렬되는가?
+
+## 4. 데이터
+
+| 구분 | 내용 |
 |---|---|
-| 언어 | Python 3.9+ |
-| 통계/회귀 | statsmodels (OLS, HAC 표준오차) |
-| 데이터 처리 | pandas, numpy |
-| 검정 | scipy.stats (spearmanr) |
-| 협업 | Git/GitHub, Claude Code, Codex |
+| 분석 패널 | 2016-01-04~2025-12-30, 17,164 산업-일 관측치 |
+| 회귀 표본 | 산업별 2,451 거래일(첫 차분 결측 제외) |
+| 산업 | 건설업, 금융업, 운수장비, 의약품, 전기전자, 철강금속, 화학 |
+| 산업·시장 | KRX 산업지수, KOSPI |
+| 금리 | 한국은행 ECOS 국고채 1·3·5·10년 및 회사채 AA− 3년 |
+| H3 기업표본 | 산업별 시가총액 상위 10개사, 7개 산업 70개사 |
+| H3 기업-연도 | 2016~2025년 700 firm-year |
+| 기업 재무자료 | DART OpenAPI 재무제표·배당, 사업보고서 원문 보완, KRX 시가총액·구성종목 |
 
-## 3. 실행 방법
+원자료와 `data/`의 중간·최종 분석 데이터는 공개 저장소에서 추적하지 않는다. 커밋된 결과표와 보고서는 분석 결과 검토용이며, 원자료 라이선스와 API 인증정보를 포함하지 않는다.
+
+## 5. 방법론
+
+### Baseline
+
+- 산업 수익률을 KOSPI 수익률과 국고채 3년물 일별 변화에 회귀하는 Two-Index Model
+- 산업별 계수 추정은 HAC(Newey–West, maxlags=5)
+- 산업 간 동일성 공동검정과 쌍별 비교는 날짜 클러스터 표준오차
+- 산업별·쌍별 다중검정은 사전에 정의한 검정족별 BH(FDR) 보정
+
+### H1
+
+- Nelson–Siegel 수익률곡선 분해: Level·Slope·Curvature, 기본값 λ=0.5
+- λ 대안·민감도, PCA, 모형 간 설명력, HAC 시차 민감도 점검
+- 회사채 AA− 3년과 국고채 3년의 차이로 Credit Spread 구성
+- 산업별 추정은 HAC, 산업 간 동일성 검정은 날짜 클러스터
+
+### H2
+
+- 금리 변화의 상승분·하락분 분해와 산업별 Wald 대칭성 검정
+- 전 산업 동시검정과 산업 간 차이 검정은 날짜 클러스터
+- BH 보정, 극단값·기간·rolling window·공분산 사양 민감도 점검
+- 정책국면 상호작용과 금리 변동 크기 모형은 보조·확장 분석으로 구분
+
+### H3
+
+- 기업 재무특성의 산업별 시가총액가중 평균과 중앙값 집계
+- 산업 단위 Spearman 순위상관과 exact permutation p-value(n=7)
+- 집계 기준, 결측 처리, 금융업 제외, leave-one-out 민감도 점검
+- 의약품 R&D와 시가총액 집중도는 인과 설명이 아닌 보조 기술통계
+
+## 6. 주요 결과
+
+### Baseline
+
+- 주 사양인 날짜 클러스터 공동검정에서 산업별 금리베타 동일성이 기각되었다(F=4.189, p=0.000338).
+- 산업별 HAC 추정에서는 금융업·운수장비·철강금속이 유의한 양(+)의 계수, 의약품이 유의한 음(−)의 계수로 관찰되었다.
+- BH 보정 후 유의한 산업 쌍 6개는 모두 의약품을 포함한다. 따라서 결과는 모든 산업이 서로 다르다는 진술보다 의약품과 나머지 산업의 대비에 가깝다.
+
+### H1
+
+- 기본 λ=0.5에서 Curvature의 산업 간 차이가 관찰되었다(F=3.580, 검정족 내 BH p=0.0047). 의약품은 음(−), 운수장비는 양(+)의 곡률 계수로 나타났다.
+- Level·Slope의 산업별 계수와 산업 간 차이는 BH 보정 후 유의수준에 도달하지 않았다. PCA에서 PC1이 금리곡선 변화의 92.09%를 설명해 요인별 해석에는 유보가 필요하다.
+- 곡률 결과는 λ와 요인 구성에 민감하다. 곡선 적합 기준 대안 λ=0.8041에서는 산업별 곡률 계수가 BH 보정 후 유의하지 않아 λ=0.5 결과를 조건부 관찰로 해석한다.
+
+### H2
+
+- 국고채 3년물 상승·하락 계수의 직접 Wald 검정은 건설업에서만 BH 5% 기준을 충족했다(BH p=0.0089). 다른 6개 산업은 유의수준에 도달하지 않았다.
+- 전 산업 동시검정의 원 p는 0.0401이지만 Y3·Curvature 두 공동검정을 함께 보정하면 0.0801이므로, 전체 공동결론은 검정족과 공분산 사양에 민감하다. Curvature 비대칭 공동검정은 비유의였다(p=0.6173).
+- 정책국면 상호작용(모형 D)은 BH 보정 후 7개 산업 모두 비유의였다. 건설업 결과는 2021년 이후에 집중되고 극단일·기간 설정에 민감해 조건부 결과로 본다.
+
+### H3
+
+- 배당수익률과 금리베타는 시가총액가중 기준에서 양(+)의 순위상관이 관찰되었다(ρ=0.8571, exact p=0.0238). 중앙값 기준에서는 유의수준에 도달하지 않아 집계 방식에 민감하다.
+- 부채비율은 시가총액가중·중앙값·금융업 제외 기준 모두 유의수준에 도달하지 않았다. leave-one-out 결과도 산업 하나의 제외에 민감하다.
+- H3는 산업 수가 7개인 탐색적 분석이다. 의약품의 낮은 배당수익률·부채비율, R&D 지출, 시가총액 집중도는 기술적 관찰이며 음(−)의 금리베타 원인을 입증하지 않는다.
+
+## 7. Repository 구조
+
+아래는 연구 결과를 확인하는 데 필요한 주요 공개 구조다.
+
+```text
+FINDSLAB-Research-Intern/
+├── README.md
+├── config.py
+├── requirements.txt
+├── pyproject.toml
+├── src/
+│   ├── data_prep.py
+│   ├── models.py
+│   └── rate_beta_professor.py
+├── notebooks/
+│   └── 01_data_preparation.ipynb ... 10_firm_characteristics_analysis.ipynb
+├── results/
+│   ├── EDA/
+│   ├── Baseline_industry_beta/
+│   ├── H1_yield_curve/
+│   ├── H2_asymmetry_regime/
+│   └── H3_firm_characteristics/
+└── docs/
+    └── HYPOTHESIS_MODEL_MAP.md
+```
+
+`data/`, `.env`, 캐시와 개인 작업 문서는 Git 추적 대상이 아니다.
+
+## 8. Notebook 안내
+
+별도의 통합 Final Notebook은 없다. 최종 분석은 아래 source notebook에 단계별로 기록되어 있으며, 결과 확인은 각 가설의 summary/HTML에서 시작하는 것이 가장 빠르다.
+
+| Notebook | 역할 |
+|---|---|
+| [`01_data_preparation.ipynb`](notebooks/01_data_preparation.ipynb) | KRX·KOSPI·금리 원자료 정제·병합 |
+| [`02_variable_generation.ipynb`](notebooks/02_variable_generation.ipynb) | 수익률·금리 변화·장단기차 생성 |
+| [`03_eda_industry.ipynb`](notebooks/03_eda_industry.ipynb) | 기술통계·시계열·상관관계 점검 |
+| [`04_rate_beta_estimation.ipynb`](notebooks/04_rate_beta_estimation.ipynb) | Baseline 산업별 HAC 금리베타 |
+| [`05_baseline_industry_difference.ipynb`](notebooks/05_baseline_industry_difference.ipynb) | Baseline 날짜 클러스터 공동·쌍별검정 |
+| [`06_yield_curve_exposure.ipynb`](notebooks/06_yield_curve_exposure.ipynb) | H1 수익률곡선·Credit Spread·민감도 |
+| [`07_asymmetric_rate_response.ipynb`](notebooks/07_asymmetric_rate_response.ipynb) | H2 상승·하락 비대칭과 강건성 |
+| [`08_regime_interaction.ipynb`](notebooks/08_regime_interaction.ipynb) | H2 정책국면 상호작용 |
+| [`09_firm_data_collection.ipynb`](notebooks/09_firm_data_collection.ipynb) | H3 DART/KRX 기업자료 수집·보완 |
+| [`10_firm_characteristics_analysis.ipynb`](notebooks/10_firm_characteristics_analysis.ipynb) | H3 산업집계·exact Spearman·LOO |
+
+## 9. 주요 산출물
+
+| 단계 | Summary / Report | 핵심 Table | 핵심 Figure |
+|---|---|---|---|
+| Baseline | [`summary.md`](results/Baseline_industry_beta/summary.md) · [`05_summary_final.html`](results/Baseline_industry_beta/05_summary_final.html) | [`industry_beta_joint_test.csv`](results/Baseline_industry_beta/tables/industry_beta_joint_test.csv) | [`05_pairwise_beta_difference_heatmap.png`](results/Baseline_industry_beta/figures/05_pairwise_beta_difference_heatmap.png) |
+| H1 | [`summary.md`](results/H1_yield_curve/summary.md) · [`06_summary_final.html`](results/H1_yield_curve/06_summary_final.html) | [`industry_difference_test.csv`](results/H1_yield_curve/tables/industry_difference_test.csv) | [`09_industry_difference_test.png`](results/H1_yield_curve/figures/09_industry_difference_test.png) |
+| H2 | [`summary.md`](results/H2_asymmetry_regime/summary.md) · [`08_summary.html`](results/H2_asymmetry_regime/08_summary.html) | [`asymmetry_wald_tests.csv`](results/H2_asymmetry_regime/tables/asymmetry_wald_tests.csv) | [`03_asymmetry_wald_comparison.png`](results/H2_asymmetry_regime/figures/03_asymmetry_wald_comparison.png) |
+| H3 | [`summary.md`](results/H3_firm_characteristics/summary.md) · [`H3_report.html`](results/H3_firm_characteristics/H3_report.html) | [`spearman_results.csv`](results/H3_firm_characteristics/tables/spearman_results.csv) | [`beta_vs_characteristics.png`](results/H3_firm_characteristics/figures/beta_vs_characteristics.png) |
+
+## 10. 재현 방법
+
+### 환경 구성
 
 ```bash
-git clone <repo-url>
-cd Research_Intern
+git clone https://github.com/lcsvvo/FINDSLAB-Research-Intern.git
+cd FINDSLAB-Research-Intern
+python -m venv .venv
 pip install -r requirements.txt
-python src/models.py   # 합성 데이터로 파이프라인 동작 예시 실행
+pip install -e .
+jupyter lab
 ```
 
-실제 데이터로 돌리려면 `data/`에 원본 데이터를 두고(비공개, 아래 4번 참고), `rate_beta()` / `cross_industry_Ftest()`에 실제 수익률·금리 시계열을 넣어 호출한다.
+### 최종 분석 재현
 
-## 4. 아키텍처
+공개 저장소에는 데이터가 포함되지 않는다. 권한이 있는 원자료를 동일한 `data/raw/` 구조에 배치한 뒤 `01`→`10` 순서로 실행한다. 이미 생성된 분석 패널을 제공받은 경우에는 다음 파일을 `data/processed/`에 배치하고 필요한 분석 notebook부터 실행할 수 있다.
 
-```mermaid
-flowchart LR
-    A[원본 데이터\n산업 수익률·시장수익률·금리변화] --> B[rate_beta\nHAC 회귀]
-    A --> C[cross_industry_Ftest\nH1 산업간 차이]
-    A --> D[rolling_beta\n시간 변동성]
-    B --> E[rank_assoc\nH3 특성 순위상관]
-    B --> F[results/\n표·그림]
-    C --> F
-    D --> F
-    E --> F
-```
+- `industry_rate_panel_daily.csv`: Baseline 입력
+- `industry_rate_panel_extended.csv`: H1·H2 입력
+- `firm_financials_recovered.csv`, `industry_characteristics.csv`, `industry_characteristics_median.csv`: H3 입력
 
-> 추후 GPT Image 2.0으로 위 다이어그램을 이미지화해 대체 예정.
+### 데이터 수집 재현
 
-## 5. 주요 결과 / 성과 지표
+- KRX 산업지수·KOSPI와 ECOS 금리는 원자료 파일을 별도로 확보해야 한다.
+- H3 DART 수집에는 `OPENDART_API_KEY` 환경변수가 필요하다. 실제 키는 `.env` 또는 저장소 밖의 비밀 저장소에서 관리하고 커밋하지 않는다.
+- DART 사업보고서 원문 보완과 일부 KRX 구성종목·시가총액 입력은 notebook 09의 절차와 동일한 원자료가 필요하다.
 
-_아직 실데이터 분석 전. 결과가 나오면 추정 계수·F-검정 p-value·순위상관 표를 이 섹션에 채운다._
+## 11. Limitations
 
-## 6. 디렉토리 구조
+- 금리 변화에는 할인율 뉴스와 경기 뉴스가 함께 포함되어 있어 순수한 통화정책 충격으로 식별되지 않는다.
+- 일별 동시점 회귀는 조건부 연관을 보여줄 뿐 인과효과를 식별하지 않는다.
+- H1의 요인별 결론은 Nelson–Siegel λ와 높은 요인 상관에 민감하다.
+- H2 건설업 결과는 시기·극단일·검정족과 표준오차 사양에 민감하다.
+- H3는 산업 단위 n=7의 탐색적 순위상관이며 집계 방식과 개별 산업의 영향이 크다.
+- 비공개 원자료와 수기 보완자료가 공개 저장소에 없어 clone만으로 완전 재현할 수 없다.
 
-구조 원칙: **인프라(`data/`, `src/`)와 공통 파이프라인(`notebooks/`)은 가설과 무관하게 공유하고, 산출물(`results/`)만 가설(Baseline / H1 / H2 / H3)별로 나눈다.** 노트북은 전역 순번(`01_`, `02_`, ...)으로 이어지며, 번호는 분석 수행 순서를 의미할 뿐 가설 번호와 연결하지 않는다(예: `04_rate_beta_estimation.ipynb`가 Baseline 분석이어도 파일명은 바뀌지 않는다). STYLE_GUIDE의 STEP 표기도 파일명이 아니라 노트북 내부 제목에서만 쓴다.
+## 12. Project Status
 
-연구 스토리라인은 **Baseline(산업별 금리민감도가 존재하는가) → H1(금리충격의 종류에 따라 다른가: Level·Slope·Curvature·Credit Spread, 모형 B) → H2(상승·하락·국면에 따라 다른가, 모형 C) → H3(기업 재무특성으로 설명되는가)** 순으로 이어지며, `results/`의 폴더 순서(알파벳순으로도 Baseline < H1 < H2 < H3)가 이 흐름과 그대로 일치한다.
-
-```
-Research_Intern/
-├── README.md  CLAUDE.md  AGENTS.md  requirements.txt  .gitignore  config.py
-├── .github/PULL_REQUEST_TEMPLATE.md
-│
-├── data/                     # 데이터 생명주기 (전부 git 추적 제외)
-│   ├── README.md
-│   ├── raw/                  # 원본 불변 (industry/ market/ firm/ rates/)
-│   │   └── rates/            # treasury_yield_3y_10y(Baseline), treasury_yield_curve_1_3_5_10y·corporate_bond_aa_minus_3y(H1)
-│   ├── interim/              # 중간 정제본 (industry_daily_clean, kospi_daily, yields_daily, yield_curve_daily)
-│   └── processed/            # 분석용 최종 패널 (industry_rate_panel_daily, industry_rate_panel_extended)
-│
-├── src/                      # 재사용 라이브러리 (가설 무관)
-│   ├── README.md  __init__.py
-│   └── models.py             # rate_beta / cross_industry_Ftest / rolling_beta / rank_assoc
-│                             #  (io.py·features.py·viz.py는 노트북 코드 추출 시 추가)
-├── notebooks/                # 분석 서사, 전역 STEP 순번 (가설과 연결하지 않음)
-│   ├── 01_data_preparation.ipynb      # STEP1: 정제·병합
-│   ├── 02_variable_generation.ipynb   # STEP2: 파생변수 생성
-│   ├── 03_eda_industry.ipynb          # STEP3: 기초통계·시계열·상관관계·검증
-│   ├── 04_rate_beta_estimation.ipynb  # STEP4: Baseline 회귀·F검정
-│   ├── 06_yield_curve_exposure.ipynb        # H1 / 모형 B: Level·Slope·Curvature·Credit Spread
-│   └── 07_asymmetric_rate_response.ipynb    # H2 / 모형 C: 상승·하락 비대칭·Wald 검정
-│
-├── results/                  # ★ 가설 기준 고정 (figures/ · tables/ 분리)
-│   ├── README.md
-│   ├── EDA/{figures,tables}/  summary.md              # STEP1-3 공통 결과
-│   ├── Baseline_industry_beta/{figures,tables}/ summary.md   # Baseline: 산업 간 금리베타 차이
-│   ├── H1_yield_curve/{figures,tables}/ summary.md  06_summary_final.html   # H1: 금리충격 원천 분해 (모형 B)
-│   ├── H2_asymmetry_regime/{figures,tables}/ summary.md       # H2: 비대칭·국면 (모형 C)
-│   └── H3_firm_characteristics/{figures,tables}/              # H3: 기업 특성 (예정)
-│
-└── docs/
-    ├── README.md  STYLE_GUIDE.md  NOTION_WORKSPACE.md
-    ├── TEAM_ONBOARDING.html   CONFIG_USAGE_GUIDE.html   MODEL_C_HANDOFF.html
-    ├── research_design/       # 확정된 연구 설계 (research_plan, research_gap_contribution)
-    ├── meetings/              # 회의 기록, 날짜 중심 파일명 (YYYYMMDD_meeting.html)
-    ├── feedback/              # 교수님 피드백 반영 계획
-    ├── templates/             # STYLE_GUIDE 기반 템플릿
-    └── private/               # 개인정보·비공개 자료 (git 추적 제외)
-```
-
-> H3 분석이 시작되면 `notebooks/`는 다음 순번(`08_...`)으로 이어 붙이고, 그 결과물은 `results/H3_firm_characteristics/`에 쌓는다. 새 가설(H4 등)이 생기면 `results/{Hn}_{설명}/` 패턴만 추가하면 된다.
-
-### 파일명 규칙 (Naming Convention)
-
-소문자 snake_case · ASCII 전용(한글·공백·쉼표 금지) · 날짜 프리픽스 금지(git이 이력 관리) · STEP 단어는 파일명에 쓰지 않는다(문서 내부 제목에서만 사용).
-
-| 유형 | 규칙 | 예시 |
-|---|---|---|
-| notebook | `NN_stage.ipynb` (전역 순번) | `01_data_preparation.ipynb` |
-| python | 모듈 명사 | `models.py`, `io.py` |
-| processed csv | `{domain}_{grain}_{freq}.csv` | `industry_rate_panel_daily.csv` |
-| figure | `{subject}_{type}.png` | `correlation_heatmap.png` |
-| table | `{subject}[_by_{group}].csv` | `descriptive_statistics_by_industry.csv` |
-| summary | `results/{카테고리}/summary.md` | `results/EDA/summary.md` |
-| 리포트 html | `results/{카테고리}/NN_summary_final.html` (NN=notebook 번호) | `results/H1_yield_curve/06_summary_final.html` |
-| 가이드 문서 | `docs/UPPER_SNAKE.html` | `docs/CONFIG_USAGE_GUIDE.html` |
-| regression | `reg_{hyp}_{spec}.csv` | `reg_h1_rate_beta_hac.csv` |
-
-## 7. 저장소 운영 방침 (Public / Private)
-
-이 저장소는 **코드·분석 로직·README는 Public**으로 운영한다. 다만 다음은 Public 여부와 무관하게 저장소에 커밋하지 않는다.
-
-- `docs/private/`: 교수님 피드백, 팀원 개인 일정이 담긴 프로젝트 계획서 등 개인정보·비공개 자료
-- `data/`: 원본 금융 데이터. 재배포 라이선스 문제가 있을 수 있어 Private 여부와 무관하게 항상 제외
-
-두 폴더 모두 `.gitignore`로 추적에서 제외했다. 로컬에는 그대로 남아있고, 협업자와는 별도 채널(Drive 등)로 공유한다.
-
-## 8. 저장소 구조 설계 근거
-
-이 프로젝트에는 직교하는 두 축이 있다 — **파이프라인 단계**(데이터준비→EDA→회귀→강건성)와 **연구 가설**(H1/H2/H3). STEP1-3(데이터 준비·변수 생성·EDA)은 가설과 무관한 공통 기반이라 `notebooks/`는 전역 순번으로 평면 관리하고, 가설별로 달라지는 것은 **산출물**이므로 `results/`만 카테고리(EDA 공통/H1/H3)별로 나누는 구조를 채택했다. 비교한 후보:
-
-| 후보 | 설명 | 채택 |
-|---|---|---|
-| STEP 중심(전부 평면) | notebooks·results 모두 전역 단계 번호로 평면 관리 | ✗ 가설별 분석이 늘면 `results/`에서 어느 산출물이 어느 가설인지 파일명만으로 구분 안 됨 |
-| H1/H2/H3 중심(전부) | data·src·notebooks까지 가설별 폴더로 분리 | ✗ STEP1-3은 H1·H2·H3가 공유하는 공통 기반이라 폴더마다 중복 |
-| Pipeline 중심(results도 평면) | notebooks·results 둘 다 평면, 파일명에 가설 태그만 표시 | ✗ 가설별 산출물이 늘수록 평면 폴더가 뒤섞임 |
-| **하이브리드(채택)** | notebooks는 전역 STEP 평면 + results만 카테고리별 분리 | ✓ 공통 단계는 순서대로, 가설별 산출물은 카테고리 폴더로 바로 찾을 수 있음 |
-
-`data/`는 가설이 아니라 생명주기(`raw`→`interim`→`processed`)로 조직한다. 산업 원본은 H1·H2가 공유하고 기업 원본은 H3 전용이라, 가설별로 나누면 공유 데이터가 중복되기 때문이다.
-
-## 9. 협업 가이드
-
-혼자 진행하는 프로젝트라도 아래 흐름을 지킨다.
-
-1. 작업 시작 전 로컬 `main`에 `git pull` (워크트리로 작업하는 에이전트는 자동으로 로컬 main에 반영되지 않을 수 있으니 반드시 확인)
-2. 작업 단위로 브랜치 생성: `<type>/<짧은-설명>` 형식 (`feature/rate-beta-hac`, `fix/rolling-window`, `docs/readme-update`). `claude/~`, `codex/~` 같은 에이전트 자동 브랜치명은 사용하지 않는다.
-3. 작업 후 `commit` → `push`
-4. PR 생성: 무엇을 했는지 / 왜 했는지 / 팀원(교수님)이 확인해야 할 사항만 간단히 작성
-5. 셀프 머지는 지양하고, 팀원·지도교수 확인 후 머지. 급한 경우가 아니면 "머지할게요" 안내 후 머지
-6. 다른 작업이 먼저 반영됐을 수 있으니 항상 `pull` 받고 새 작업 시작
-
-Claude Code/Codex로 작업할 때는 이 섹션을 그대로 따르도록 `CLAUDE.md`, `AGENTS.md`에 요약해 두었다.
+- Baseline, H1, H2, H3 분석과 주요 표·그림·summary/report 생성 완료
+- 가설·모형·notebook·결과 폴더 대응표 작성 완료
+- 공개용 README 및 상대경로 링크 정리 완료
+- 최종 GitHub release 검토 진행 중

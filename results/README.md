@@ -9,8 +9,8 @@
 - 핵심 기능 요약
   1. Baseline — 산업별 금리 베타 추정치·F-검정 결과
   2. H1 — 수익률곡선(Level·Slope·Curvature)·신용스프레드 노출 (모형 B)
-  3. H2 — 금리 상승·하락 비대칭, 국면 상호작용 (모형 C)
-  4. H3 — 기업 재무특성과 금리 민감도 (예정)
+  3. H2 — 금리 상승·하락 비대칭, 국면 상호작용 (모형 C·D)
+  4. H3 — 기업 재무특성과 금리 민감도, 의약품 보조분석 (모형 E)
   5. (추후) 최종 보고서용 요약 그림
 
 ## 사용 기술 스택
@@ -42,8 +42,8 @@ results/
 │   ├── tables/                       # 확증 4 · 사후 7
 │   ├── summary.md
 │   └── 06_summary_final.html         # 노트북 06 결과 리포트
-├── H2_asymmetry_regime/{figures,tables}/ summary.md       # H2: 비대칭·국면, 모형 C (07)
-└── H3_firm_characteristics/{figures,tables}/              # H3: 기업 특성 (예정)
+├── H2_asymmetry_regime/{figures,tables}/ summary.md       # H2: 비대칭·국면, 모형 C·D (07·08)
+└── H3_firm_characteristics/{figures,tables}/ summary.md  H3_report.html   # H3: 기업 특성, 모형 E (09·10)
 ```
 
 ### 리포트 HTML 명명

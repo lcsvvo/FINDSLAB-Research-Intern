@@ -1,0 +1,14 @@
+﻿output_table,regression_form,se_method,reason
+up_down_sample_diagnostics,기술통계 (회귀 아님),해당 없음,표본 구성 집계표
+up_down_rate_summary,기술통계 (회귀 아님),해당 없음,금리변화 기술통계표
+up_down_beta_long,개별 시계열 회귀 (산업별),"HAC(Newey-West, lag=5)","산업 1개, 횡단면 상관 없음"
+up_down_beta_by_industry,up_down_beta_long의 wide 변형,"HAC(Newey-West, lag=5)",up_down_beta_long과 동일 계수
+up_down_beta_report_table_bh,up_down_beta_long의 보고서 변형,"HAC(Newey-West, lag=5)",up_down_beta_long과 동일 계수
+up_down_effect_10bp,up_down_beta_long의 환산 변형,"HAC(Newey-West, lag=5)",up_down_beta_long과 동일 계수
+symmetric_vs_asymmetric,개별 시계열 회귀 (산업별),"HAC(Newey-West, lag=5)","산업 1개, 횡단면 상관 없음"
+asymmetry_wald_tests,개별 시계열 회귀 (산업별),"HAC(Newey-West, lag=5)","산업 1개, 횡단면 상관 없음"
+key_factor_asymmetry_tests,개별 시계열 회귀 (산업별),"HAC(Newey-West, lag=5)","산업 1개, 횡단면 상관 없음"
+key_factor_asymmetry_wald_tests,개별 시계열 회귀 (산업별),"HAC(Newey-West, lag=5)","산업 1개, 횡단면 상관 없음"
+industry_difference_tests,통합회귀 (산업더미 x 교차항),날짜 클러스터,같은 날짜 산업 간 잔차 횡단면 상관
+joint_symmetry_tests,통합회귀 (산업더미 x 교차항),날짜 클러스터,같은 날짜 산업 간 잔차 횡단면 상관
+y3_vs_curvature_comparison,asymmetry_wald_tests / key_factor_asymmetry_wald_tests 결합,"HAC(Newey-West, lag=5)",원본 표의 SE를 그대로 인용

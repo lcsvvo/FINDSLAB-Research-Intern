@@ -95,8 +95,15 @@ H3_TABDIR = H3_DIR / "tables"
 
 # H3 KRX 수집은 요청 단위 원본(raw)과 정규화·결합 결과(interim)를 분리한다.
 # 분석 노트북은 KRX_INTERIM_DIR의 표준 CSV만 소비한다.
+KRX_MANUAL_DIR = RAW_DIR / "firm" / "krx_manual"  # 09/10에서 실제 사용 (구성종목·시총가중·의약품 R&D 수기 입력)
+
+# --- 아래 5개는 src/krx_collector.py(공식 KRX API만으로 PBR·배당수익률·구성종목을 받으려던 A안) 전용 ---
+# A안은 KRX 화면 다운로드 파일(krx_valuation_YYYY.csv 등)이 확보되지 않아 pbr·dividend_yield를
+# 채우지 못하고 중단됨(krx_validation_report.csv: pbr_available/dividend_yield_available 모두 FAIL,
+# 639건 결측). 현재 09/10 노트북은 이 경로를 전혀 참조하지 않고 DART 기반 수집으로 대체했다.
+# 삭제하지 않고 남겨두는 이유: src/krx_collector.py 자체가 참조하므로, 그 모듈을 완전히
+# 제거하기 전까지는 상수만 지우면 ImportError가 난다. 2026-08-23 기준 미사용(deprecated).
 KRX_RAW_DIR = RAW_DIR / "firm" / "krx"
-KRX_MANUAL_DIR = RAW_DIR / "firm" / "krx_manual"
 KRX_INTERIM_DIR = INTERIM_DIR / "firm" / "krx"
 KRX_CONSTITUENTS_FILE = KRX_INTERIM_DIR / "industry_constituents.csv"
 KRX_FIRM_YEARLY_FILE = KRX_INTERIM_DIR / "krx_firm_yearly.csv"
@@ -636,7 +643,8 @@ def get_industry_source_folders() -> list[tuple[str, Path]]:
 # =====================================================================
 def describe() -> None:
     """실제로 어떤 경로/파일이 잡혔는지 출력한다. 노트북 첫 셀 점검용."""
-    print(f"PROJECT_ROOT : {PROJECT_ROOT}")
+    # 개인 PC 절대경로(Desktop, OneDrive, C:\Users ...)를 출력에 남기지 않는다 — 폴더명만 확인한다.
+    print(f"PROJECT_ROOT : {PROJECT_ROOT.name}")
     print(f"DATA_DIR     : {_rel(DATA_DIR)}  (exists={DATA_DIR.exists()})")
 
     print("\n[raw 파일]")

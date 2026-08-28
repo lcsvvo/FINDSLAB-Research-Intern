@@ -1,0 +1,47 @@
+﻿source_table,bh_family,bh_n_tests,test_id,p_raw,q_family,q_global,significant_family_5pct,significant_global_5pct,판정 변화
+up_down_beta_long,Y3_Asymmetry | up,7,industry=건설업 | direction=up | model=Y3_Asymmetry,0.06619533439680496,0.15445578025921158,0.2029990254835352,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=건설업 | direction=down | model=Y3_Asymmetry,0.005268741331513592,0.016153160336125724,0.039806002256881245,True,True,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=금융업 | direction=up | model=Y3_Asymmetry,0.42106787457749795,0.4912458536737476,0.6679007665712036,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=금융업 | direction=down | model=Y3_Asymmetry,0.006922783001196738,0.016153160336125724,0.039806002256881245,True,True,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=운수장비 | direction=up | model=Y3_Asymmetry,0.06265279523256302,0.15445578025921158,0.2029990254835352,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=운수장비 | direction=down | model=Y3_Asymmetry,0.06203358556657917,0.10855877474151356,0.2029990254835352,False,False,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=의약품 | direction=up | model=Y3_Asymmetry,0.13909662769000797,0.24341909845751394,0.3763791102200216,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=의약품 | direction=down | model=Y3_Asymmetry,0.0054466843562169815,0.016153160336125724,0.039806002256881245,True,True,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=전기전자 | direction=up | model=Y3_Asymmetry,0.2785902533736945,0.39002635472317226,0.5595083187012466,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=전기전자 | direction=down | model=Y3_Asymmetry,0.3647390835610682,0.5106347169854955,0.6141200567481713,False,False,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=철강금속 | direction=up | model=Y3_Asymmetry,0.02109387607451156,0.14765713252158094,0.08085985828562765,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=철강금속 | direction=down | model=Y3_Asymmetry,0.5088946130469816,0.5813040425314928,0.7093682484897319,False,False,동일
+up_down_beta_long,Y3_Asymmetry | up,7,industry=화학 | direction=up | model=Y3_Asymmetry,0.905286062582253,0.905286062582253,0.9745088132476704,False,False,동일
+up_down_beta_long,Y3_Asymmetry | down,7,industry=화학 | direction=down | model=Y3_Asymmetry,0.5813040425314928,0.5813040425314928,0.7639995987556762,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=건설업 | model=Y3_Wald,0.0012645525650308033,0.008851867955215625,0.039806002256881245,True,True,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=금융업 | model=Y3_Wald,0.2913708943667734,0.4296483754298115,0.5595083187012466,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=운수장비 | model=Y3_Wald,0.9745088132476704,0.9745088132476704,0.9745088132476704,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=의약품 | model=Y3_Wald,0.29164350710570497,0.4296483754298115,0.5595083187012466,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=전기전자 | model=Y3_Wald,0.1984209172045671,0.4296483754298115,0.5070756773005604,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=철강금속 | model=Y3_Wald,0.30689169673557964,0.4296483754298115,0.5646807219934665,False,False,동일
+asymmetry_wald_tests,Y3_Wald,7,industry=화학 | model=Y3_Wald,0.7834088374715688,0.9139769770501636,0.907499842097396,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=건설업 | direction=up | model=Curvature_Coef,0.8135819836762388,0.9491789809556119,0.912799298758707,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=건설업 | direction=down | model=Curvature_Coef,0.37381220845540863,0.6541713647969651,0.6141200567481713,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=금융업 | direction=up | model=Curvature_Coef,0.7891302974759965,0.9491789809556119,0.907499842097396,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=금융업 | direction=down | model=Curvature_Coef,0.6437425029553494,0.8964775186150007,0.8225598648873909,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=운수장비 | direction=up | model=Curvature_Coef,0.005578652003830271,0.0390505640268119,0.039806002256881245,True,True,동일
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=운수장비 | direction=down | model=Curvature_Coef,0.28487381964717484,0.6541713647969651,0.5595083187012466,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=의약품 | direction=up | model=Curvature_Coef,0.020942937788263772,0.04886685483928214,0.08085985828562765,True,False,유의→비유의
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=의약품 | direction=down | model=Curvature_Coef,0.01730270524584886,0.12111893672094202,0.08085985828562765,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=전기전자 | direction=up | model=Curvature_Coef,0.9648714179524263,0.9648714179524263,0.9745088132476704,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=전기전자 | direction=down | model=Curvature_Coef,0.37330598213894284,0.6541713647969651,0.6141200567481713,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=철강금속 | direction=up | model=Curvature_Coef,0.018574028886276794,0.04886685483928214,0.08085985828562765,True,False,유의→비유의
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=철강금속 | direction=down | model=Curvature_Coef,0.9472078750605405,0.9472078750605405,0.9745088132476704,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | up,7,industry=화학 | direction=up | model=Curvature_Coef,0.4369281062398894,0.7646241859198065,0.6699564295678304,False,False,동일
+key_factor_asymmetry_tests,Curvature_Coef | down,7,industry=화학 | direction=down | model=Curvature_Coef,0.7684093016700005,0.8964775186150007,0.907499842097396,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=건설업 | model=Curvature_Wald,0.4688811158866908,0.7840875844469231,0.6957590751867024,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=금융업 | model=Curvature_Wald,0.9135114574797004,0.9135114574797004,0.9745088132476704,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=운수장비 | model=Curvature_Wald,0.29191738367021564,0.7840875844469231,0.5595083187012466,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=의약품 | model=Curvature_Wald,0.7830382828404595,0.9135114574797004,0.907499842097396,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=전기전자 | model=Curvature_Wald,0.5600625603192307,0.7840875844469231,0.7577316992554298,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=철강금속 | model=Curvature_Wald,0.11405590436302482,0.7840875844469231,0.32791072504369634,False,False,동일
+key_factor_asymmetry_wald_tests,Curvature_Wald,7,industry=화학 | model=Curvature_Wald,0.4885033415694023,0.7840875844469231,0.7022235535060158,False,False,동일
+industry_difference_tests,Y3_Asymmetry,2,variable=d_y3_up | model=Y3_Asymmetry,0.001816525178052815,0.00363305035610563,0.039806002256881245,True,True,동일
+industry_difference_tests,Y3_Asymmetry,2,variable=d_y3_down | model=Y3_Asymmetry,0.004652430819856246,0.004652430819856246,0.039806002256881245,True,True,동일
+industry_difference_tests,Curvature_Asymmetry,2,variable=d_curv_up | model=Curvature_Asymmetry,0.0062454129086741035,0.012490825817348207,0.039806002256881245,True,True,동일
+industry_difference_tests,Curvature_Asymmetry,2,variable=d_curv_down | model=Curvature_Asymmetry,0.22108555707445077,0.22108555707445077,0.5352597697591965,False,False,동일

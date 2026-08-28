@@ -8,5 +8,7 @@ jupyter
 ipykernel
 # data/raw/* 원본이 .xlsx 로 제공되는 경우 필요 (팀원별 확장자 차이 대응)
 openpyxl
+# KRX Open API 호출
+requests
 # KRX 공식 Open API 인증키(.env) 로드
 python-dotenv>=1.0

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STEP7b 요약 — 금리 변동 크기 반응</title>
+<style>
+  :root{
+    --ink:#172033;
+    --muted:#667085;
+    --line:#e7eaf0;
+    --bg:#f6f8fb;
+    --card:#ffffff;
+    --navy:#223a5e;
+    --blue:#3d6fa8;
+    --blue-soft:#eef5fc;
+    --green:#16815f;
+    --green-soft:#eaf8f3;
+    --amber:#a66a00;
+    --amber-soft:#fff7e8;
+    --red:#b33a3a;
+    --red-soft:#fff0f0;
+    --purple:#7453a6;
+    --purple-soft:#f4effb;
+    --shadow:0 10px 30px rgba(20,35,60,.08);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family: "Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.72;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 80px}
+  .hero{
+    background:linear-gradient(135deg,#1c3150 0%,#315b87 65%,#4779a8 100%);
+    color:white;
+    border-radius:24px;
+    padding:44px 48px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero:after{
+    content:"";
+    position:absolute;
+    width:290px;height:290px;border-radius:50%;
+    right:-100px;top:-120px;
+    background:rgba(255,255,255,.08);
+  }
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.25);
+    padding:6px 11px;
+    border-radius:999px;
+    margin-bottom:13px;
+  }
+  h1{font-size:36px;line-height:1.25;margin:0 0 14px}
+  .hero p{margin:0;max-width:850px;color:#eaf1f8;font-size:17px}
+  .source{margin-top:18px;font-size:13px;color:#d7e3ef}
+
+  .summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:22px 0 26px;
+  }
+  .metric{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:17px;
+    padding:18px 19px;
+    box-shadow:0 5px 18px rgba(20,35,60,.05);
+  }
+  .metric .label{font-size:13px;color:var(--muted);font-weight:700}
+  .metric .value{font-size:25px;font-weight:900;margin-top:4px;color:var(--navy)}
+  .metric .sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+  .toc{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 22px;
+    margin:0 0 25px;
+    box-shadow:0 5px 18px rgba(20,35,60,.04);
+  }
+  .toc strong{display:block;margin-bottom:9px}
+  .toc-links{display:flex;flex-wrap:wrap;gap:8px}
+  .toc a{
+    text-decoration:none;color:var(--navy);font-size:13px;font-weight:800;
+    background:#f0f4f8;border:1px solid #dde5ef;
+    padding:7px 10px;border-radius:999px;
+  }
+
+  .section{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:30px;
+    margin:20px 0;
+    box-shadow:var(--shadow);
+  }
+  .section h2{margin:0 0 8px;font-size:27px;line-height:1.35}
+  .section h3{font-size:18px;margin:24px 0 8px}
+  .section p{margin:8px 0}
+  .qnum{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:10px;
+    background:var(--navy);color:white;font-weight:900;margin-right:10px;
+  }
+  .lead{
+    font-size:18px;font-weight:800;color:var(--navy);
+    background:var(--blue-soft);
+    border-left:5px solid var(--blue);
+    border-radius:12px;
+    padding:15px 17px;margin:14px 0 20px;
+  }
+  .why{
+    background:var(--amber-soft);
+    border:1px solid #f1ddb5;
+    border-radius:14px;
+    padding:16px 18px;
+    margin:14px 0;
+  }
+  .why b{color:#7f5200}
+  .method{
+    background:#f8fafc;
+    border:1px dashed #cfd8e5;
+    border-radius:14px;
+    padding:15px 18px;
+  }
+
+  table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    margin:14px 0 8px;
+    font-size:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:12px;
+  }
+  th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:#f2f5f9;color:#344054;font-weight:800}
+  tr:last-child td{border-bottom:0}
+  .yes{color:var(--green);font-weight:900}
+  .no{color:var(--red);font-weight:900}
+  .borderline{color:var(--amber);font-weight:900}
+  .tag{
+    display:inline-block;padding:5px 9px;border-radius:999px;
+    font-size:12px;font-weight:900;margin-right:6px;
+  }
+  .tag.green{background:var(--green-soft);color:var(--green)}
+  .tag.amber{background:var(--amber-soft);color:var(--amber)}
+  .tag.red{background:var(--red-soft);color:var(--red)}
+  .tag.blue{background:var(--blue-soft);color:var(--blue)}
+  .tag.purple{background:var(--purple-soft);color:var(--purple)}
+
+  .verdict{
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:15px;
+    align-items:start;
+    margin-top:18px;
+    border-radius:14px;
+    padding:17px 18px;
+  }
+  .verdict .vtitle{font-weight:900;font-size:16px}
+  .verdict.green{background:var(--green-soft);border:1px solid #bfe8d8}
+  .verdict.amber{background:var(--amber-soft);border:1px solid #efd8a5}
+  .verdict.blue{background:var(--blue-soft);border:1px solid #c9dff2}
+
+  .formula{
+    background:#172033;color:#f4f7fb;
+    border-radius:14px;padding:16px 18px;
+    font-family:Consolas,monospace;font-size:15px;
+    margin:12px 0;
+  }
+
+  .timeline{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    gap:7px;margin:14px 0 8px;
+  }
+  .win{
+    border-radius:10px;padding:10px 5px;text-align:center;font-size:12px;
+    border:1px solid var(--line);background:#f7f8fa;
+  }
+  .win strong{display:block;font-size:13px}
+  .win.sig{background:var(--green-soft);border-color:#bfe8d8;color:var(--green)}
+  .win.ns{color:#667085}
+  .barrow{display:grid;grid-template-columns:220px 1fr 80px;gap:10px;align-items:center;margin:9px 0}
+  .bar{height:12px;border-radius:999px;background:#edf0f4;overflow:hidden}
+  .bar span{display:block;height:100%;border-radius:999px;background:var(--blue)}
+  .bar.red span{background:#d25b5b}
+  .bar.green span{background:#39a77e}
+  .barvalue{text-align:right;font-size:13px;font-weight:800}
+
+  .final{
+    background:linear-gradient(135deg,#172033,#29435f);
+    color:white;
+    border-radius:22px;
+    padding:32px;
+    margin-top:22px;
+    box-shadow:var(--shadow);
+  }
+  .final h2{margin-top:0}
+  .final .box{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:15px;padding:17px 18px;margin:12px 0;
+  }
+  .final ul{margin:6px 0 0;padding-left:20px}
+  .note{
+    font-size:13px;color:var(--muted);
+    background:#f8fafc;border-left:4px solid #98a2b3;
+    padding:12px 14px;border-radius:8px;margin-top:14px;
+  }
+  footer{font-size:12px;color:#7a8596;text-align:center;margin-top:24px}
+  @media(max-width:800px){
+    .summary-grid{grid-template-columns:repeat(2,1fr)}
+    .timeline{grid-template-columns:repeat(2,1fr)}
+    .hero{padding:34px 26px}
+    h1{font-size:29px}
+    .section{padding:23px 19px}
+    .verdict{grid-template-columns:1fr}
+    .barrow{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="background:#fef3c7;border:2px solid #f59e0b;color:#78350f;padding:14px 18px;border-radius:10px;font-size:13.5px;line-height:1.6;margin-bottom:18px">
+  <b>[HISTORICAL]</b> 파일명의 "_final"은 이 07b 단독 문서의 마지막 버전이라는 뜻이며, H2(모형 C) 전체의 최종본이 아니다.
+  이 문서는 통합 이전의 아카이브 노트북(<code>07b_rate_uncertainty_exposure.ipynb</code>, git 추적 제외) 실행 결과만으로 작성됐다.
+  같은 내용(PART E)은 현재 통합된 <code>notebooks/07_asymmetric_rate_response.ipynb</code>와
+  <code>results/H2_asymmetry_regime/summary.md</code>의 PART E 절에 재구현돼 있다(PART E 자체 QA로 수치 일치 확인됨).
+  최신 상태를 확인하려면 <code>summary.md</code>를 기준으로 볼 것.
+  </div>
+  <div class="hero">
+    <div class="eyebrow">STEP7b · 금리 변동 크기 반응</div>
+    <h1>금리가 얼마나 움직였는지에 대한 반응은 산업마다 다른가?</h1>
+    <p>STEP7은 건설업의 반응이 금리 방향보다 변동 크기와 이어지는 형태를 찾았지만, 산업끼리 비교하지는 않았다. 이 문서는 그 크기 반응을 따로 떼어 하나의 질문으로 다룬 결과를 정리한다.</p>
+    <div class="source">근거: 07b 실행 결과 · 2016-01-04 ~ 2025-12-30 · 7개 산업 · 관측치 17,157 · 거래일 2,451</div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="metric">
+      <div class="label">산업 간 크기계수 차이</div>
+      <div class="value">p = 0.0392</div>
+      <div class="sub">F(6)=2.2129 · 5% 기준 충족</div>
+    </div>
+    <div class="metric">
+      <div class="label">방향계수 차이 (비교)</div>
+      <div class="value">p = 0.0004</div>
+      <div class="sub">F(6)=4.1372 · 크기보다 뚜렷</div>
+    </div>
+    <div class="metric">
+      <div class="label">건설업 제외 시</div>
+      <div class="value">p = 0.4469</div>
+      <div class="sub">5% 기준 넘지 않음</div>
+    </div>
+    <div class="metric">
+      <div class="label">크기 효과의 경제적 크기</div>
+      <div class="value">4.34%</div>
+      <div class="sub">건설업 · 일별 등락폭 대비 최대치</div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <strong>목차</strong>
+    <div class="toc-links">
+      <a href="#baseline">무엇을 새로 보나</a>
+      <a href="#q1">① 같은 모형인가</a>
+      <a href="#q2">② 산업마다 다른가</a>
+      <a href="#q3">③ 조건을 바꿔도 남는가</a>
+      <a href="#q4">④ 크기는 얼마나 큰가</a>
+      <a href="#final">최종 결론</a>
+    </div>
+  </div>
+
+  <section class="section" id="baseline">
+    <h2>무엇을 새로 보나</h2>
+    <div class="lead">이 문서가 다루는 질문은 하나다. 금리가 어느 쪽으로 갔는지가 아니라 얼마나 움직였는지에 대한 반응이 산업마다 다른가.</div>
+
+    <div class="formula">
+      R = a + g·KOSPI + b_abs·|Δy3| + b_dir·Δy3<br>
+      b_abs = (b_up − b_down) / 2      b_dir = (b_up + b_down) / 2
+    </div>
+
+    <h3>하는 것 / 하지 않는 것</h3>
+    <table>
+      <thead>
+        <tr><th>구분</th><th>내용</th><th>어디서</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="tag red">하지 않음</span></td><td>건설업 크기계수가 0인지 검정</td><td>STEP7이 이미 수행</td></tr>
+        <tr><td><span class="tag red">하지 않음</span></td><td>그 검정을 날짜·기간·표준오차별로 다시 보기</td><td>STEP7a가 이미 수행</td></tr>
+        <tr><td><span class="tag red">하지 않음</span></td><td>전 산업 동시 대칭검정</td><td>STEP7이 이미 수행 — 크기계수가 모두 0인가와 같은 질문</td></tr>
+        <tr><td><span class="tag green">함</span></td><td>상승·하락 모형과 절댓값 모형이 같은 모형인지 수치 확인</td><td>이 문서 ①</td></tr>
+        <tr><td><span class="tag green">함</span></td><td>산업별 크기계수에 다중검정 보정</td><td>이 문서 ②</td></tr>
+        <tr><td><span class="tag green">함</span></td><td>크기계수가 산업마다 다른지 검정</td><td>이 문서 ②</td></tr>
+        <tr><td><span class="tag green">함</span></td><td>그 검정이 조건에 따라 어떻게 달라지는지</td><td>이 문서 ③</td></tr>
+        <tr><td><span class="tag green">함</span></td><td>계수가 실제로 얼마나 큰지 환산</td><td>이 문서 ④</td></tr>
+      </tbody>
+    </table>
+
+    <div class="method"><b>추정 방법</b> 산업별 회귀는 HAC(maxlags=5), 산업 간 검정은 날짜 클러스터 표준오차를 쓴다. 다중검정은 BH(FDR), alpha=0.05. p값은 STEP7·STEP7a와 같은 Wald F 기준으로 계산해 값이 그대로 대조되게 했다.</div>
+  </section>
+
+  <section class="section" id="q1">
+    <h2><span class="qnum">1</span>절댓값 모형은 새 모형인가</h2>
+
+    <div class="why"><b>이 질문을 한 이유</b> 절댓값 모형이 상승·하락 모형과 다른 모형이라면 새로운 정보를 더한 것이 된다. 같은 모형을 다르게 적은 것이라면, 이 문서가 더하는 것은 새 자료가 아니라 아직 검정하지 않았던 것과 계수 크기 환산으로 한정된다.</div>
+
+    <div class="method"><b>어떻게 확인했나</b> 7개 산업 각각에서 두 모형을 모두 추정하고, 상승·하락 계수에서 유도한 값과 절댓값 모형에서 직접 추정한 값이 같은지 대조했다.</div>
+
+    <table>
+      <thead>
+        <tr><th>산업</th><th>b_up</th><th>b_down</th><th>(b_up−b_down)/2</th><th>직접 추정 b_abs</th><th>차이</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>건설업</td><td>−0.021607</td><td>+0.031027</td><td>−0.026317</td><td>−0.026317</td><td>0.0</td></tr>
+        <tr><td>금융업</td><td>+0.005664</td><td>+0.017479</td><td>−0.005908</td><td>−0.005908</td><td>0.0</td></tr>
+        <tr><td>운수장비</td><td>+0.017446</td><td>+0.016986</td><td>+0.000230</td><td>+0.000230</td><td>0.0</td></tr>
+        <tr><td>의약품</td><td>−0.017156</td><td>−0.038179</td><td>+0.010512</td><td>+0.010512</td><td>0.0</td></tr>
+        <tr><td>전기전자</td><td>+0.007840</td><td>−0.005425</td><td>+0.006632</td><td>+0.006632</td><td>0.0</td></tr>
+        <tr><td>철강금속</td><td>+0.028131</td><td>+0.008412</td><td>+0.009859</td><td>+0.009859</td><td>0.0</td></tr>
+        <tr><td>화학</td><td>+0.000943</td><td>+0.004369</td><td>−0.001713</td><td>−0.001713</td><td>0.0</td></tr>
+      </tbody>
+    </table>
+    <div class="note">두 모형의 R2 차이도 모든 산업에서 1e-12 미만으로 관찰되었다.</div>
+
+    <h3>STEP7과 숫자가 조금 다른 이유</h3>
+    <p>STEP7은 크기 계수를 구할 때 방향 항을 빼고 계산했다. 이 문서는 항상 둘 다 넣는다. 방향 항을 빼면 크기 계수가 방향 효과를 일부 흡수하므로, 상승·하락 모형과 정확히 같아지는 것은 둘 다 넣은 쪽이다. 건설업 기준으로 STEP7은 −0.0258, 이 문서는 −0.0263이다. 두 값은 서로 다른 식에서 나온 것이므로 같은 숫자로 인용하지 않는다.</p>
+
+    <div class="verdict blue">
+      <div class="vtitle">같은 모형</div>
+      <div>절댓값 모형은 상승·하락 모형을 다르게 적은 것으로 관찰되었다. 따라서 이 문서가 더하는 것은 새 자료나 새 모형이 아니라, 아직 검정하지 않았던 제약과 계수 크기 환산이다.</div>
+    </div>
+  </section>
+
+  <section class="section" id="q2">
+    <h2><span class="qnum">2</span>크기 반응은 산업마다 다른가</h2>
+
+    <div class="why">STEP7은 크기 반응이 건설업에 한정된다고 적었지만, 산업 간 검정은 수행하지 않았다. 이 문서에서 처음 검정한다.</div>
+    <div class="method">크기·방향 두 항을 한 모형에 함께 넣고, 산업더미와 산업별 시장 교차항을 둔 통합회귀에서 날짜 클러스터 표준오차로 F검정했다. STEP7은 상승계수가 산업 간에 같은지, 하락계수가 같은지를 각각 검정했다. 여기서 묻는 것은 상승계수와 하락계수의 차이가 산업 간에 같은지이며, 앞의 둘 중 어느 것과도 같은 질문이 아니다.</div>
+
+    <h3>산업별 계수 (BH 보정)</h3>
+    <table>
+      <thead>
+        <tr><th>산업</th><th>크기계수 b_abs</th><th>크기 BH p</th><th>방향계수 b_dir</th><th>방향 BH p</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>건설업</td><td>−0.026317</td><td><span class="yes">0.008852</span></td><td>+0.004710</td><td><span class="no">0.685433</span></td></tr>
+        <tr><td>금융업</td><td>−0.005908</td><td><span class="no">0.429648</span></td><td>+0.011571</td><td><span class="yes">0.006875</span></td></tr>
+        <tr><td>운수장비</td><td>+0.000230</td><td><span class="no">0.974509</span></td><td>+0.017216</td><td><span class="yes">0.006875</span></td></tr>
+        <tr><td>의약품</td><td>+0.010512</td><td><span class="no">0.429648</span></td><td>−0.027667</td><td><span class="yes">0.003245</span></td></tr>
+        <tr><td>전기전자</td><td>+0.006632</td><td><span class="no">0.429648</span></td><td>+0.001208</td><td><span class="no">0.772889</span></td></tr>
+        <tr><td>철강금속</td><td>+0.009859</td><td><span class="no">0.429648</span></td><td>+0.018272</td><td><span class="yes">0.036424</span></td></tr>
+        <tr><td>화학</td><td>−0.001713</td><td><span class="no">0.913977</span></td><td>+0.002656</td><td><span class="no">0.685433</span></td></tr>
+      </tbody>
+    </table>
+    <div class="note">크기 쪽에서 5% 기준을 넘은 산업과 방향 쪽에서 넘은 산업이 서로 겹치지 않는 형태로 관찰되었다.</div>
+
+    <h3>산업 간 계수 차이 검정</h3>
+    <table>
+      <thead>
+        <tr><th>검정</th><th>F</th><th>원 p</th><th>BH p</th><th>판정</th><th>출처</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>크기계수 차이</td><td>F(6)=2.2129</td><td>0.0392</td><td>0.0392</td><td><span class="yes">5% 충족</span></td><td>이 문서 (신규)</td></tr>
+        <tr><td>방향계수 차이</td><td>F(6)=4.1372</td><td>0.0004</td><td>0.0008</td><td><span class="yes">5% 충족</span></td><td>이 문서 (신규)</td></tr>
+        <tr><td>상승계수 차이</td><td>F(6)=3.5162</td><td>0.0018</td><td>0.0036</td><td><span class="yes">5% 충족</span></td><td>STEP7 (참고)</td></tr>
+        <tr><td>하락계수 차이</td><td>F(6)=3.1304</td><td>0.0047</td><td>0.0047</td><td><span class="yes">5% 충족</span></td><td>STEP7 (참고)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict amber">
+      <div class="vtitle">다르게 나왔으나 약하다</div>
+      <div>크기계수는 산업 간에 다르게 관찰되었다(BH p=0.0392). 다만 방향계수 차이(BH p=0.0008)보다 큰 p값이며, 크기가 방향보다 산업을 더 잘 구분한다고 볼 근거는 이 표본에서 관찰되지 않는다.</div>
+    </div>
+  </section>
+
+  <section class="section" id="q3">
+    <h2><span class="qnum">3</span>조건을 바꿔도 남는가</h2>
+
+    <div class="why">결과가 특정 시기나 특정 날짜에 기대고 있는지 본다. STEP7a는 건설업 하나에 대해 이 작업을 이미 수행했고, 그 검정은 여기서 다루는 건설업 크기계수 검정과 같은 검정이다. 그래서 이 문서에서는 건설업 개별 검정을 다시 싣지 않고, STEP7a가 보지 않은 산업 간 차이 하나만 본다.</div>
+    <div class="method">조건 목록은 STEP7a가 쓴 것을 따랐다. 건설업 제외 조건은 STEP7a에 없던 것으로, 관찰된 차이가 특정 산업에서 오는지 보기 위해 넣었다.</div>
+
+    <table>
+      <thead>
+        <tr><th>조건</th><th>크기계수 차이 p</th><th>판정</th><th>방향계수 차이 p</th><th>판정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>전체 2016-2025</td><td>0.0392</td><td><span class="yes">유지</span></td><td>0.0004</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>2022-2023 제외</td><td>0.0162</td><td><span class="yes">유지</span></td><td>0.2539</td><td><span class="no">미유지</span></td></tr>
+        <tr><td>2020-2021 제외</td><td>0.0210</td><td><span class="yes">유지</span></td><td>0.0075</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>2016-2020</td><td>0.3195</td><td><span class="no">미유지</span></td><td>0.3272</td><td><span class="no">미유지</span></td></tr>
+        <tr><td>2021-2025</td><td>0.0061</td><td><span class="yes">유지</span></td><td>0.000004</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>절대변화 상위1% 제외</td><td>0.0542</td><td><span class="no">미유지</span></td><td>0.000028</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>절대변화 상위0.5% 제외</td><td>0.0744</td><td><span class="no">미유지</span></td><td>0.000048</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>Winsorize 1%</td><td>0.0327</td><td><span class="yes">유지</span></td><td>0.000078</td><td><span class="yes">유지</span></td></tr>
+        <tr><td>건설업 제외</td><td>0.4469</td><td><span class="no">미유지</span></td><td>0.000198</td><td><span class="yes">유지</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>크기와 방향이 갈리는 지점</h3>
+    <table>
+      <thead>
+        <tr><th>조건</th><th>크기계수 차이</th><th>방향계수 차이</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>극단일 제외 (상위 1%·0.5%)</td><td><span class="no">0.0542 · 0.0744 미유지</span></td><td><span class="yes">0.000028 · 0.000048 유지</span></td></tr>
+        <tr><td>2022-2023 제외</td><td><span class="yes">0.0162 유지</span></td><td><span class="no">0.2539 미유지</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict amber">
+      <div class="vtitle">조건에 따라 갈린다</div>
+      <div>크기와 방향은 같은 민감도 패턴을 보이지 않는다. 두 검정은 서로 다른 제거 조건에서 서로 다른 강건성을 보였다. 극단일을 뺀 조건에서는 크기 쪽만 5% 기준을 넘지 않았고, 2022-2023을 뺀 조건에서는 방향 쪽만 넘지 않았다. 여기서 더 나아가 두 축이 서로 다른 정보원에서 나온다고까지 말할 근거는 이 표본에서 관찰되지 않는다. 건설업을 뺀 조건에서 크기계수 차이가 5% 기준을 넘지 않은 것은, 관찰된 차이가 주로 건설업과 나머지 산업의 대비에서 나올 가능성을 시사한다.</div>
+    </div>
+  </section>
+
+  <section class="section" id="q4">
+    <h2><span class="qnum">4</span>크기는 얼마나 큰가</h2>
+
+    <div class="why">계수가 5% 기준을 넘는지와 그 계수가 나타내는 변화가 실제로 큰지는 다른 질문이다.</div>
+    <div class="method">금리 변동 크기가 1 표준편차(2.95bp) 움직였을 때의 수익률 변화를 해당 산업 일별 수익률 표준편차 대비 비율로 환산하고, 같은 기준으로 KOSPI 1 표준편차 효과를 비교 기준으로 뒀다.</div>
+
+    <h3>금리 변동 크기 1SD 효과 (일별 등락폭 대비 %)</h3>
+    <div class="barrow">
+      <div>건설업</div><div class="bar"><span style="width:86.8%"></span></div><div class="barvalue">4.34%</div>
+    </div>
+    <div class="barrow">
+      <div>금융업</div><div class="bar"><span style="width:26.8%"></span></div><div class="barvalue">1.34%</div>
+    </div>
+    <div class="barrow">
+      <div>운수장비</div><div class="bar"><span style="width:0.8%"></span></div><div class="barvalue">0.04%</div>
+    </div>
+    <div class="barrow">
+      <div>의약품</div><div class="bar"><span style="width:34.4%"></span></div><div class="barvalue">1.72%</div>
+    </div>
+    <div class="barrow">
+      <div>전기전자</div><div class="bar"><span style="width:24.8%"></span></div><div class="barvalue">1.24%</div>
+    </div>
+    <div class="barrow">
+      <div>철강금속</div><div class="bar"><span style="width:31.6%"></span></div><div class="barvalue">1.58%</div>
+    </div>
+    <div class="barrow">
+      <div>화학</div><div class="bar"><span style="width:7.0%"></span></div><div class="barvalue">0.35%</div>
+    </div>
+
+    <h3>KOSPI 1SD 효과 (같은 기준, %)</h3>
+    <div class="barrow">
+      <div>건설업</div><div class="bar red"><span style="width:62.7%"></span></div><div class="barvalue">62.7</div>
+    </div>
+    <div class="barrow">
+      <div>금융업</div><div class="bar red"><span style="width:78.9%"></span></div><div class="barvalue">78.9</div>
+    </div>
+    <div class="barrow">
+      <div>운수장비</div><div class="bar red"><span style="width:68.8%"></span></div><div class="barvalue">68.8</div>
+    </div>
+    <div class="barrow">
+      <div>의약품</div><div class="bar red"><span style="width:48.8%"></span></div><div class="barvalue">48.8</div>
+    </div>
+    <div class="barrow">
+      <div>전기전자</div><div class="bar red"><span style="width:85.0%"></span></div><div class="barvalue">85.0</div>
+    </div>
+    <div class="barrow">
+      <div>철강금속</div><div class="bar red"><span style="width:62.2%"></span></div><div class="barvalue">62.2</div>
+    </div>
+    <div class="barrow">
+      <div>화학</div><div class="bar red"><span style="width:80.2%"></span></div><div class="barvalue">80.2</div>
+    </div>
+
+    <div class="note">건설업 기준으로 금리가 10bp 움직였을 때의 환산 효과는 −0.263%다.</div>
+
+    <div class="verdict blue">
+      <div class="vtitle">크기는 작다</div>
+      <div>금리 변동 크기의 영향은 산업 일별 등락폭의 0.04%~4.34%로 관찰되었다. 같은 기준으로 시장요인은 48.8%~85.0%다. 산업 간 차이가 통계적으로 관찰되더라도 그 크기는 제한적으로 해석하는 것이 적절하다.</div>
+    </div>
+  </section>
+
+  <section class="section final" id="final">
+    <h2>최종 결론</h2>
+
+    <h3>비교적 분명하게 말할 수 있는 것</h3>
+    <ul>
+      <li>절댓값 모형은 상승·하락 모형을 다르게 적은 것으로 관찰되었다. 두 모형의 계수 관계와 설명력이 일치한다.</li>
+      <li>다중검정 보정 후 크기계수가 5% 기준을 넘은 산업은 건설업 하나다.</li>
+      <li>크기계수는 산업 간에 다르게 관찰되었다(BH p=0.0392).</li>
+      <li>방향계수 차이가 크기계수 차이보다 뚜렷하게 관찰되었다.</li>
+      <li>금리 변동 크기의 경제적 영향은 시장요인에 비해 작게 관찰되었다.</li>
+    </ul>
+
+    <h3>조심해서 말해야 하는 것</h3>
+    <ul>
+      <li>건설업을 뺀 조건에서 크기계수 차이가 5% 기준을 넘지 않았다. "산업마다 다르다"보다 "건설업이 나머지와 다르다"에 가까운 모습이다.</li>
+      <li>금리가 크게 움직인 날을 뺀 조건과 2016-2020년 조건에서 5% 기준을 넘지 않았다. 결과가 최근 시기와 급변동일에 기대고 있을 가능성이 있다.</li>
+      <li>크기와 방향은 같은 민감도 패턴을 보이지 않는다. 두 검정은 서로 다른 제거 조건에서 서로 다른 강건성을 보였다.</li>
+      <li>여기서 쓴 변동 크기는 그날 실제로 움직인 폭이며, 앞날에 대한 불확실성을 직접 잰 값이 아니다. 국내에는 그런 지표를 만들 시장 자료가 없다. 따라서 "불확실성에 반응한다"는 표현은 해석 수준에 그친다.</li>
+      <li>KOSPI를 통제한 같은 날 움직임의 관계이며, 금리가 주가를 움직였다는 뜻이 아니다.</li>
+    </ul>
+
+    <h3>경제적 해석</h3>
+    <p>원래 상승·하락 비대칭을 예상한 근거는 재무 제약이었다. 차입 의존도가 높은 기업은 금리 상승 시 조달비용 증가와 대출 축소를 함께 겪지만, 금리 하락 시 대칭적인 이득을 얻지는 않는다는 논의다. 건설업에서 관찰된 형태는 이와 다르다. 금리가 오를 때도 내릴 때도 수익률이 낮아지는 쪽으로 나타나, 방향보다 변동 크기와의 연관이 관찰된다. 이 모습은 불확실성과 투자에 관한 실물옵션 논의(Bernanke 1983, Dixit &amp; Pindyck 1994)와 정성적으로 일치한다. 되돌리기 어려운 대규모 투자를 앞둔 주체가 불확실성이 클 때 결정을 미루는 것이 합리적이라는 논의이며, 분양 일정과 자금 조달이 금리 경로 가정에 연결된 건설업에 들어맞을 가능성이 있다. 다만 착공·분양 일정, 자금 조달 규모, 산업별 부채 구조가 자료에 없으므로 이 설명을 직접 검정할 수는 없다. 결과와 방향이 정성적으로 일치한다는 수준에 그친다.</p>
+
+    <h3>가장 적절한 최종 표현</h3>
+    <div class="lead">금리 변동 크기에 대한 산업별 반응 차이는 전체 표본에서 5% 기준을 넘어 관찰되었으나, 건설업을 제외하면 유지되지 않았고 급변동일을 제외한 조건에서도 유지되지 않았다. 따라서 산업 전반의 구조적 차이보다는 건설업과 나머지 산업의 대비, 그리고 최근 금리환경에 기댄 현상으로 해석하는 것이 적절하다. 실물옵션 논의와는 정성적으로 일치하나, 본 자료로 그 메커니즘을 직접 검정할 수는 없다.</div>
+
+    <p class="source">본 문서는 07b 실행 결과만을 바탕으로 구성했다.</p>
+  </section>
+</div>
+
+</body>
+</html>

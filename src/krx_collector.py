@@ -1,4 +1,11 @@
-"""Safe H3 collection using only the official KRX Open API.
+"""[DEPRECATED — 2026-08-23] Safe H3 collection using only the official KRX Open API.
+
+이 모듈(A안: 공식 KRX API만으로 PBR·배당수익률·구성종목 확보)은 실제로는 KRX 화면
+다운로드 파일(krx_valuation_YYYY.csv 등)이 끝내 확보되지 않아 pbr·dividend_yield를
+한 건도 채우지 못하고 중단되었다(data/interim/firm/krx/krx_validation_report.csv 참고:
+pbr_available/dividend_yield_available 모두 FAIL, 639건 결측). 현재 09/10 노트북은
+DART OpenAPI 기반 수집(fnlttSinglAcntAll, alotMatter)으로 전환되어 이 모듈을 전혀
+참조하지 않는다. 과거 설계 기록·비교용으로만 남겨두며, 신규 실행/유지보수 대상이 아니다.
 
 Official API scope (checked 2026-08-18): KOSPI daily trading data includes
 market cap, but PBR/dividend yield/index constituents are not offered. KRX's

@@ -10,7 +10,7 @@
 - 7개 산업(금융업·철강금속·운수장비·의약품·전기전자·건설업·화학) 대상 국고채 3년 금리 민감도를 2지수 모형으로 추정.
 - 회귀식: industry_return = α + β_rate·d_y3 + γ·kospi_return + ε. KOSPI 수익률 통제 하에서 국고채 3년 금리 일별 변화분(d_y3, %p)에 대한 산업 수익률의 반응(β_rate) 추정.
 - 표준오차는 HAC(Newey–West) 적용, 유의성 판정은 7개 산업 공동 BH(Benjamini–Hochberg) 보정 p값(α=0.05) 기준.
-- 분석·재현·검증 절차는 04_rate_beta_estimation_final.ipynb에 기록됨.
+- 분석·재현·검증 절차는 `notebooks/04_rate_beta_estimation.ipynb`에 기록됨.
 
 ## 사용 데이터
 - 입력 데이터: data/processed/industry_rate_panel_daily.csv 사용.
