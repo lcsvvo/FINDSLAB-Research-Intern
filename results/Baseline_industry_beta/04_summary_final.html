@@ -371,9 +371,9 @@ footer{text-align:center;color:var(--slate);font-size:12px;padding:30px;border-t
    <div class="m"><div class="k">데이터 출처</div><div class="v">산업지수·KOSPI: KRX / 국고채 3년: 한국은행 ECOS</div></div>
    <div class="m"><div class="k">전처리 코드</div><div class="v">1–2단계 · src/data_prep.py</div></div>
    <div class="m"><div class="k">추정 코드</div><div class="v">src/models.py (industry_rate_betas, rate_beta_stats)</div></div>
-   <div class="m"><div class="k">재현 노트북</div><div class="v">04_rate_beta_estimation_final.ipynb</div></div>
+   <div class="m"><div class="k">재현 노트북</div><div class="v">04_rate_beta_estimation.ipynb</div></div>
   </div>
-  <div class="note"><b>결과 컬럼(10개)</b> — industry · beta_rate · std_error · t_value · p_value · <b>p_value_bh</b> · ci_lower · ci_upper · n_obs · r_squared. 저장: results/Rate_Beta/tables/rate_beta_by_industry_hac.csv</div>
+  <div class="note"><b>결과 컬럼(10개)</b> — industry · beta_rate · std_error · t_value · p_value · <b>p_value_bh</b> · ci_lower · ci_upper · n_obs · r_squared. 저장: results/Baseline_industry_beta/tables/rate_beta_by_industry_hac.csv</div>
 
   <h3 class="sub mt">자동 검증(QA)</h3>
   <p class="lead" style="margin-bottom:14px">노트북에서 <code>assert</code>로 결과표의 설계 계약을 검증한다. 위배 시 즉시 중단, 통과 시 "12개 항목 검증 통과"를 출력한다.</p>

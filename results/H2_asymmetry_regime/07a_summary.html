@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>07a 비대칭 결과 강건성 검증 해석</title>
+<style>
+  :root{
+    --ink:#172033;
+    --muted:#667085;
+    --line:#e7eaf0;
+    --bg:#f6f8fb;
+    --card:#ffffff;
+    --navy:#223a5e;
+    --blue:#3d6fa8;
+    --blue-soft:#eef5fc;
+    --green:#16815f;
+    --green-soft:#eaf8f3;
+    --amber:#a66a00;
+    --amber-soft:#fff7e8;
+    --red:#b33a3a;
+    --red-soft:#fff0f0;
+    --purple:#7453a6;
+    --purple-soft:#f4effb;
+    --shadow:0 10px 30px rgba(20,35,60,.08);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family: "Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    line-height:1.72;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 22px 80px}
+  .hero{
+    background:linear-gradient(135deg,#1c3150 0%,#315b87 65%,#4779a8 100%);
+    color:white;
+    border-radius:24px;
+    padding:44px 48px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero:after{
+    content:"";
+    position:absolute;
+    width:290px;height:290px;border-radius:50%;
+    right:-100px;top:-120px;
+    background:rgba(255,255,255,.08);
+  }
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.25);
+    padding:6px 11px;
+    border-radius:999px;
+    margin-bottom:13px;
+  }
+  h1{font-size:36px;line-height:1.25;margin:0 0 14px}
+  .hero p{margin:0;max-width:850px;color:#eaf1f8;font-size:17px}
+  .source{margin-top:18px;font-size:13px;color:#d7e3ef}
+
+  .summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin:22px 0 26px;
+  }
+  .metric{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:17px;
+    padding:18px 19px;
+    box-shadow:0 5px 18px rgba(20,35,60,.05);
+  }
+  .metric .label{font-size:13px;color:var(--muted);font-weight:700}
+  .metric .value{font-size:25px;font-weight:900;margin-top:4px;color:var(--navy)}
+  .metric .sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+  .toc{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 22px;
+    margin:0 0 25px;
+    box-shadow:0 5px 18px rgba(20,35,60,.04);
+  }
+  .toc strong{display:block;margin-bottom:9px}
+  .toc-links{display:flex;flex-wrap:wrap;gap:8px}
+  .toc a{
+    text-decoration:none;color:var(--navy);font-size:13px;font-weight:800;
+    background:#f0f4f8;border:1px solid #dde5ef;
+    padding:7px 10px;border-radius:999px;
+  }
+
+  .section{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:30px;
+    margin:20px 0;
+    box-shadow:var(--shadow);
+  }
+  .section h2{margin:0 0 8px;font-size:27px;line-height:1.35}
+  .section h3{font-size:18px;margin:24px 0 8px}
+  .section p{margin:8px 0}
+  .qnum{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:10px;
+    background:var(--navy);color:white;font-weight:900;margin-right:10px;
+  }
+  .lead{
+    font-size:18px;font-weight:800;color:var(--navy);
+    background:var(--blue-soft);
+    border-left:5px solid var(--blue);
+    border-radius:12px;
+    padding:15px 17px;margin:14px 0 20px;
+  }
+  .why{
+    background:var(--amber-soft);
+    border:1px solid #f1ddb5;
+    border-radius:14px;
+    padding:16px 18px;
+    margin:14px 0;
+  }
+  .why b{color:#7f5200}
+  .method{
+    background:#f8fafc;
+    border:1px dashed #cfd8e5;
+    border-radius:14px;
+    padding:15px 18px;
+  }
+
+  table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    margin:14px 0 8px;
+    font-size:14px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:12px;
+  }
+  th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:#f2f5f9;color:#344054;font-weight:800}
+  tr:last-child td{border-bottom:0}
+  .yes{color:var(--green);font-weight:900}
+  .no{color:var(--red);font-weight:900}
+  .borderline{color:var(--amber);font-weight:900}
+  .tag{
+    display:inline-block;padding:5px 9px;border-radius:999px;
+    font-size:12px;font-weight:900;margin-right:6px;
+  }
+  .tag.green{background:var(--green-soft);color:var(--green)}
+  .tag.amber{background:var(--amber-soft);color:var(--amber)}
+  .tag.red{background:var(--red-soft);color:var(--red)}
+  .tag.blue{background:var(--blue-soft);color:var(--blue)}
+  .tag.purple{background:var(--purple-soft);color:var(--purple)}
+
+  .verdict{
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:15px;
+    align-items:start;
+    margin-top:18px;
+    border-radius:14px;
+    padding:17px 18px;
+  }
+  .verdict .vtitle{font-weight:900;font-size:16px}
+  .verdict.green{background:var(--green-soft);border:1px solid #bfe8d8}
+  .verdict.amber{background:var(--amber-soft);border:1px solid #efd8a5}
+  .verdict.blue{background:var(--blue-soft);border:1px solid #c9dff2}
+
+  .formula{
+    background:#172033;color:#f4f7fb;
+    border-radius:14px;padding:16px 18px;
+    font-family:Consolas,monospace;font-size:15px;
+    margin:12px 0;
+  }
+
+  .timeline{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    gap:7px;margin:14px 0 8px;
+  }
+  .win{
+    border-radius:10px;padding:10px 5px;text-align:center;font-size:12px;
+    border:1px solid var(--line);background:#f7f8fa;
+  }
+  .win strong{display:block;font-size:13px}
+  .win.sig{background:var(--green-soft);border-color:#bfe8d8;color:var(--green)}
+  .win.ns{color:#667085}
+  .barrow{display:grid;grid-template-columns:220px 1fr 80px;gap:10px;align-items:center;margin:9px 0}
+  .bar{height:12px;border-radius:999px;background:#edf0f4;overflow:hidden}
+  .bar span{display:block;height:100%;border-radius:999px;background:var(--blue)}
+  .bar.red span{background:#d25b5b}
+  .bar.green span{background:#39a77e}
+  .barvalue{text-align:right;font-size:13px;font-weight:800}
+
+  .final{
+    background:linear-gradient(135deg,#172033,#29435f);
+    color:white;
+    border-radius:22px;
+    padding:32px;
+    margin-top:22px;
+    box-shadow:var(--shadow);
+  }
+  .final h2{margin-top:0}
+  .final .box{
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:15px;padding:17px 18px;margin:12px 0;
+  }
+  .final ul{margin:6px 0 0;padding-left:20px}
+  .note{
+    font-size:13px;color:var(--muted);
+    background:#f8fafc;border-left:4px solid #98a2b3;
+    padding:12px 14px;border-radius:8px;margin-top:14px;
+  }
+  footer{font-size:12px;color:#7a8596;text-align:center;margin-top:24px}
+  @media(max-width:800px){
+    .summary-grid{grid-template-columns:repeat(2,1fr)}
+    .timeline{grid-template-columns:repeat(2,1fr)}
+    .hero{padding:34px 26px}
+    h1{font-size:29px}
+    .section{padding:23px 19px}
+    .verdict{grid-template-columns:1fr}
+    .barrow{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="background:#fef3c7;border:2px solid #f59e0b;color:#78350f;padding:14px 18px;border-radius:10px;font-size:13.5px;line-height:1.6;margin-bottom:18px">
+  <b>[HISTORICAL]</b> 이 문서는 통합 이전의 아카이브 노트북(<code>07a_asymmetric_rate_response.ipynb</code>, git 추적 제외) 실행 결과만으로 작성됐다.
+  같은 내용(PART D 강건성)은 현재 통합된 <code>notebooks/07_asymmetric_rate_response.ipynb</code>와
+  <code>results/H2_asymmetry_regime/summary.md</code>의 PART D 절에 포함돼 있다. 수치는 이 문서와 일치하지만,
+  최신 상태를 확인하려면 <code>summary.md</code>를 기준으로 볼 것.
+  </div>
+
+  <header class="hero">
+    <div class="eyebrow">모형 C 후속 강건성 검증</div>
+    <h1>건설업 금리 상승·하락 비대칭은 정말 믿을 만한가?</h1>
+    <p>
+      기존 분석에서 건설업만 국고채 3년물 금리의 상승과 하락에 서로 다른 민감도를 보였다.
+      이번 파일은 그 결과가 특정 날짜, 특정 시기, 표준오차 방식, 다중검정 범위,
+      또는 상승일·하락일의 평균 차이 때문에 우연히 나온 것은 아닌지 다섯 가지 질문으로 다시 확인한다.
+    </p>
+    <div class="source">근거 파일: 07a_asymmetric_rate_response(1).ipynb 실행 결과</div>
+  </header>
+
+  <div class="summary-grid">
+    <div class="metric">
+      <div class="label">기준 건설업 Wald BH p</div>
+      <div class="value">0.0089</div>
+      <div class="sub">산업 7개 기준, 유의</div>
+    </div>
+    <div class="metric">
+      <div class="label">극단일 1개씩 제외</div>
+      <div class="value">10/10</div>
+      <div class="sub">모든 경우 유의 유지</div>
+    </div>
+    <div class="metric">
+      <div class="label">유의한 3년 이동창</div>
+      <div class="value">3/8</div>
+      <div class="sub">2021년 이후 창에서만</div>
+    </div>
+    <div class="metric">
+      <div class="label">14개 Wald 전체 보정</div>
+      <div class="value">0.0177</div>
+      <div class="sub">건설업 결과 유지</div>
+    </div>
+  </div>
+
+  <nav class="toc">
+    <strong>파일 흐름: 처음 던진 다섯 가지 질문</strong>
+    <div class="toc-links">
+      <a href="#baseline">기준 결과</a>
+      <a href="#q1">① 극단값 때문인가?</a>
+      <a href="#q2">② 특정 시기 때문인가?</a>
+      <a href="#q3">③ 표준오차에 민감한가?</a>
+      <a href="#q4">④ 다중검정 범위에 민감한가?</a>
+      <a href="#q5">⑤ 평균 수준 차이 때문인가?</a>
+      <a href="#conclusion">최종 결론</a>
+    </div>
+  </nav>
+
+  <section class="section" id="baseline">
+    <h2>기준 결과: 무엇을 다시 검증하려는가?</h2>
+    <div class="lead">
+      건설업에서 금리 상승계수와 하락계수가 같다는 귀무가설이 기각되었다.
+    </div>
+
+    <div class="formula">H₀: β<sub>up</sub> = β<sub>down</sub></div>
+
+    <table>
+      <thead>
+        <tr><th>구분</th><th>계수</th><th>10bp 변화 시 수익률 방향</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>금리 상승계수</td><td>-0.021607</td><td>-0.216%</td></tr>
+        <tr><td>금리 하락계수</td><td>+0.031027</td><td>-0.310%</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      하락계수가 양수인데도 실제 수익률 효과가 음수인 이유는, 금리 하락변수 자체가 음수이기 때문이다.
+      따라서 금리가 10bp 하락하면 <b>+0.031027 × -0.1</b>이 되어 건설업 수익률은 약 0.310% 낮아지는 방향이다.
+    </p>
+
+    <p>
+      기준 Wald F는 10.4178, 원 p값은 0.001265, 산업 7개에 대한 BH 보정 p값은 0.008852였다.
+      즉 기준 분석에서는 건설업의 상승·하락 민감도가 같다고 보기 어려웠다.
+    </p>
+
+    <div class="note">
+      이 분석은 KOSPI 수익률을 통제한 조건부 동행 관계다. 금리변화가 건설업 수익률을 직접 일으켰다는 인과효과를 의미하지는 않는다.
+    </div>
+  </section>
+
+  <section class="section" id="q1">
+    <h2><span class="qnum">1</span>극단적인 금리변화일을 제외해도 결과가 유지되는가?</h2>
+
+    <div class="why">
+      <b>이 질문을 한 이유</b><br/>
+      절대 금리변화가 가장 컸던 상위 10개 날짜가 모두 2022~2023년에 몰려 있었다.
+      특히 2022-09-26에는 3년물 금리가 34.9bp 상승했고, 2023-03-13에는 26.8bp 하락했다.
+      이런 소수의 큰 변동일이 회귀선 기울기를 과도하게 끌어당겨 건설업 비대칭을 만든 것일 수 있었다.
+    </div>
+
+    <div class="method">
+      <b>어떻게 확인했나</b><br/>
+      ① 원자료, ② 상·하위 1% Winsorize, ③ 절대변화 상위 0.5% 날짜 전체 제외,
+      ④ 상위 1% 날짜 전체 제외, ⑤ 가장 큰 10개 날짜를 한 번에 하나씩 제외하는 방법을 비교했다.
+    </div>
+
+    <h3>핵심 결과</h3>
+    <table>
+      <thead>
+        <tr><th>분석 사양</th><th>상승계수</th><th>하락계수</th><th>BH p값</th><th>판정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>원자료</td><td>-0.0216</td><td>+0.0310</td><td>0.0089</td><td class="yes">유의</td></tr>
+        <tr><td>Winsorize 1%</td><td>-0.0215</td><td>+0.0395</td><td>0.0380</td><td class="yes">유의</td></tr>
+        <tr><td>절대변화 상위 0.5% 전체 제외</td><td>-0.0168</td><td>+0.0379</td><td>0.1401</td><td class="no">비유의</td></tr>
+        <tr><td>절대변화 상위 1% 전체 제외</td><td>-0.0090</td><td>+0.0369</td><td>0.1864</td><td class="no">비유의</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      가장 큰 날짜 10개를 <b>하나씩</b> 빼면 BH p값은 0.0047~0.0394 범위로 모두 유의했다.
+      따라서 특정 하루 하나가 결과를 전부 만든 것은 아니다.
+      반면 큰 변동일 여러 개를 집단적으로 제거하면 유의성이 사라졌다.
+    </p>
+
+    <div class="verdict amber">
+      <div class="vtitle">판단</div>
+      <div>
+        <span class="tag green">단일 날짜 의존 아님</span>
+        <span class="tag amber">큰 변동기 집단에는 의존</span><br/>
+        건설업 비대칭은 한두 날짜의 우연한 결과는 아니지만,
+        큰 금리변화가 발생한 시기의 정보가 통계적 유의성을 강화하고 있다.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="q2">
+    <h2><span class="qnum">2</span>특정 시기에만 나타난 결과인가?</h2>
+
+    <div class="why">
+      <b>이 질문을 한 이유</b><br/>
+      전체 10년을 한 번에 분석하면 서로 다른 금리환경이 평균으로 섞인다.
+      초기 저금리기, 코로나 시기, 2022년 이후 급격한 긴축기가 서로 달랐기 때문에,
+      전체 표본의 유의성이 특정 시기의 현상을 숨기고 있을 수 있었다.
+    </div>
+
+    <div class="method">
+      <b>어떻게 확인했나</b><br/>
+      2016~2020과 2021~2025를 분리하고, 2020~2021 및 2022~2023을 각각 제외했으며,
+      2016~2019·2020~2021·2022~2025의 세 구간도 비교했다.
+      추가로 3년씩 이동하는 Rolling Window를 사용했다.
+    </div>
+
+    <h3>고정 기간 결과</h3>
+    <table>
+      <thead>
+        <tr><th>기간</th><th>상승계수</th><th>하락계수</th><th>BH p값</th><th>판정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>전체 2016~2025</td><td>-0.0216</td><td>+0.0310</td><td>0.0089</td><td class="yes">유의</td></tr>
+        <tr><td>2020~2021 제외</td><td>-0.0221</td><td>+0.0341</td><td>0.0094</td><td class="yes">유의</td></tr>
+        <tr><td>2022~2023 제외</td><td>-0.0213</td><td>+0.0426</td><td>0.1524</td><td class="no">비유의</td></tr>
+        <tr><td>2016~2020</td><td>+0.0168</td><td>+0.0386</td><td>0.7651</td><td class="no">비유의</td></tr>
+        <tr><td>2021~2025</td><td>-0.0355</td><td>+0.0267</td><td>0.0061</td><td class="yes">유의</td></tr>
+        <tr><td>2022~2025</td><td>-0.0387</td><td>+0.0251</td><td>0.0109</td><td class="yes">유의</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3년 Rolling Window</h3>
+    <div class="timeline">
+      <div class="win ns"><strong>2016–18</strong>0.7072</div>
+      <div class="win ns"><strong>2017–19</strong>0.7709</div>
+      <div class="win ns"><strong>2018–20</strong>0.4221</div>
+      <div class="win ns"><strong>2019–21</strong>0.7310</div>
+      <div class="win ns"><strong>2020–22</strong>0.3650</div>
+      <div class="win sig"><strong>2021–23</strong>0.0496</div>
+      <div class="win sig"><strong>2022–24</strong>0.0203</div>
+      <div class="win sig"><strong>2023–25</strong>0.0450</div>
+    </div>
+    <p style="font-size:13px;color:#667085">숫자는 각 3년 구간의 BH p값이다. 초록색 구간만 5% 기준에서 유의하다.</p>
+
+    <div class="verdict amber">
+      <div class="vtitle">판단</div>
+      <div>
+        <span class="tag amber">시기 의존적</span>
+        <span class="tag purple">2021년 이후 집중</span><br/>
+        건설업 비대칭은 2016년부터 계속 존재한 고정적 특성이라기보다,
+        2021년 이후 금리환경에서 강화된 현상으로 해석하는 것이 적절하다.
+        2022~2023년을 제외하면 계수 부호는 유지되지만 BH 유의성은 사라진다.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="q3">
+    <h2><span class="qnum">3</span>표준오차 방식을 바꿔도 전 산업 공동검정이 유지되는가?</h2>
+
+    <div class="why">
+      <b>이 질문을 한 이유</b><br/>
+      기존 전 산업 공동검정은 날짜 클러스터 표준오차를 사용했다.
+      이 방식은 같은 날 여러 산업이 함께 움직이는 것은 고려하지만,
+      오늘의 오차가 며칠 뒤까지 이어지는 시계열 자기상관을 직접 반영하지 않는다.
+      기존 p값이 0.0401로 경계선이었기 때문에 표준오차 방식에 따라 결론이 바뀔 가능성이 있었다.
+    </div>
+
+    <div class="method">
+      <b>어떻게 확인했나</b><br/>
+      날짜 클러스터와 Driscoll–Kraay 표준오차를 비교했고,
+      Driscoll–Kraay의 시차를 1일, 5일, 10일로 바꿨다.
+    </div>
+
+    <h3>국고채 3년물 공동검정</h3>
+    <div class="barrow"><div>Date-cluster</div><div class="bar"><span style="width:80%"></span></div><div class="barvalue">0.0401</div></div>
+    <div class="barrow"><div>Driscoll–Kraay lag 1</div><div class="bar green"><span style="width:51%"></span></div><div class="barvalue">0.0254</div></div>
+    <div class="barrow"><div>Driscoll–Kraay lag 5</div><div class="bar green"><span style="width:56%"></span></div><div class="barvalue">0.0280</div></div>
+    <div class="barrow"><div>Driscoll–Kraay lag 10</div><div class="bar green"><span style="width:53%"></span></div><div class="barvalue">0.0266</div></div>
+
+    <h3>Curvature 공동검정</h3>
+    <table>
+      <thead><tr><th>표준오차</th><th>p값</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td>Date-cluster</td><td>0.6173</td><td class="no">비유의</td></tr>
+        <tr><td>DK lag 1</td><td>0.6209</td><td class="no">비유의</td></tr>
+        <tr><td>DK lag 5</td><td>0.5749</td><td class="no">비유의</td></tr>
+        <tr><td>DK lag 10</td><td>0.5876</td><td class="no">비유의</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict green">
+      <div class="vtitle">판단</div>
+      <div>
+        <span class="tag green">표준오차에는 강건</span><br/>
+        원 p값 기준으로 3년물 공동검정은 모든 표준오차 방식에서 5% 유의성을 유지했다.
+        반면 Curvature 비대칭은 어떤 방식에서도 확인되지 않았다.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="q4">
+    <h2><span class="qnum">4</span>다중검정의 범위를 넓혀도 결론이 유지되는가?</h2>
+
+    <div class="why">
+      <b>이 질문을 한 이유</b><br/>
+      검정을 여러 번 하면 우연히 유의한 결과가 나올 가능성이 커진다.
+      따라서 3년물과 Curvature를 별도 질문으로 볼지,
+      또는 같은 연구에서 수행한 하나의 검정족으로 묶을지에 따라 보정 p값이 달라질 수 있다.
+    </div>
+
+    <div class="method">
+      <b>어떻게 확인했나</b><br/>
+      ① 3년물·Curvature 공동검정 2개를 함께 보정,
+      ② Curvature 상승 7개와 하락 7개를 합친 14개 계수를 함께 보정,
+      ③ 3년물 Wald 7개와 Curvature Wald 7개를 합친 14개 검정을 함께 보정했다.
+    </div>
+
+    <h3>전 산업 공동검정 2개를 함께 보정</h3>
+    <table>
+      <thead>
+        <tr><th>표준오차</th><th>3년물 원 p</th><th>2개 BH 보정 p</th><th>판정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Date-cluster</td><td>0.0401</td><td>0.0801</td><td class="no">비유의</td></tr>
+        <tr><td>DK lag 1</td><td>0.0254</td><td>0.0508</td><td class="borderline">경계선</td></tr>
+        <tr><td>DK lag 5</td><td>0.0280</td><td>0.0561</td><td class="no">비유의</td></tr>
+        <tr><td>DK lag 10</td><td>0.0266</td><td>0.0532</td><td class="no">비유의</td></tr>
+      </tbody>
+    </table>
+
+    <h3>개별 건설업 Wald 검정</h3>
+    <table>
+      <thead><tr><th>보정 범위</th><th>건설업 3년물 BH p</th><th>판정</th></tr></thead>
+      <tbody>
+        <tr><td>3년물 산업 7개만</td><td>0.008852</td><td class="yes">유의</td></tr>
+        <tr><td>3년물·Curvature 총 14개</td><td>0.017704</td><td class="yes">유의</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Curvature 개별 계수</h3>
+    <p>
+      상승 7개와 하락 7개를 별도로 보정하면 운수장비·의약품·철강금속의 상승계수가 유의했지만,
+      14개 전체를 함께 보정하면 최소 BH p값이 0.0733으로 올라가 유의한 계수가 하나도 남지 않았다.
+    </p>
+
+    <div class="verdict amber">
+      <div class="vtitle">판단</div>
+      <div>
+        <span class="tag green">건설업 개별 결과는 유지</span>
+        <span class="tag amber">전 산업 공동결론은 민감</span><br/>
+        건설업 3년물 비대칭은 보정 범위를 넓혀도 유지된다.
+        그러나 전 산업 공동검정은 3년물과 Curvature 두 검정을 같은 검정족으로 묶으면 5% 유의성을 잃는다.
+        따라서 주 검정과 확장 검정을 어떻게 구분했는지 반드시 명시해야 한다.
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="q5">
+    <h2><span class="qnum">5</span>상승일과 하락일의 평균 수준 차이가 비대칭처럼 보인 것은 아닌가?</h2>
+
+    <div class="why">
+      <b>이 질문을 한 이유</b><br/>
+      기존 모형은 금리변화가 0일 때 상승구간과 하락구간이 같은 절편에서 만난다고 가정한다.
+      하지만 금리 상승일은 물가·긴축 우려, 하락일은 경기둔화·위험회피와 같이
+      기본적인 시장 분위기 자체가 다를 수 있다.
+      이 평균 수준 차이가 상승·하락 기울기에 섞였을 가능성을 확인할 필요가 있었다.
+    </div>
+
+    <div class="method">
+      <b>어떻게 확인했나</b><br/>
+      금리 무변화일을 제외한 뒤, 금리 상승일이면 1이 되는 방향 더미를 추가해
+      상승일과 하락일의 절편이 다를 수 있도록 허용했다.
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>모형</th><th>상승계수</th><th>하락계수</th><th>BH p값</th><th>판정</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>전체 표본 기본모형</td><td>-0.0216</td><td>+0.0310</td><td>0.0089</td><td class="yes">유의</td></tr>
+        <tr><td>무변화일 제외</td><td>-0.0216</td><td>+0.0310</td><td>0.0097</td><td class="yes">유의</td></tr>
+        <tr><td>무변화일 제외 + 상승일 더미</td><td>-0.0271</td><td>+0.0247</td><td>0.0107</td><td class="yes">유의</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      방향 더미 자체의 p값은 0.3384로 유의하지 않았다.
+      즉 상승일이라는 이유만으로 건설업의 평균 수익률 수준이 달랐다는 근거는 없었고,
+      절편 차이를 허용해도 상승·하락 기울기 차이는 유지되었다.
+    </p>
+
+    <div class="verdict green">
+      <div class="vtitle">판단</div>
+      <div>
+        <span class="tag green">절편 가정에 강건</span><br/>
+        건설업 비대칭은 상승일과 하락일의 단순한 평균 분위기 차이가 기울기에 섞여 생긴 결과로 보기는 어렵다.
+      </div>
+    </div>
+  </section>
+
+  <section class="final" id="conclusion">
+    <h2>최종 종합 결론</h2>
+
+    <div class="box">
+      <b>비교적 강하게 말할 수 있는 것</b>
+      <ul>
+        <li>건설업의 3년물 상승·하락 비대칭은 특정 하루 하나에 의해 만들어진 결과가 아니다.</li>
+        <li>Winsorize와 방향 더미 추가 후에도 유의성이 유지된다.</li>
+        <li>건설업 개별 Wald 결과는 3년물·Curvature 14개 전체를 함께 보정해도 유의하다.</li>
+        <li>3년물 전 산업 공동검정은 표준오차 방식을 바꿔도 원 p값 기준으로 유지된다.</li>
+        <li>Curvature의 상승·하락 비대칭은 어떤 설정에서도 확인되지 않는다.</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <b>조심해서 말해야 하는 것</b>
+      <ul>
+        <li>건설업 비대칭은 2016년부터 계속된 고정적 구조라기보다 2021년 이후에 집중된다.</li>
+        <li>2022~2023년과 큰 금리변화일들을 집단적으로 제거하면 BH 유의성이 약해진다.</li>
+        <li>전 산업 공동검정은 3년물과 Curvature를 같은 검정족으로 보정하면 5% 기준을 넘는다.</li>
+        <li>따라서 “모든 산업에서 방향 비대칭이 확실하다”는 식으로 일반화하면 안 된다.</li>
+      </ul>
+    </div>
+
+    <div class="box">
+      <b>가장 적절한 최종 표현</b><br/>
+      건설업의 국고채 3년물 상승·하락 비대칭은 단일 극단일이나 상승·하락일의 평균 수준 차이로 설명되지는 않으며,
+      개별 산업 수준에서는 다중검정 범위를 확대해도 유지되는 유의미한 신호다.
+      다만 기간별 분석에서는 주로 2021년 이후, 특히 큰 금리변화가 집중된 최근 환경에서 강해졌으므로
+      전 기간에 공통된 고정적 특성보다는 최근 금리환경에 민감한 시기 의존적 현상으로 해석하는 것이 적절하다.
+    </div>
+  </section>
+
+  <footer>
+    본 문서는 07a_asymmetric_rate_response(1).ipynb에 저장된 실행 결과만을 바탕으로 구성함.
+  </footer>
+</div>
+</body>
+</html>

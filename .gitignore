@@ -1,5 +1,13 @@
 # 민감/비공개 자료
 docs/private/
+docs/feedback/
+docs/meetings/
+docs/paper_design/
+docs/research_design/
+docs/templates/
+docs/CONFIG_USAGE_GUIDE.html
+docs/NOTION_WORKSPACE.md
+docs/STYLE_GUIDE.md
 data/
 .env
 .env.*
