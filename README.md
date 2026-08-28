@@ -116,8 +116,7 @@ FINDSLAB-Research-Intern/
 ├── pyproject.toml
 ├── src/
 │   ├── data_prep.py
-│   ├── models.py
-│   └── rate_beta_professor.py
+│   └── models.py
 ├── notebooks/
 │   └── 01_data_preparation.ipynb ... 10_firm_characteristics_analysis.ipynb
 ├── results/
