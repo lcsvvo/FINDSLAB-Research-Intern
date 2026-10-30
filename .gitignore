@@ -1,0 +1,50 @@
+# Data and local credentials
+data/
+.env
+.env.*
+!.env.example
+
+# Internal research documents
+/AGENTS.md
+/CLAUDE.md
+/src/rate_beta_professor.py
+docs/private/
+docs/feedback/
+docs/meetings/
+docs/paper_design/
+docs/research_design/
+docs/templates/
+docs/CONFIG_USAGE_GUIDE.html
+docs/NOTION_WORKSPACE.md
+docs/STYLE_GUIDE.md
+
+# Python and Jupyter
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Local editor and OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local bundles
+*.zip
+
+# Local reports and paper files
+*.html
+*.htm
+*.pdf
+
+# Internal documentation and superseded notebooks
+/docs/
+/notebooks/FINAL_paper_analysis.ipynb
+/notebooks/MASTER_full_analysis.ipynb
+/results/H3_firm_characteristics/collection_plan_comparison.md
+
+# Local distribution bundle
+/resource/

@@ -540,6 +540,8 @@ def setup_korean_font(verbose: bool = True) -> str | None:
     폰트를 찾지 못해도 예외를 던지지 않는다. 그래프 한글이 깨질 뿐이고
     분석 자체는 진행되어야 하기 때문이다.
     """
+    import warnings
+
     import matplotlib.pyplot as plt
     from matplotlib import font_manager
 
@@ -565,6 +567,15 @@ def setup_korean_font(verbose: bool = True) -> str | None:
 
     # 음수 기호가 네모로 표시되는 것을 막는다.
     plt.rcParams["axes.unicode_minus"] = False
+
+    # Malgun Gothic은 일부 사용자 지정 레이블의 Unicode minus(U+2212)를
+    # 포함하지 않는다. 축의 음수 표시는 위 설정으로 정상 보정되므로,
+    # 이 폰트 제약만 알리는 반복 경고를 출력에서 제외한다.
+    warnings.filterwarnings(
+        "ignore",
+        message=r"Glyph 8722 .* missing from font\(s\) .*",
+        category=UserWarning,
+    )
 
     if verbose and applied is not None:
         print(f"그래프 폰트: {applied}")
