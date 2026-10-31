@@ -4,6 +4,8 @@
 
 2016–2025년 한국 **7개 산업지수**의 금리 민감도 분석. KOSPI 수익률을 통제한 뒤 산업별 차이를 추정하고, 수익률곡선 요인, 금리 방향, 산업 재무특성과의 관계를 살펴봄.
 
+**2026 한국경영과학회 추계학술대회 장려상(경쟁 부문) 수상.**
+
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white) ![pandas](https://img.shields.io/badge/pandas-150458?style=flat&logo=pandas&logoColor=white) ![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat&logo=numpy&logoColor=white) ![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?style=flat&logo=scipy&logoColor=white) ![statsmodels](https://img.shields.io/badge/statsmodels-4051B5?style=flat) ![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?style=flat)
 
 ## Data
