@@ -2,7 +2,6 @@
 data/
 .env
 .env.*
-!.env.example
 
 # Internal research documents
 /AGENTS.md
@@ -48,3 +47,7 @@ Thumbs.db
 
 # Local distribution bundle
 /resource/
+
+# Local setup sample and redundant directory placeholders
+/results/H2_asymmetry_regime/figures/.gitkeep
+/results/H2_asymmetry_regime/tables/.gitkeep
